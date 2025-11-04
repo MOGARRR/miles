@@ -5,12 +5,17 @@ import MissionStatement from "./components/MissionStatement";
 import ServicesProducts from "./components/ServicesProducts";
 import Contact from "./components/Contact";
 import GalleryList from "./components/GalleryList";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  let { data: Users, error } = await supabase.from("Users").select("*");
+
   return (
     <>
       {/* ///HERO/// */}
       <Hero />
+      <pre>{JSON.stringify(Users, null, 2)}</pre>
       {/* Our Mission */}
       <MissionStatement />
       {/* ///SERVICES/PRODUCT/// */}
