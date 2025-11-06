@@ -1,10 +1,21 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @plugin "daisyui";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #1c1c21;
+  --foreground: #FAFAFA;
 }
+
+
+h1, h2, h3 {
+  font-family: var(--font-bebas);
+  letter-spacing: 0.5px;
+}
+
 
 @theme inline {
   --color-background: var(--background);
@@ -15,8 +26,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1c1c21;
+    --foreground: #FAFAFA;
   }
 }
 
