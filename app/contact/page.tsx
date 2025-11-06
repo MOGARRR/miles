@@ -1,5 +1,4 @@
-import React from "react";
-import Contact from "../components/Contact";
+
 
 const contactPage = () => {
   return (
@@ -28,17 +27,7 @@ const contactPage = () => {
           </button>
         </fieldset>
       </div>
-      <div className="bg-slate-400 text-center p-4 text-xl">
-        <div className="">
-          <h2>📞 123-456-7890</h2>
-        </div>
-        <div>
-          <h2>📧 Duck@Season.com</h2>
-        </div>
-        <div>
-          <h2>📫 123-DuckLane</h2>
-        </div>
-      </div>
+      
     </div>
   );
 };
