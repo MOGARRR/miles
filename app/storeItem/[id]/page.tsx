@@ -15,6 +15,7 @@ interface ProductPageProps {
 const productPage = ({ params }: ProductPageProps) => {
   
   const itemId = parseInt(params.id)
+  console.log(itemId);
   const item = productSetArray.find((item) => item.id === itemId);
 
   if (!item) return notFound();
