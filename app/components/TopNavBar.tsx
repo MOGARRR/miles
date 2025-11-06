@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import NavMenu from "./NavMenu";
 import Cart from "./Cart";
 import { useState } from "react";
@@ -18,10 +17,14 @@ const TopNavBar = () => {
 
   return (
     <>
-      <div className="navbar bg-base-100 shadow-sm fixed z-10">
+      <div 
+        className="navbar bg-base-100 shadow-sm fixed z-10"
+        style={{ backgroundColor: "#1c1c21" }}
+      >
         <div className="navbar-start">
           <div
             className="dropdown"
+            
             onClick={() => {
               handleNav(navStatus);
               handleCart(true);

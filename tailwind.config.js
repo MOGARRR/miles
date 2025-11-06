@@ -3,7 +3,7 @@
 
 export default {
 
-   //"content" tells Tailwind where to look for class names in the project.
+  //"content" tells Tailwind where to look for class names in the project.
   //It scans these files and automatically removes unused CSS (tree-shaking).
 
   content: [
@@ -18,6 +18,7 @@ export default {
     // "extend" allows you to add to Tailwind’s default theme
     // instead of replacing it completely.
     extend: {
+
       fontFamily: {
 
         // Default font (from bubble)

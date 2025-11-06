@@ -15,8 +15,8 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
   return (
     <>
       {display && (
-        <div className="flex ">
-          <div className="bg-base-100 fixed top-15 w-screen h-3/6 flex flex-col select-none z-10 border-b-2">
+        <div className="flex " >
+          <div className="bg-base-100 fixed top-15 w-screen h-3/6 flex flex-col select-none z-10 border-b-2" style={{ backgroundColor: "#1c1c21" }}>
             <div className="flex flex-col h-full text-4xl text-center">
               <Link
                 href={{ pathname: "/" }}
