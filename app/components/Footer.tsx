@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Instagram } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -25,7 +26,13 @@ const Footer = () => {
 
         <div className="text-center space-y-1">
           <h1 className="text-lg">© {new Date().getFullYear()} KILOBOY ARTWORK</h1>
-          <p className="text-xs">Privacy Policy and Terms & Conditions</p>
+
+          <Link
+            href="/privacy"
+            className="text-xs text-white hover:text-red-400 transition"
+          >
+            Privacy Policy & Terms & Conditions
+          </Link>
 
         </div>
 
@@ -42,7 +49,6 @@ const Footer = () => {
           </div>
 
         </div>
-        
 
       </div>
       
