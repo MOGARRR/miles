@@ -1,13 +1,48 @@
-import Link from "next/link";
+import Image from "next/image";
+import { Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer 
-      className="footer footer-horizontal footer-center rounded p-10 text-white"
-      style={{ backgroundColor: "#1c1c21" }}>
+      className="
+        footer 
+        footer-center 
+        bg-[#1c1c21] text-white
+        px-8 py-4 rounded-none"
+    >
+      
+      
+      <div className="flex flex-row justify-between items-center w-full">
+        <div>
+          <Image 
+            src="/images/kiloboy-logo.jpg" 
+            alt="KiloBoy logo" 
+            width={80} 
+            height={80} 
+          />
+        </div>
+      
 
-      <div>
-        <h1>I am the footer </h1>
+        <div className="text-center space-y-1">
+          <h1 className="text-lg">© {new Date().getFullYear()} KILOBOY ARTWORK</h1>
+          <p className="text-xs">Privacy Policy and Terms & Conditions</p>
+
+        </div>
+
+        <div className="text-right space-y-1">
+          <p> (111) 111-1111 </p>
+          <p> email@email.com</p>
+
+          <div className="flex justify-end mt-2">
+            <a href="https://www.instagram.com/kiloboyartwork/" aria-label="Instagram">
+            <Instagram 
+              size={24}
+              className="text-white hover:text-red-400 transition" />
+            </a>
+          </div>
+
+        </div>
+        
 
       </div>
       
