@@ -7,11 +7,11 @@ import Contact from "./components/Contact";
 import GalleryList from "./components/GalleryList";
 
 
-export default function Home() {
   return (
     <>
       {/* ///HERO/// */}
       <Hero />
+      <pre>{JSON.stringify(Users, null, 2)}</pre>
       {/* Our Mission */}
       <MissionStatement />
       {/* ///SERVICES/PRODUCT/// */}
