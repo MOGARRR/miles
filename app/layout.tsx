@@ -50,7 +50,7 @@ export default function RootLayout({
         {/* Top navigation bar (visible on every page) */}
         <TopNavBar />
 
-        <main className="flex-grow mt-[100px] px-6 md:px12 max-w-6xl mx-auto w-full">{children}</main>
+        <main className="flex-grow mt-[60px] w-full">{children}</main>
 
 
         {/* 

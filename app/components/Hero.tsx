@@ -5,23 +5,58 @@ import Link from "next/link";
 
 const Hero = () => {
   return (
-    <div className="text-center relative w-screen h-[95vh] border-b-2 border-slate ">
-      <Image
-        className="w-screen object-cover blur-[3px]"
-        src='/images/StockCake-Floating-Rubber.jpg'
-        alt="Rubber duck floating in water"
-        fill
-        priority 
-      />
-      <div className="text-5xl absolute inset-x-0 bottom-70 z-0 flex flex-col justify-between text-white">
-        <h1>It's</h1>
-        <h1>Duck</h1>
-        <h1>Season!</h1>
-        <Link href={{ pathname: '/store'}} className=" text-2xl text-white btn btn-neutral btn-outline m-5 rounded-sm border-white">
-          Shop
-        </Link>
-      </div>
-    </div>
+    <section className="
+      bg-gradient-to-l from-[#46403F] to-[#26262B]
+      text-white
+      py-20 ">
+
+        {/* Content wrapper */}
+        <div className="
+          max-w-6xl mx-auto
+          px-6 md:px-16
+          flex flex-col 
+          items-start text-left
+          space-y-6">
+
+          <h1 className="text-4xl md:text-6xl font-bold text-[#E14747] ">
+            Bold Art. Fierce Style. 
+          </h1>
+
+          <h2 className="text-lg md:text-3xl max-w-2xl leading-relaxed"> 
+            Pop culture-inspired artworks that speak to the streets.
+          </h2>
+          
+          
+          <div className="flex flex-col sm:flex-row gap-8 mt-6">
+            {/* RED BUTTON */}
+            <Link
+            href="/store"
+            className="
+              bg-[#E14747] text-white 
+              px-8 py-3 rounded-md font-semibold 
+              hover:bg-[#B53535] transition-colors duration-200
+            "
+          >
+              SHOP NOW
+            </Link>
+
+            {/* BLACK BUTTON */}
+            <Link 
+            href="/customArtwork"
+            className="bg-[#1C1C21] text-white px-8 py-3 rounded-md font-semibold hover:bg-[#0f0f11] transition-colors duration-200">
+              REQUEST CUSTOM
+            </Link>
+
+          </div>
+
+        </div>
+      
+        
+        
+
+
+      
+    </section>
   );
 };
 
