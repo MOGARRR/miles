@@ -12,47 +12,40 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
 
   const handleDisplay = () => setDisplay(false);
 
+  const links = [
+                  { name: "Home", path: "/" }, 
+                  { name: "Gallery", path: "/store" }, 
+                  { name: "Custom Artowork", path: "/customArtowork" }, 
+                  { name: "About", path: "/about" }, 
+                  { name: "Contact us", path: "/contact" }, 
+                  { name: "Login / Register", path: "/login" }, 
+                ]
+
   return (
     <>
       {display && (
-        <div className="flex " >
-          <div className="bg-base-100 fixed top-15 w-screen h-3/6 flex flex-col select-none z-10 border-b-2" style={{ backgroundColor: "#1c1c21" }}>
-            <div className="flex flex-col h-full text-4xl text-center">
+        <div className="
+          bg-[#1c1c21] text-white 
+          fixed top-16 left-0 w-full z-50
+          flex flex-col border-t border-gray-700" 
+        >
+    
+          <nav className=" flex flex-col text-left text-lg select-none ">
+            {links.map((link) => (
               <Link
-                href={{ pathname: "/" }}
-                className=" m-1 w-full p-3 border-y-1"
-                onClick={() => handleDisplay()}
+                key={link.path}
+                href={link.path}
+                onClick={handleDisplay}
+                className="
+                  w-full px-6 py-4 m-1
+                  hover:bg-gray-800 active:bg-gray-700
+                  transition=colors duration-150 rounded-md
+                  "
               >
-                Home
+                {link.name}
               </Link>
-              <Link
-                href={{ pathname: "/about" }}
-                className="  w-full p-3 m-1 w-full p-3 border-b-1"
-                onClick={() => handleDisplay()}
-              >
-                About
-              </Link>
-              <Link
-                href={{ pathname: "/store" }}
-                className="  w-full p-3 m-1 w-full p-3 border-b-1"
-                onClick={() => handleDisplay()}
-              >
-                Store &gt;
-                <ul className="text-2xl">
-                  <li className="m-4">Category 1</li>
-                  <li className="m-4">Category 2</li>
-                  <li className="m-4">Category 3</li>
-                </ul>
-              </Link>
-              <Link
-                href={{ pathname: "/contact" }}
-                className="  w-full p-3 m-1 w-full p-3"
-                onClick={() => handleDisplay()}
-              >
-                Contact
-              </Link>
-            </div>
-          </div>
+            ))};           
+          </nav>
         </div>
       )}
     </>

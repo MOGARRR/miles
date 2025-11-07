@@ -18,10 +18,10 @@ const TopNavBar = () => {
   return (
     <>
       <div 
-        className="navbar bg-base-100 shadow-sm fixed z-10"
-        style={{ backgroundColor: "#1c1c21" }}
+        className="navbar bg-[#1c1c21] text-white shadow-sm fixed z-10 p-4"
+        
       >
-        <div className="navbar-start">
+        <div className="navbar-start ">
           <div
             className="dropdown"
             
