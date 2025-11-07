@@ -16,7 +16,7 @@ const Footer = () => {
       <div className="flex flex-col md:flex-row justify-between items-center w-full gap-6 md:gap-12 text-center md:text-left">
         <div>
           <Image 
-            src="/images/kiloboy-logo.jpg" 
+            src="/images/kiloboy-logo.png" 
             alt="KiloBoy logo" 
             width={80} 
             height={80} 

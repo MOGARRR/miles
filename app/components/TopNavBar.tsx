@@ -56,7 +56,7 @@ const TopNavBar = () => {
           {/* Logo (mobile)*/}
           <Link href="/" className=" text-xl font-semibold tracking-wide hover:text-gray-300">
             <Image
-              src="/images/kiloboy-logo.jpg"
+              src="/images/kiloboy-logo.png"
               alt="KiloBoy Logo"
               width={80}
               height={20}
