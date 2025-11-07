@@ -3,10 +3,21 @@
 import NavMenu from "./NavMenu";
 import Cart from "./Cart";
 import { useState } from "react";
+import Link from "next/link";
+import { ShoppingCart, Menu } from "lucide-react";
 
 const TopNavBar = () => {
   const [navStatus, setNavStatus] = useState(false);
   const [cartStatus, setCartStatus] = useState(false);
+
+  const links = [
+                  { name: "Home", path: "/" }, 
+                  { name: "Gallery", path: "/store" }, 
+                  { name: "Custom", path: "/customArtowork" }, 
+                  { name: "About", path: "/about" }, 
+                  { name: "Contact", path: "/contact" }, 
+                  { name: "Login", path: "/login" }, 
+                ]
 
 
   const handleNav = (type: boolean) =>
@@ -17,76 +28,70 @@ const TopNavBar = () => {
 
   return (
     <>
-      <div 
-        className="navbar bg-[#1c1c21] text-white shadow-sm fixed z-10 p-4"
-        
-      >
-        <div className="navbar-start ">
-          <div
-            className="dropdown"
-            
+      <header className="
+        fixed top-0 left-0 w-full z-20 
+        bg-[#1c1c21] text-white shadow-sm 
+        px-6 py-3 flex items-center">
+
+        {/* ---------- LEFT SECTION: LOGO + HAMBURGER ---------- */}
+        <div className=" flex-1 flex items-center gap-4">
+          {/* Logo */}
+          <Link href="/" className="text-xl font-semibold tracking-wide hover:text-gray-300">
+            KiloBoy
+          </Link>
+
+          {/* Hamburger (md:hidden = only on small screens) */}
+          <button
+            className="btn btn-ghost btn-circle md:hidden"
+            aria-label="Open menu"
             onClick={() => {
               handleNav(navStatus);
               handleCart(true);
             }}
           >
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h7"
-                />{" "}
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div className="navbar-center">
-          <a className="btn btn-ghost text-2xl">Duck Season</a>
-        </div>
-        <div className="navbar-end">
-          <button
-            className="btn btn-ghost btn-circle"
-            onClick={() => {
-              handleCart(cartStatus);
-              handleNav(true);
-            }}
-          >
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />{" "}
-              </svg>
-              {/* <span className="badge badge-xs badge-primary indicator-item"></span> */}
-            </div>
+            < Menu size={24} />
           </button>
         </div>
-      </div>
-      {navStatus && <NavMenu active={navStatus} />}
-      {cartStatus && <Cart active={cartStatus} />}
+  
+        {/* ------ CENTER SECTION: NAV LINKS desktop only ----- */}
+        {/* hidden by default, starting from the md (medium) breakpoint and above, apply display: flex */}
+        
+          <nav className="hidden md:flex flex-1 justify-center gap-10 ">
+            {links.map((link) => (
+              <Link
+                key={link.path}
+                href={link.path}
+                className=""
+              >
+                {link.name}
+              </Link>
+
+            ))}          
+            
+          </nav>
+
+          {/* ---------- RIGHT SECTION: CART ICON ---------- */}
+          <div className="flex-1 flex justify-end">
+            <button
+              className="btn btn-ghost btn-circle"
+              aria-label="Cart Page"
+              onClick={() => {
+                handleCart(cartStatus);
+                handleNav(true);
+              }}
+            >
+              < ShoppingCart 
+                size={24}
+              />
+            </button>
+          </div>
+
+
+        {/* ---------- MOBILE MENU + CART ---------- */}
+        {navStatus && <NavMenu active={navStatus} />}
+        {cartStatus && <Cart active={cartStatus} />}
+
+      </header>
     </>
   );
 };
