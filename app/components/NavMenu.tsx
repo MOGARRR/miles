@@ -27,7 +27,8 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
         <div className="
           bg-[#1c1c21] text-white 
           fixed top-16 left-0 w-full z-50
-          flex flex-col border-t border-gray-700" 
+          flex flex-col border-t border-gray-700
+          " 
         >
     
           <nav className=" flex flex-col text-left text-lg select-none ">
