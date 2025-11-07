@@ -4,12 +4,14 @@ import Image from "next/image";
 
 const aboutPage = () => {
   return (
-    <div className="page container">
+    // PAGE CONTAINER 
+    <div className="flex flex-col items-center px-6 py-12 space-y-6">
 
-      <div className="page text">
-        <h1>Hi, I'm Miles</h1>
-        <h2>The artist behind KiloBoy</h2>
-
+      {/* TEXT + SIGNATURE */}
+      <div className="space-y-4">
+        <h1 className="text-5xl font-bold" >Hi, I'm <span className="text-[#E14747]">Miles</span></h1>
+        <h2 className="text-3xl text-gray-300">The artist behind KiloBoy</h2>
+        <br />
         <p>
           I make art that hits with attitude — bold lines, loud colors, and real emotion. Every design comes from a place of passion and energy you can feel.
         </p>
@@ -24,9 +26,9 @@ const aboutPage = () => {
         <Image
           src="/images/miles-signature.png"
                     alt="Miles Signature"
-                    width={50}
-                    height={20}
-                    className="">
+                    width={120}
+                    height={60}
+                    className="mx-auto mt-4">
 
         </Image>
 
