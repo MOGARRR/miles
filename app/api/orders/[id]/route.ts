@@ -19,9 +19,8 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ users: data });
+  return NextResponse.json({ orders: data });
 }
-
 
 // PUT
 export async function PUT(
@@ -35,6 +34,9 @@ export async function PUT(
     Object.entries(updatedOrderItem) // turn into array of key/values
       .filter(([_, v]) => v !== undefined) // filter out any undefined values
   );
+
+  updates.updated_at = new Date().toISOString(); // adds update time
+
   let { data, error } = await supabase
     .from("Orders")
     .update(updates)
@@ -47,9 +49,8 @@ export async function PUT(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ users: data });
+  return NextResponse.json({ orders: data });
 }
-
 
 // DELETE
 export async function DELETE(
@@ -69,5 +70,5 @@ export async function DELETE(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ users: data });
+  return NextResponse.json({ orders: data });
 }

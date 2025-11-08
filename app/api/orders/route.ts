@@ -12,7 +12,7 @@ const supabase = await createClient();
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ users: data })
+  return NextResponse.json({ orders: data })
 }  
 
 
@@ -44,5 +44,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ users: data });
+  return NextResponse.json({ orders: data });
 }
