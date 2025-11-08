@@ -27,35 +27,35 @@ const Hero = () => {
           </h2>
           
           
-          <div className="flex flex-col sm:flex-row gap-8 mt-6">
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
             {/* RED BUTTON */}
             <Link
-            href="/store"
-            className="
-              bg-[#E14747] text-white 
-              px-8 py-3 rounded-md font-semibold 
-              hover:bg-[#B53535] transition-colors duration-200
-            "
-          >
+              href="/store"
+              className="
+                bg-[#E14747] text-white text-center
+                px-6 py-2 text-sm
+                md:px-8 md:py-3 md:text-base
+                rounded-md font-semibold 
+                hover:bg-[#B53535] transition-colors duration-200"
+            >
               SHOP NOW
             </Link>
 
             {/* BLACK BUTTON */}
             <Link 
-            href="/customArtwork"
-            className="bg-[#1C1C21] text-white px-8 py-3 rounded-md font-semibold hover:bg-[#0f0f11] transition-colors duration-200">
+              href="/customArtwork"
+              className="
+                bg-[#1C1C21] text-white text-center
+                px-6 py-2 text-sm
+                md:px-8 md:py-3 md:text-base
+                rounded-md font-semibold 
+                hover:bg-[#0f0f11] transition-colors duration-200"
+                >
               REQUEST CUSTOM
             </Link>
 
           </div>
-
-        </div>
-      
-        
-        
-
-
-      
+        </div>  
     </section>
   );
 };

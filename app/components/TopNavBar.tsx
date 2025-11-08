@@ -10,8 +10,7 @@ const TopNavBar = () => {
   const [navStatus, setNavStatus] = useState(false);
   const [cartStatus, setCartStatus] = useState(false);
 
-  const links = [
-                
+  const links = [           
                   { name: "Gallery", path: "/store" }, 
                   { name: "Custom", path: "/customArtwork" }, 
                   { name: "About", path: "/about" }, 
