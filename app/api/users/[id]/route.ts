@@ -47,3 +47,24 @@ export async function PUT(
 
   return NextResponse.json({ users: data });
 }
+
+// DELETE
+export async function DELETE (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const userId = params.id;
+  const supabase = await createClient();
+  let { data, error } = await supabase
+    .from("Users")
+    .delete()
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ users: data });
+}
