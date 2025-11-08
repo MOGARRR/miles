@@ -22,6 +22,7 @@ export async function GET(
   return NextResponse.json({ users: data });
 }
 
+// PUT
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -49,7 +50,7 @@ export async function PUT(
 }
 
 // DELETE
-export async function DELETE (
+export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
