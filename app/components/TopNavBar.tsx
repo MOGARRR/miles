@@ -4,16 +4,16 @@ import NavMenu from "./NavMenu";
 import Cart from "./Cart";
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Menu } from "lucide-react";
+import { ShoppingCart, Menu, Linkedin } from "lucide-react";
 
 const TopNavBar = () => {
   const [navStatus, setNavStatus] = useState(false);
   const [cartStatus, setCartStatus] = useState(false);
 
   const links = [           
+                  { name: "About", path: "/about" }, 
                   { name: "Gallery", path: "/store" }, 
                   { name: "Custom", path: "/customArtwork" }, 
-                  { name: "About", path: "/about" }, 
                   { name: "Contact", path: "/contact" }, 
                   { name: "Login", path: "/login" }, 
                 ]
@@ -74,10 +74,7 @@ const TopNavBar = () => {
                 key={link.path}
                 href={link.path}
                 className="
-                px-3 py-2 rounded-md
-                hover:bg-gray-800
-                active:bg-gray-700
-                transition-colors duration-200
+                btn btn-ghost text-white hover:text-black rounded-md
                 "
               >
                 {link.name}

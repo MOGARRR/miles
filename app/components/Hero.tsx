@@ -12,7 +12,7 @@ const Hero = () => {
 
         {/* Content wrapper */}
         <div className="
-          max-w-6xl mx-auto
+          max-w-7xl mx-auto
           px-6 md:px-16
           flex flex-col 
           items-start text-left
@@ -50,12 +50,12 @@ const Hero = () => {
                 md:px-8 md:py-3 md:text-base
                 rounded-md font-semibold 
                 hover:bg-[#0f0f11] transition-colors duration-200"
-                >
+            >
               REQUEST CUSTOM
             </Link>
 
           </div>
-        </div>  
+        </div>
     </section>
   );
 };

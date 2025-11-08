@@ -30,7 +30,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
           flex flex-col border-t border-gray-700
           " 
         >
-    
+
           <nav className=" flex flex-col text-left text-lg select-none ">
             {links.map((link) => (
               <Link
@@ -45,7 +45,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
               >
                 {link.name}
               </Link>
-            ))};           
+            ))}          
           </nav>
         </div>
       )}
