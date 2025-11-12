@@ -52,7 +52,7 @@ export async function PUT(
   return NextResponse.json({ orders: data });
 }
 
-// DELETE
+// DELETE //CHANGE TO UPDATE CAUSE OF REFERENCE ERROR
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }

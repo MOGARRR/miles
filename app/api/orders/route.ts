@@ -15,7 +15,7 @@ const supabase = await createClient();
   return NextResponse.json({ orders: data })
 }  
 
-
+//POST
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const orderItem = await req.json();
