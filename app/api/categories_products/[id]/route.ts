@@ -51,3 +51,24 @@ export async function PUT(
 
   return NextResponse.json({ categories_products: data });
 }
+
+// DELETE
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const categories_productsId = params.id;
+  const supabase = await createClient();
+  let { data, error } = await supabase
+    .from("Categories_products")
+    .delete()
+    .eq("id", categories_productsId)
+    .single();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ categories_products: data });
+}
