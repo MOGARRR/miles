@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ users: data });
+  return NextResponse.json({ categories_products: data });
 }
 
 //Post

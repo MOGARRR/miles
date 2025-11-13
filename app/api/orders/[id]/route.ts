@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-//GET
+//GET  
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
