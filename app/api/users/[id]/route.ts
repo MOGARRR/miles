@@ -1,17 +1,17 @@
 import { NextResponse, NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-//GET  
+//GET
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const orderId = params.id;
+  const userId = params.id;
   const supabase = await createClient();
   let { data, error } = await supabase
-    .from("Orders")
+    .from("Users")
     .select("*")
-    .eq("id", orderId)
+    .eq("id", userId)
     .single();
 
   if (error) {
@@ -19,7 +19,7 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ orders: data });
+  return NextResponse.json({ users: data });
 }
 
 // PUT
@@ -27,20 +27,17 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const orderId = params.id;
+  const userId = params.id;
   const supabase = await createClient();
-  const updatedOrderItem = await req.json();
+  const updatedUserItem = await req.json();
   const updates = Object.fromEntries(
-    Object.entries(updatedOrderItem) // turn into array of key/values
+    Object.entries(updatedUserItem) // turn into array of key/values
       .filter(([_, v]) => v !== undefined) // filter out any undefined values
   );
-
-  updates.updated_at = new Date().toISOString(); // adds update time
-
   let { data, error } = await supabase
-    .from("Orders")
+    .from("Users")
     .update(updates)
-    .eq("id", orderId)
+    .eq("id", userId)
     .select()
     .single();
 
@@ -49,20 +46,20 @@ export async function PUT(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ orders: data });
+  return NextResponse.json({ users: data });
 }
 
-// DELETE //CHANGE TO UPDATE CAUSE OF REFERENCE ERROR
+// DELETE
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const orderId = params.id;
+  const userId = params.id;
   const supabase = await createClient();
   let { data, error } = await supabase
-    .from("Orders")
+    .from("Users")
     .delete()
-    .eq("id", orderId)
+    .eq("id", userId)
     .single();
 
   if (error) {
@@ -70,5 +67,5 @@ export async function DELETE(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ orders: data });
+  return NextResponse.json({ users: data });
 }
