@@ -50,3 +50,26 @@ export async function PUT(
 
   return NextResponse.json({ orders_products: data });
 }
+
+
+
+// DELETE
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const orders_productsId = params.id;
+  const supabase = await createClient();
+  let { data, error } = await supabase
+    .from("Orders_products")
+    .delete()
+    .eq("id", orders_productsId)
+    .single();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ orders_products: data });
+}
