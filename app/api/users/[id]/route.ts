@@ -5,9 +5,11 @@ import {
   deleteUser,
 } from "@/src/controllers/userControllers";
 
-
 //GET
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const users = await getUsersById(params.id);
     return NextResponse.json({ users }, { status: 200 });
@@ -39,7 +41,10 @@ export async function PUT(
 }
 
 // DELETE
-export async function DELETE({ params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const userId = params.id;
 
