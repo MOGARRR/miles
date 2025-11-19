@@ -1,40 +1,26 @@
 import { NextResponse, NextRequest } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { createCategoriesProducts, getAllCategoriesProducts } from "@/src/controllers/categories_productsControllers";
 
-//GET 
+//GET
 export async function GET() {
-  const supabase = await createClient();
-  let { data, error } = await supabase.from("Categories_products").select("*");
-
-  if (error) {
-    console.error("Supabase error:", error);
+  try {
+    const categories_products = await getAllCategoriesProducts();
+    return NextResponse.json({ categories_products }, { status: 200 });
+  } catch (error: any) {
+    console.error("GET /api/categories_products error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  return NextResponse.json({ categories_products: data });
 }
 
-//Post
-export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const categoriesProductsItem = await req.json();
-  let { data, error } = await supabase
-    .from("Categories_products")
-    .insert([
-      {
-      title : categoriesProductsItem.title,
-      description : categoriesProductsItem.description,
-      image_URL : categoriesProductsItem.image_URL,
-      updated_at : categoriesProductsItem.updated_at,
-      },
-    ])
-    .select()
-    .single();
 
-  if (error) {
-    console.error("Supabase error:", error);
+//POST
+export async function POST(req: Request) {
+  try {
+    const categories_productsItem = await req.json();
+    const categories_products = await createCategoriesProducts(categories_productsItem);
+    return NextResponse.json({ categories_products }, { status: 201 });
+  } catch (error: any) {
+    console.error("POST /api/categories_products error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  return NextResponse.json({ categories_products: data });
 }
