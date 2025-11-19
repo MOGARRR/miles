@@ -1,48 +1,26 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { createClient } from "@/utils/supabase/server";
+import { getAllOrders, createOrder } from '@/src/controllers/orderControllers';
 
 
 //GET
 export async function GET() {
-const supabase = await createClient();
-  let { data  , error } = await supabase.from("Orders").select("*");
-
-  if (error) {
-    console.error('Supabase error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  return NextResponse.json({ orders: data })
-}  
-
-//POST
-export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const orderItem = await req.json();
-  let { data, error } = await supabase
-    .from("Orders")
-    .insert([
-      {
-      customer_id : orderItem.customer_id,
-      total_cents : orderItem.total_cents,
-      shopping_fee_cents : orderItem.shopping_fee_cents,
-      stripe_session_id : orderItem.stripe_session_id,
-      status : orderItem.status,
-      updated_at : null,
-      payment_status : orderItem.payment_status,
-      tracking_number : orderItem.tracking_number,
-      label_url : orderItem.label_url,
-      estimated_delivery : orderItem.estimated_delivery,
-      shipping_status : orderItem.shipping_status,
-      },
-    ])
-    .select()
-    .single();
-
-  if (error) {
-    console.error("Supabase error:", error);
+  try {
+    const orders = await getAllOrders();
+    return NextResponse.json({ orders }, { status: 200 });
+  } catch (error: any) {
+    console.error("GET /api/orders error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
 
-  return NextResponse.json({ orders: data });
+//POST
+export async function POST(req: Request) {
+  try {
+    const orderItem = await req.json();
+    const order = await createOrder(orderItem);
+    return NextResponse.json({ order }, { status: 201 });
+  } catch (error: any) {
+    console.error("POST /api/order error:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
