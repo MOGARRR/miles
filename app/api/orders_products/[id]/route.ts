@@ -1,54 +1,39 @@
 import { NextResponse, NextRequest } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { deleteOrderProduct, getOrderProductById, updateOrderProducts } from "@/src/controllers/order_productsControllers";
 
-//GET  
+//GET
 export async function GET(
-  req: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  const orders_productsId = params.id;
-  const supabase = await createClient();
-  let { data, error } = await supabase
-    .from("Orders_products")
-    .select("*")
-    .eq("id", orders_productsId)
-    .single();
-
-  if (error) {
-    console.error("Supabase error:", error);
+  try {
+    const order_product = await getOrderProductById(params.id);
+    return NextResponse.json({ order_product }, { status: 200 });
+  } catch (error: any) {
+    console.error("GET /api/order_product error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  return NextResponse.json({ orders_products: data });
 }
-
 
 // PUT
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const orders_productsId = params.id;
-  const supabase = await createClient();
-  const updatedOrders_productsItem = await req.json();
-  const updates = Object.fromEntries(
-    Object.entries(updatedOrders_productsItem) // turn into array of key/values
-      .filter(([_, v]) => v !== undefined) // filter out any undefined values
-  );
+  try {
+    const orderProductId = params.id;
+    const updatedOrderProductItem = await req.json();
 
-  let { data, error } = await supabase
-    .from("Orders_products")
-    .update(updates)
-    .eq("id", orders_productsId)
-    .select()
-    .single();
+    const result = await updateOrderProducts(orderProductId, updatedOrderProductItem);
 
-  if (error) {
-    console.error("Supabase error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ order_product: result });
+  } catch (error: any) {
+    console.error("Update error:", error);
+    return NextResponse.json(
+      { error: error.message ?? "Unexpected error" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ orders_products: data });
 }
 
 
@@ -58,18 +43,17 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const orders_productsId = params.id;
-  const supabase = await createClient();
-  let { data, error } = await supabase
-    .from("Orders_products")
-    .delete()
-    .eq("id", orders_productsId)
-    .single();
+  try {
+    const orderProductId = params.id;
 
-  if (error) {
-    console.error("Supabase error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const result = await deleteOrderProduct(orderProductId);
+
+    return NextResponse.json({ order_product: result });
+  } catch (error: any) {
+    console.error("Delete error:", error);
+    return NextResponse.json(
+      { error: error.message ?? "Unexpected error" },
+      { status: 500 }
+    );  
   }
-
-  return NextResponse.json({ orders_products: data });
 }

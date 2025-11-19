@@ -56,6 +56,6 @@ export async function DELETE(
     return NextResponse.json(
       { error: error.message ?? "Unexpected error" },
       { status: 500 }
-    );
+    );  
   }
 }
