@@ -2,25 +2,23 @@ import React from "react";
 import ProductList from "../components/ProductList";
 
 
-
 const storePage = () => {
   return (
-    <div className="pt-15 bg-slate-500">
-      <div>
-      
-
-        <div className="text-center p-8 ">
-          <h1 className="text-5xl mb-8 border-b-2">Our Duck Collection</h1>
-          <h2 className="text-xl">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta
-            beatae dolore pariatur sed dolores odio laudantium error enim rem!
-            Cupiditate culpa ex eveniet voluptas sint nam nemo quaerat,
-            architecto aliquid!
-          </h2>
-        </div>
-        <ProductList />
+   
+    <div>
+      <div className="text-center p-8 ">
+        <h1 className="text-4xl md:text-6xl font-bold text-[#E14747]">
+          THE GALLERY
+        </h1>
+        <p className="text-base md:text-lg text-gray-200 leading-relaxed">
+          Explore KiloBoy's collection of pop culture-inspired artwork. From NBA legends to DC and Marvel heroes, each piece captures the raw energy of street culture.
+        </p>
       </div>
+
+      
+      <ProductList />
     </div>
+
   );
 };
 

@@ -13,11 +13,30 @@ const ProductList = async () => {
   const data: { products: Product[] } = await res.json();
   const products = data.products; // pulls out the array
 
-
   return (
-    // <pre> is an HTML tag that preserves: whitespace, indentation, line breaks
-    <pre>{JSON.stringify(products, null, 2)}</pre>
-  );
+    <div className="
+      grid
+      grid-cols-1
+      sm:grid-cols-2
+      md:grid-cols-3
+      gap-6
+      p-4
+    ">
+      {products.map((product) => (
+        <ProductListItem
+          key={product.id}
+          id={product.id}
+          title={product.title}
+          description={product.description}
+          category_id={product.category_id}
+          image_URL={product.image_URL}
+          price_cents={product.price_cents}
+          sold_out={product.sold_out}
+          is_available={product.is_available}
+        />
+      ))}
+    </div>
+  )
 }
 
 export default ProductList;
