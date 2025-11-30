@@ -1,6 +1,6 @@
 import React from "react";
 import ProductList from "../components/ProductList";
-import Directory from "../components/Directory";
+
 
 
 const storePage = () => {
