@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import StoreItemListing from "@/app/components/StoreItemListing";
-import Directory from "@/app/components/Directory";
+
 import productSetArray from "@/app/data/productData";
 import { notFound } from "next/navigation";
 
@@ -22,7 +22,7 @@ const productPage = ({ params }: ProductPageProps) => {
 
   return (
     <div className="py-15 bg-slate-500">
-      <Directory routeLink="/store" routeName="Store" />
+
       <StoreItemListing
         image={item.image}
         imageAlt={item.imageAlt}
