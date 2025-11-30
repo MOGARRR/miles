@@ -32,10 +32,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
     <div className="
       flex flex-col
       rounded-2xl
-      shadow-md
-      overflow-hidden
-      h-full
       bg-[#2E2E33]
+      p-3
       "
     >
 
@@ -43,8 +41,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
       <Link href={`/storeItem/${id}`}>
       
         {/* IMAGE */}
-        <div className="gap-2 p-6 pb-3">
-          <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden">
+        <div className="gap-2 p-4 pb-3">
+          <div className="relative w-full aspect-[1/1] rounded-xl overflow-hidden">
             <Image
             src={image_URL}
             alt={title}
@@ -54,7 +52,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           />
 
           </div>
-          
         </div>
       
 
