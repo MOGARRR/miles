@@ -60,3 +60,4 @@ export async function deleteProduct(id: string) {
   if (error) throw new Error(error.message);
   return data;
 }
+

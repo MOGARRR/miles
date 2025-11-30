@@ -7,7 +7,7 @@ const storePage = () => {
   return (
     <div className="pt-15 bg-slate-500">
       <div>
-        <Directory routeName={null} routeLink={null} />
+      
 
         <div className="text-center p-8 ">
           <h1 className="text-5xl mb-8 border-b-2">Our Duck Collection</h1>
