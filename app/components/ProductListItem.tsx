@@ -27,6 +27,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   sold_out, 
   is_available,
 }) => {
+
+  
   
   return (
 

@@ -6,12 +6,19 @@ import { Product } from "@/src/types/product";
 const ProductList = async () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  //fetch from the api route
-  const res = await fetch(`${baseUrl}/api/products`, {cache: "no-store"});
+  //fetch PRODUCTS from the api route
+  const productsRes = await fetch(`${baseUrl}/api/products`, {cache: "no-store"});
 
-  //parse the JSON
-  const data: { products: Product[] } = await res.json();
-  const products = data.products; // pulls out the array
+  const productsData: { products: Product[] } = await productsRes.json();
+  const products = productsData.products; // pulls out the PRODUCTS array
+
+  //fetch CATEGORIES from the api route
+  const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, {cache: "no-store"});
+
+  const categoriesData = await categoriesRes.json();
+  const categories = categoriesData.categories_products;
+  //console.log("categories", categories);
+
 
   return (
     <div className="
