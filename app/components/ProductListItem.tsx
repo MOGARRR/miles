@@ -10,6 +10,7 @@ interface ProductListItemProps {
   description: string;
   price_cents: number;
   category_id: number | null;
+  category_name?: string;
   image_URL: string;
   sold_out: boolean;
   is_available: boolean;
@@ -23,12 +24,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   description,
   price_cents,
   category_id,
+  category_name,
   image_URL,
   sold_out, 
   is_available,
 }) => {
 
-  
+
   
   return (
 
@@ -66,7 +68,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
 
           {/* reference to categories table later to fetch title */}
           <h2>
-            {category_id ?? "Category"}
+            {category_name}
           </h2>
 
           <p className="text-sm leading-snug">
