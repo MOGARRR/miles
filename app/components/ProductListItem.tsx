@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 
 // the interface defines what props the component must receive
 interface ProductListItemProps {
@@ -95,13 +96,16 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
 
         <button
           type="button"
-          className="
+          disabled={sold_out}
+          className={`
           bg-[#E14747]
           px-4 py-2
           rounded-full
-          font-semibold"
+          font-semibold
+          flex items-center gap-2
+          ${sold_out ? "opacity-40 cursor-not-allowed" : ""}`}
         > 
-          BUY NOW 
+          Add < ShoppingCart size={20} />
         </button>
 
       </div> 

@@ -4,7 +4,7 @@ import NavMenu from "./NavMenu";
 import Cart from "./Cart";
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Menu, Linkedin } from "lucide-react";
+import { ShoppingCart, Menu } from "lucide-react";
 
 const TopNavBar = () => {
   const [navStatus, setNavStatus] = useState(false);
