@@ -41,29 +41,31 @@ const ProductList = async () => {
       p-10
       
     ">
-      {products.map((product) => {
+      {products
+        .filter((product) => product.is_available) // only available products remain
+        .map((product) => {
 
-        //get category name for this product 
-        const categoryName = product.category_id !== null 
-          ? categoryMap[product.category_id]
-          : undefined; 
+          //get category name for this product 
+          const categoryName = product.category_id !== null 
+            ? categoryMap[product.category_id]
+            : undefined; 
 
-        return (      
-        
-          <ProductListItem
-            key={product.id}
-            id={product.id}
-            title={product.title}
-            description={product.description}
-            category_id={product.category_id}
-            image_URL={product.image_URL}
-            price_cents={product.price_cents}
-            sold_out={product.sold_out}
-            is_available={product.is_available}
-            category_name={categoryName}
-          />
-        );
-      })}
+          return (      
+          
+            <ProductListItem
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              description={product.description}
+              category_id={product.category_id}
+              image_URL={product.image_URL}
+              price_cents={product.price_cents}
+              sold_out={product.sold_out}
+              is_available={product.is_available}
+              category_name={categoryName}
+            />
+          );
+        })}
     </div>
   )
 }
