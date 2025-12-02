@@ -7,6 +7,7 @@ import Contact from "./components/Contact";
 import GalleryList from "./components/GalleryList";
 
 export default function Home() {
+  
 
   return (
     <>
