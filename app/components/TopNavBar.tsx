@@ -15,7 +15,8 @@ const TopNavBar = () => {
                   { name: "Gallery", path: "/store" }, 
                   { name: "Custom", path: "/customArtwork" }, 
                   { name: "Contact", path: "/contact" }, 
-                  { name: "Login", path: "/login" }, 
+                  { name: "Login", path: "/login" },
+                  { name: "CART", path: "/cart"}, 
                 ]
 
 

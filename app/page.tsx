@@ -9,8 +9,6 @@ export default function Home() {
       {/* ///HERO/// */}
       <Hero />
 
-
-
       {/* ///CONTACT INFO & HOURS///  */}
       <Contact />
     </>

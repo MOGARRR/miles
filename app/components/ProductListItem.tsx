@@ -134,6 +134,12 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           rounded-full
           font-semibold
           flex items-center gap-2
+          transition
+          duration-150
+          hover:bg-[#f05a5a]
+          active:scale-95
+          cursor-pointer
+                
           ${sold_out ? "opacity-40 cursor-not-allowed" : ""}`}
 
         > 
