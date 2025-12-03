@@ -2,6 +2,7 @@ import React from "react";
 import ProductListClient from "./ProductListClient";
 import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
+import { CartProvider } from "./CartContext";
 
 
 const ProductList = async () => {
@@ -32,11 +33,13 @@ const ProductList = async () => {
 
   return (
     <div>
-
-      <ProductListClient
-        products={products}
-        categoryMap={categoryMap}
-      />
+      <CartProvider>
+        <ProductListClient
+          products={products}
+          categoryMap={categoryMap}
+        />
+      </CartProvider>
+      
       
     </div>
   )
