@@ -22,11 +22,11 @@ export async function getOrderById(id: string) {
 }
 
 // POST Orders
-export async function createOrder(userItem: any) {
+export async function createOrder(orderItem: any) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("Orders")
-    .insert([userItem])
+    .insert([orderItem])
     .select()
     .single();
   if (error) throw new Error(error.message);
