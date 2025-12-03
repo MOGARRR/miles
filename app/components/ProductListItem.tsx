@@ -1,7 +1,14 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
+import { useCart } from "./CartContext";
+import { Product } from "@/src/types/product";
+import { CartProduct } from "./CartContext";
+
+
 
 // the interface defines what props the component must receive
 interface ProductListItemProps {
@@ -14,7 +21,11 @@ interface ProductListItemProps {
   image_URL: string;
   sold_out: boolean;
   is_available: boolean;
+  created_at: string;
+  updated_at: string | null;
 }
+
+
 
 // React.FC means Functional Component
 // ProductListItem is a functional component and its props must follow the ProductListItemProps interface.
@@ -28,8 +39,22 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   image_URL,
   sold_out, 
   is_available,
+  created_at,
+  updated_at
 }) => {
 
+  const { addToCart } = useCart();
+
+  // Build the product object to send to the cart
+  const productToAdd: CartProduct = {
+    id,
+    title,
+    description, 
+    price_cents,
+    category_id,
+    image_URL,
+
+  }
 
   
   return (
@@ -85,7 +110,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
         
       ">
     
-
         {sold_out ? ( 
           <>
           <p className="text-red-500 text-base font-semibold">
@@ -101,6 +125,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
         <button
           type="button"
           disabled={sold_out}
+          onClick={() => {
+            addToCart(productToAdd);
+          }}
           className={`
           bg-[#E14747]
           px-4 py-2
@@ -108,6 +135,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           font-semibold
           flex items-center gap-2
           ${sold_out ? "opacity-40 cursor-not-allowed" : ""}`}
+
         > 
           Add < ShoppingCart size={20} />
         </button>

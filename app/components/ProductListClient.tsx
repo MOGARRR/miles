@@ -85,6 +85,8 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
               price_cents={product.price_cents}
               sold_out={product.sold_out}
               is_available={product.is_available}
+              created_at={product.created_at}
+              updated_at={product.updated_at}
               category_name={categoryName}
             />
 

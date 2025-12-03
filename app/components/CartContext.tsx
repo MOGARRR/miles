@@ -3,22 +3,37 @@
 import { createContext, useState, useContext } from "react";
 import { Product } from "@/src/types/product";
 
+// Smaller version of Product that we store in the cart
+export type CartProduct = {
+  id: number;
+  title: string;
+  description: string;
+  price_cents: number;
+  category_id: number | null;
+  image_URL: string;
+};
+
+type CartContextType = {
+  items: CartProduct[];
+  addToCart: (product: CartProduct) => void;
+}
+
 
 // Create an empty "box" (Context) to hold cart data
-// it starts as null because we haven't built the cart yet
-// Later, we will store the cart items and functions (addToCart, etc.) in here
-export const CartContext = createContext(null); 
-
+export const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider = ({children}: { children: React.ReactNode }) => {
 
   // cart state 
-  const [items, setItems] = useState([]); 
+  const [items, setItems] = useState<CartProduct[]>([]); 
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: CartProduct) => {
     // push the product into the array
+    console.log("ADDING TO CART:", product);
     setItems((prevItems) => [...prevItems, product]);
   };
+
+  console.log("items", items);
 
 
   return (
@@ -35,7 +50,7 @@ export const CartProvider = ({children}: { children: React.ReactNode }) => {
 export const useCart = () => {
   const context = useContext(CartContext); 
 
-  if (!context) {
+  if (context === null) {
     throw new Error("useCart must be used inside a cart provider")
   }
 
