@@ -39,8 +39,6 @@ const ProductList = async () => {
           categoryMap={categoryMap}
         />
       </CartProvider>
-      
-      
     </div>
   )
 }
