@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       massUnit: parcel.massUnit || WeightUnitEnum.Lb,
     };
 
-    //  Create shipment object 
+    //  Create shipment object
     const shipment = await shippo.shipments.create({
       addressFrom: addressFrom as AddressCreateRequest,
       addressTo: addressTo as AddressCreateRequest,
@@ -59,22 +59,31 @@ export async function POST(request: Request) {
       carrierAccount: rate.carrierAccount,
     });
 
+    /// CHANGE MOCK DATA BEFORE PRODUCTION ///
+    const orderRecord = {
+      customer_id: 3, /// CHANGE
+      total_cents: 1999, ///CHANGE
+      stripe_session_id: "cs_test_a1B2c3D4e5F6g7H8i9J0klmnop", /// CHANGE
+      status: transaction.status,
+      payment_status: transaction.status,
+      shopping_fee_cents: Math.round(parseFloat(rate.amount) * 100),
+      tracking_number: transaction.trackingNumber,
+      label_url: transaction.labelUrl,
+      estimated_delivery: transaction.eta,
+      shipping_status: shipment.status,
+    };
+
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderRecord),
+    });
+
     return NextResponse.json({
-      provider: rate.provider,
-      shipmentId: shipment.objectId,
-      transactionId: transaction.objectId,
-      trackingNumber: transaction.trackingNumber,
-      labelUrl: transaction.labelUrl,
-      rateAmount: rate.amount,
-      rateCurrency: rate.currency,
-      serviceLevel: rate.servicelevel.name,
+      orderRecord,
     });
   } catch (err: any) {
     console.error("Shippo error:", err?.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-
-
-
-
