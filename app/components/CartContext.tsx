@@ -1,9 +1,9 @@
 "use client"
 
-import { createContext, useState, useContext } from "react";
-import { Product } from "@/src/types/product";
+import { createContext, useState, useContext, useEffect } from "react";
 
-// Smaller version of Product that we store in the cart
+
+// Defining the type of a smaller version of Product that we store in the cart
 export type CartProduct = {
   id: number;
   title: string;
@@ -18,8 +18,9 @@ type CartContextType = {
   addToCart: (product: CartProduct) => void;
 }
 
+const STORAGE_KEY = "kiloboy_cart";
 
-// Create an empty "box" (Context) to hold cart data
+
 export const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider = ({children}: { children: React.ReactNode }) => {
@@ -27,12 +28,47 @@ export const CartProvider = ({children}: { children: React.ReactNode }) => {
   // cart state 
   const [items, setItems] = useState<CartProduct[]>([]); 
 
+  // runs once when the app loads
+  useEffect(() => {
+
+    // If window doesn’t exist → stop the function
+    if (typeof window === "undefined") return;
+
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY); 
+
+      // if cart exists, load it 
+      if (stored) {
+        // localStorage only stores strings
+        // convert string back into an array of objects
+        const parsed: CartProduct[] = JSON.parse(stored);
+        setItems(parsed);
+      }  
+    } catch (error) {
+      console.error("Error reading cart from localStorage")
+    }
+    
+  },[]);
+
+  // when items change, save update localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error);
+    }
+
+  }, [items]);
+
+
+
   const addToCart = (product: CartProduct) => {
     // push the product into the array
     console.log("ADDING TO CART:", product);
     setItems((prevItems) => [...prevItems, product]);
   };
-
   console.log("items", items);
 
 
