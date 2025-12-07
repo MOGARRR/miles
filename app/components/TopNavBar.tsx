@@ -22,8 +22,7 @@ const TopNavBar = () => {
     { name: "Gallery", path: "/store" },
     { name: "Custom", path: "/customArtwork" },
     { name: "Contact", path: "/contact" },
-    { name: "Login", path: "/login" },
-    { name: "CART", path: "/cart" },
+    //{ name: "Login", path: "/login" },
   ]
 
 
@@ -92,15 +91,15 @@ const TopNavBar = () => {
 
         {/* ---------- RIGHT SECTION: CART ICON ---------- */}
         <div className="justify-self-end">
-          <button
-            className="btn btn-ghost btn-circle"
+          <Link
+            href="/cart"
             aria-label="Cart Page"
-            onClick={handleNav}
+            className="btn btn-ghost btn-circle"
           >
             < ShoppingCart
               size={24}
             />
-          </button>
+          </Link>
         </div>
 
 
