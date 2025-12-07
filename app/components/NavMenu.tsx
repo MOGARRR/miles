@@ -15,7 +15,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
   const links = [
                   { name: "Home", path: "/" }, 
                   { name: "Gallery", path: "/store" }, 
-                  { name: "Custom Artowork", path: "/customArtowork" }, 
+                  { name: "Custom Artwork", path: "/customArtwork" }, 
                   { name: "About", path: "/about" }, 
                   { name: "Contact us", path: "/contact" }, 
                   { name: "Login / Register", path: "/login" }, 
