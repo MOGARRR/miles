@@ -16,10 +16,10 @@ export type CartProduct = {
 type CartContextType = {
   items: CartProduct[];
   addToCart: (product: CartProduct) => void;
+  removeFromCart: (id: number) => void;
 }
 
 const STORAGE_KEY = "kiloboy_cart";
-
 
 export const CartContext = createContext<CartContextType | null>(null);
 
@@ -66,15 +66,37 @@ export const CartProvider = ({children}: { children: React.ReactNode }) => {
 
   const addToCart = (product: CartProduct) => {
     // push the product into the array
-    console.log("ADDING TO CART:", product);
+    // console.log("ADDING TO CART:", product);
     setItems((prevItems) => [...prevItems, product]);
   };
-  console.log("items", items);
+  // console.log("items", items);
+
+  const removeFromCart = (id: number) => {
+    setItems((prevItems) => {
+
+      // Make a copy of the items array so we don't modify state directly
+      const itemsCopy = [... prevItems]; 
+
+      // Find index of the first item with this id
+      const indexToRemove = itemsCopy.findIndex((item) => item.id === id);
+
+      // If no item was found, return the original array
+      if (indexToRemove === -1) {
+        return prevItems;
+      }
+
+      // Remove ONE item at that position
+      itemsCopy.splice(indexToRemove, 1);
+
+      //Return the updated array (React will update the cart)
+      return itemsCopy;
+    });
+  };
 
 
   return (
     //anything inside <CartProvider> ... </CartProvider> can now read items and addToCart using useContext(CartContext)
-    <CartContext.Provider value={{ items, addToCart }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
