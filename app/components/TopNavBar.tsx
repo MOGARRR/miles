@@ -6,11 +6,16 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ShoppingCart, Menu } from "lucide-react";
 
+import { useCart } from "./CartContext";
+
 
 const TopNavBar = () => {
   const [navStatus, setNavStatus] = useState(false);
 
   const pathname = usePathname();
+
+  const { items } = useCart();
+  const hasItems = items.length > 0;
 
   useEffect(() => {
     // Whenever the URL/path changes, close the mobile menu
@@ -94,12 +99,25 @@ const TopNavBar = () => {
           <Link
             href="/cart"
             aria-label="Cart Page"
-            className="btn btn-ghost btn-circle"
+            className="btn btn-ghost btn-circle relative"
           >
             < ShoppingCart
               size={24}
             />
+
+            
+          {hasItems && (
+            <span 
+              className="
+                absolute -top-0.5 -right-1
+                inline-block
+                h-3 w-3
+                bg-red-600
+                rounded-full"
+              ></span>
+          )}
           </Link>
+
         </div>
 
 
