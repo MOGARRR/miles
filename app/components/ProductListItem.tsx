@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "./CartContext";
-import { Product } from "@/src/types/product";
 import { CartProduct } from "./CartContext";
 
 
