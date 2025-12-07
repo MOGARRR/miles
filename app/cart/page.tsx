@@ -9,7 +9,7 @@ type GroupedCartItem = CartProduct & {
 
 const CartPage = () => {
   
-  const { items, removeFromCart } = useCart();
+  const { items, removeFromCart, addToCart } = useCart();
 
   const groupedItems: GroupedCartItem[] = [];
 
@@ -61,18 +61,30 @@ const CartPage = () => {
           <div className="flex flex-col flex-1">
             <span className="font-semibold">{item.title}</span>
             <span className="text-gray-300 text-sm">
-              Qty: {item.quantity}
-            </span>
-            <span className="text-gray-300 text-sm">
               ${(item.price_cents / 100).toFixed(2)}
             </span>
           </div>
 
           <button 
             onClick={() => removeFromCart(item.id)}
-            className="text-red-400 hover:text-red-300 underline"
+            className="
+              px-2 py-1 border rounded
+              hover:bg-gray-700"
           >
-            Remove 1 
+            -
+          </button>
+          <span>
+            {item.quantity}
+          </span>
+          
+
+          <button
+            onClick={() => addToCart(item)}
+            className="
+              px-2 py-1 border rounded
+              hover:bg-gray-700"
+          >
+            +
           </button>
 
 
@@ -99,9 +111,12 @@ const CartPage = () => {
           {total.toFixed(2)}
         </div>
       </div>
-
       
     )}
+
+    <button>
+      Proceed To Checkout
+    </button>
   </div>
   )
 };
