@@ -9,6 +9,7 @@ import {
 } from "shippo";
 
 const shippo = new Shippo({ apiKeyHeader: process.env.SHIPPO_API_KEY });
+//
 
 export async function POST(request: Request) {
   try {
@@ -61,7 +62,14 @@ export async function POST(request: Request) {
 
     /// CHANGE MOCK DATA BEFORE PRODUCTION ///
     const orderRecord = {
-      customer_id: 3, /// CHANGE
+      email_id: 1, /// CHANGE
+      first_name: "John", /// CHANGE
+      last_name: "Doe", /// CHANGE
+      address_line_1: "somewhere street", /// CHANGE
+      address_line_2: 'somewhere else blvd', /// CHANGE
+      postal: "123 ABC", /// CHANGE
+      city: "City Place", /// CHANGE
+      province: "AB", /// CHANGE
       total_cents: 1999, ///CHANGE
       stripe_session_id: "cs_test_a1B2c3D4e5F6g7H8i9J0klmnop", /// CHANGE
       status: transaction.status,
