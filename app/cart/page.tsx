@@ -24,6 +24,7 @@ const CartPage = () => {
   });
 
   const [shippingEstimate, setShippingEstimate] = useState<number | null>(null);
+  const shippingAmount = shippingEstimate ?? 0;
 
 
   //store user input from the form into state
@@ -71,7 +72,7 @@ const CartPage = () => {
   const subtotalCents = items.reduce(
     (sum, item) => sum + item.price_cents, 0);
   const hst = subtotalCents / 100 * 0.13;
-  const total = subtotalCents / 100 + hst;
+  const total = subtotalCents / 100 + hst + shippingAmount;
 
 
   return (
@@ -126,29 +127,7 @@ const CartPage = () => {
         ))}
       </ul>
 
-      {/* SUBTOTAL */}
-      {items.length > 0 && (
-        <div>
-          <div>
-            Subtotal: $
-            {(subtotalCents / 100).toFixed(2)}
-          </div>
-
-          <div>
-            HST (13%): $
-            {hst.toFixed(2)}
-          </div>
-
-          <div className="font-semibold text-xl">
-            Total: $
-            {total.toFixed(2)}
-          </div>
-        </div>
-
-      )}
-      <br /><br />
-
-
+      
       {/* SHIPPING INPUT */}
       {/* REFACTOR IF NECESSARY WHEN EVERYTHING IS WORKING */}
       <h1 className="text-xl">Shipping (Within Canada) </h1>
@@ -239,7 +218,37 @@ const CartPage = () => {
 
       <br /><br />
 
-      {/* REDIRECT TO STRIPE LATER   */}
+      {/* SUBTOTAL */}
+      {items.length > 0 && (
+        <div>
+          <div>
+            Subtotal: $
+            {(subtotalCents / 100).toFixed(2)}
+          </div>
+
+          <div>
+            HST (13%): $
+            {hst.toFixed(2)}
+          </div>
+
+          {shippingEstimate !== null && (
+            <div>
+              Shipping: $
+              {shippingAmount.toFixed(2)}
+            </div>
+          )}
+
+
+          <div className="font-semibold text-xl">
+            Total: $
+            {total.toFixed(2)}
+          </div>
+        </div>
+
+      )}
+      <br /><br />
+
+      {/* TODO: redirect to stripe    */}
       <button className=" rounded border p-2 cursor-pointer">
         Proceed To Checkout
       </button>
