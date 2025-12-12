@@ -4,7 +4,6 @@ import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
 
 
-
 const ProductList = async () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
