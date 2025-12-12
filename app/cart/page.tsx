@@ -13,7 +13,7 @@ const CartPage = () => {
   const { items, removeFromCart, addToCart } = useCart();
 
   // ------ SHIPPING --------
-  //store input from user 
+  
   const [shippingForm, setShippingForm] = useState({
     name: "",
     street1: "",
@@ -23,6 +23,10 @@ const CartPage = () => {
     country: "CA",
   });
 
+  const [shippingEstimate, setShippingEstimate] = useState<number | null>(null);
+
+
+  //store user input from the form into state
   const handleShippingChange = (event:any) => {
     const { name, value } = event.target;
 
@@ -32,7 +36,16 @@ const CartPage = () => {
     }));
 
   }; 
-  //console.log(shippingForm);
+
+
+  // TODO: replace with backend request to Shippo/UPS to calculate actual shipping
+  const handleShippingEstimate = () => {
+    console.log("Estimating shipping with:", shippingForm);
+
+    // temporary fake value - replace with real API result later
+    setShippingEstimate(12.99);
+  }; 
+
 
 
   // ------ GROUPED ITEMS --------
@@ -60,6 +73,7 @@ const CartPage = () => {
   const hst = subtotalCents / 100 * 0.13;
   const total = subtotalCents / 100 + hst;
 
+
   return (
     <div className="pt-24 px-6">
       <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
@@ -78,8 +92,6 @@ const CartPage = () => {
               alt={item.title}
               className="w-20 h-20 object-cover rounded-md"
             />
-
-
 
             <div className="flex flex-col flex-1">
               <span className="font-semibold">{item.title}</span>
@@ -109,8 +121,6 @@ const CartPage = () => {
             >
               +
             </button>
-
-
 
           </li>
         ))}
@@ -209,14 +219,21 @@ const CartPage = () => {
             className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
           />
 
-   
+          <br/>
 
+          <button
+            className=" rounded border p-2 cursor-pointer"
+            onClick={handleShippingEstimate}>
+            Estimate Shipping
 
+          </button>
 
+          <br/> <br/>
 
-
-
-
+          {/* render shipping cost on UI  */}
+          {shippingEstimate !== null && (
+            <p>Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
+          )}
         </div>
       )}
 
