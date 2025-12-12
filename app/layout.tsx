@@ -9,6 +9,7 @@ import { CartProvider } from "./components/CartContext";
 
 import TopNavBar from "./components/TopNavBar";
 import Footer from "./components/Footer";
+import CartPopup from "./components/CartPopup";
 
 
 // Initialize the Google fonts with variables for CSS usage
@@ -51,6 +52,7 @@ export default function RootLayout({
         <CartProvider>
           {/* Top navigation bar (visible on every page) */}
           <TopNavBar />
+          <CartPopup />
 
           <main className="flex-grow mt-[60px] w-full">{children}</main>
 
