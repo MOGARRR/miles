@@ -79,10 +79,16 @@ const CartPopup = () => {
           <ul className="mt-2 space-y-1 p-2">
             {groupedItems.map((item) => (
             <li key={item.id} className="flex items-center justify-between gap-2">
+              <img 
+                src={item.image_URL}
+                alt={item.title}
+                className="w-10 h-10 object-cover rounded"
+              />
+
               <span>
                 {item.title} 
-
               </span>
+
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => removeFromCart(item.id)}
@@ -101,20 +107,24 @@ const CartPopup = () => {
                 >
                   +
                 </button>
-              </div>
-              
 
+                <p>${((item.price_cents * item.quantity) /100).toFixed(2)}</p>
+              </div>
             </li>
           ))}
             
           </ul>
+
+          <br />
           
           <p>Subtotal: ${subtotal}</p>
-          <Link href="/cart">
-            <button>
-              Go to Checkout
-            </button>
+          <br/>
           
+          <Link 
+            href="/cart" 
+            className=" border rounded p-1"
+          >
+            Go to Checkout
           </Link>
 
         </div>
