@@ -11,6 +11,7 @@ type GroupedCartItem = CartProduct & {
 
 const CartPage = () => {
 
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const { items, removeFromCart, addToCart } = useCart();
 
   // ------ GROUPED ITEMS --------
@@ -97,7 +98,7 @@ const CartPage = () => {
             <div className="flex flex-col flex-1">
               <span className="font-semibold">{item.title}</span>
               <span className="text-gray-300 text-sm">
-                ${(item.price_cents / 100).toFixed(2)}
+                ${(item.price_cents / 100).toFixed(2)} 
               </span>
             </div>
 
@@ -122,6 +123,8 @@ const CartPage = () => {
             >
               +
             </button>
+
+            ${((item.price_cents * item.quantity) / 100).toFixed(2)}
 
           </li>
         ))}
@@ -256,10 +259,33 @@ const CartPage = () => {
 
       <br /><br />
 
+      <div>
+        <label className="flex items-center gap-2">
+          <input 
+            type="checkbox"
+            checked={agreedToPrivacy}
+            onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+          
+          />
+          <span>
+            I agree to the{" "}
+            <Link href="/privacy" className="underline">
+              Privacy Policy
+            </Link>
+          </span>
+        </label>
+      </div>
+      <br/>
+
       {/* TODO: redirect to stripe    */}
-      <button className="rounded border p-2 cursor-pointer">
+      <button 
+        className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={!agreedToPrivacy}
+      >
         Proceed To Checkout
       </button>
+
+
       <br /><br /><br /><br />
     </div>
   )

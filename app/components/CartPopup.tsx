@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCart } from "./CartContext";
 import Link from "next/link";
 import { CartProduct } from "./CartContext";
+import { usePathname } from "next/navigation";
 
 
 // This is a floating mini-cart that appears when there are items in the cart.
@@ -14,9 +15,15 @@ type GroupedCartItem = CartProduct & {
 };
 
 const CartPopup = () => {
+  const pathname = usePathname();
 
   const { items, addToCart, removeFromCart } = useCart();
   const [isOpen, setIsOpen] = useState(true); // collapse/expand 
+
+  // don't show the mini cart when we're already on the cart page
+  if (pathname === "/cart") {
+    return null;
+  }
 
   const totalItems = items.length; 
 
@@ -54,7 +61,7 @@ const CartPopup = () => {
 
   return (
     <div className="
-      fixed bottom-4 right-4 
+      fixed bottom-26 right-4 
       bg-black text-white 
       border border-gray-600 
       rounded-lg 
@@ -119,6 +126,8 @@ const CartPopup = () => {
           
           <p>Subtotal: ${subtotal}</p>
           <br/>
+
+          
           
           <Link 
             href="/cart" 
