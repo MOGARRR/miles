@@ -15,7 +15,7 @@ type GroupedCartItem = CartProduct & {
 
 const CartPopup = () => {
 
-  const { items } = useCart();
+  const { items, addToCart, removeFromCart } = useCart();
   const [isOpen, setIsOpen] = useState(true); // collapse/expand 
 
   const totalItems = items.length; 
@@ -64,7 +64,7 @@ const CartPopup = () => {
     ">
 
       {/* Header row with title + collapse button */}
-      <div>
+      <div className=" flex justify-between p-2">
         <p>Your Cart ({totalItems})</p>
         <button onClick={() => setIsOpen(prev => !prev)}>
           {isOpen ? "-" : "+"}
@@ -75,11 +75,34 @@ const CartPopup = () => {
       {/* Collapsible content */}
       {isOpen && (
         <div>
-          <p>{totalItems} item{totalItems > 1 ? "s" : ""} in your cart.</p>
-          <ul className="mt-2 space-y-1">
+
+          <ul className="mt-2 space-y-1 p-2">
             {groupedItems.map((item) => (
-            <li key={item.id}>
-              {item.title} x {item.quantity}
+            <li key={item.id} className="flex items-center justify-between gap-2">
+              <span>
+                {item.title} 
+
+              </span>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="border px-2 rounded"
+                  aria-label={`Decrease qty of ${item.title}`}
+                >
+                  -
+                </button>
+
+                {item.quantity}
+
+                <button
+                  onClick={() => addToCart(item)}
+                  className="border px-2 rounded"
+                  aria-label={`Increase qty of ${item.title}`}
+                >
+                  +
+                </button>
+              </div>
+              
 
             </li>
           ))}
