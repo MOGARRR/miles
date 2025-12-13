@@ -75,6 +75,9 @@ const CartPage = () => {
   const hst = subtotalCents / 100 * 0.13;
   const total = subtotalCents / 100 + hst + shippingAmount;
 
+// ----- PROCEED TO CHECKOUT GUARD -------
+  const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy; 
+
 
   return (
     <div className="pt-24 px-6">
@@ -277,10 +280,16 @@ const CartPage = () => {
       </div>
       <br/>
 
+      {shippingEstimate === null && (
+        <p className="text-sm" >
+          Please calculate shipping before proceeding to checkout.
+        </p>
+      )}
+
       {/* TODO: redirect to stripe    */}
       <button 
         className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={!agreedToPrivacy}
+        disabled={!canProceedToCheckout}
       >
         Proceed To Checkout
       </button>
