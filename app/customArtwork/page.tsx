@@ -1,6 +1,6 @@
 
 
-const customArtworkPage = () => {
+const CustomArtworkPage = () => {
   return (
 
     <div>
@@ -13,4 +13,4 @@ const customArtworkPage = () => {
   )
 }
 
-export default customArtworkPage;
+export default CustomArtworkPage;

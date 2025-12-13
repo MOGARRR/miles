@@ -1,6 +1,6 @@
 import React from "react";
 
-const confirmationPage = () => {
+const ConfirmationPage = () => {
   return (
     <div>
       <h1>I am the Confirmation page </h1>
@@ -15,4 +15,4 @@ const confirmationPage = () => {
   )
 };
 
-export default confirmationPage;
+export default ConfirmationPage;

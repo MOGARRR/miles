@@ -2,7 +2,7 @@ import React from "react";
 import ProductList from "../components/ProductList";
 
 
-const storePage = () => {
+const StorePage = () => {
   return (
   
     // PAGE CONTAINER 
@@ -23,4 +23,4 @@ const storePage = () => {
   );
 };
 
-export default storePage;
+export default StorePage;

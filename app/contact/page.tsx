@@ -1,6 +1,6 @@
 
 
-const contactPage = () => {
+const ContactPage = () => {
   return (
     <div className="pt-15">
       <div className="bg-slate-500 p-4 border-b-2 border-slate text-center place-items-center">
@@ -32,4 +32,4 @@ const contactPage = () => {
   );
 };
 
-export default contactPage;
+export default ContactPage;
