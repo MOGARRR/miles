@@ -13,6 +13,25 @@ const CartPage = () => {
 
   const { items, removeFromCart, addToCart } = useCart();
 
+  // ------ GROUPED ITEMS --------
+  const groupedItems: GroupedCartItem[] = [];
+
+  for (const item of items) {
+    const existing = groupedItems.find(
+      (groupedItem) => groupedItem.id === item.id
+    );
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      groupedItems.push({
+        ...item,
+        quantity: 1,
+      });
+    }
+  };
+
+
   // ------ SHIPPING --------
   
   const [shippingForm, setShippingForm] = useState({
@@ -47,26 +66,6 @@ const CartPage = () => {
     // temporary fake value - replace with real API result later
     setShippingEstimate(12.99);
   }; 
-
-
-
-  // ------ GROUPED ITEMS --------
-  const groupedItems: GroupedCartItem[] = [];
-
-  for (const item of items) {
-    const existing = groupedItems.find(
-      (groupedItem) => groupedItem.id === item.id
-    );
-
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      groupedItems.push({
-        ...item,
-        quantity: 1,
-      });
-    }
-  };
 
 
   // ----- CALCULATE TOTALS -------
