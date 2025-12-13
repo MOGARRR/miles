@@ -2,6 +2,7 @@
 import { useCart } from "../components/CartContext";
 import { CartProduct } from "../components/CartContext";
 import { useState } from "react";
+import Link from "next/link";
 
 type GroupedCartItem = CartProduct & {
   quantity: number;
@@ -247,9 +248,17 @@ const CartPage = () => {
 
       )}
       <br /><br />
+      
+      <Link 
+        href="/store"
+        aria-label="Back to Gallery"
+        className=" rounded border p-2 cursor-pointer"
+      > Continue Shopping </Link>
+
+      <br /><br />
 
       {/* TODO: redirect to stripe    */}
-      <button className=" rounded border p-2 cursor-pointer">
+      <button className="rounded border p-2 cursor-pointer">
         Proceed To Checkout
       </button>
       <br /><br /><br /><br />

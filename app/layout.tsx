@@ -50,7 +50,7 @@ export default function RootLayout({
           font-sans "
       >
         <CartProvider>
-          {/* Top navigation bar (visible on every page) */}
+          {/* Top navigation bar and cart popup visible on every page */}
           <TopNavBar />
           <CartPopup />
 
