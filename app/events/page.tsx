@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Event } from "@/src/types/event";
 
+
 import EventCard from "../components/EventCard";
 
 
@@ -44,17 +45,24 @@ const EventsPage = () => {
 
   return (
     <div className="pt-24 px-6">
-      <h1 className="text-2xl font-semibold">Events</h1>
+      <h1 className="text-2xl font-semibold">Upcoming Events</h1>
+      <p>Catch KiloBoy live at these exclusive pop-ups and exhibitions.</p>
+      
 
-      {upcomingEvents.length === 0 ? (
-        <p className="mt-6 text-gray-300">No upcoming events right now.</p>
-      ) : (
-        <ul>
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </ul>
-      )}
+      <div className="flex ">
+        {upcomingEvents.length === 0 ? (
+          <p className="mt-6 text-gray-300">No upcoming events right now.</p>
+        ) : (
+          <ul className="">
+            {upcomingEvents.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </ul>
+        )}
+
+      </div>
+
+      
 
       
   
