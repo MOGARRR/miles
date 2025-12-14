@@ -5,6 +5,7 @@ import { Event } from "@/src/types/event";
 
 
 import EventCard from "../components/EventCard";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 
 const EventsPage = () => {
@@ -37,7 +38,7 @@ const EventsPage = () => {
     return (
       <div>
         
-        <p> Loading events... </p>
+        <LoadingAnimation />
       </div>
     );
   }
