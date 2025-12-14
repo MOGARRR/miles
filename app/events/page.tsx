@@ -4,22 +4,20 @@ import { useEffect, useState } from "react";
 import { Event } from "@/src/types/event";
 
 
-
 const EventsPage = () => {
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true); 
+
+  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const upcomingEvents = events.filter((e) => e.end_date >= today); 
 
 
 
   useEffect (() => {
     async function loadEvents() {
       try {
-        // PORT 3000 IN USE GO BACK TO THIS LATER
-        // const res = await fetch (`${baseUrl}/api/events`); 
-        const res = await fetch (`http://localhost:3001/api/events`); 
+        const res = await fetch ("/api/events"); 
         const json = await res.json(); 
         setEvents(json.events ?? []); 
       } catch (err) {
@@ -35,6 +33,7 @@ const EventsPage = () => {
   if (loading) {
     return (
       <div>
+        
         <p> Loading events... </p>
       </div>
     );
@@ -44,7 +43,26 @@ const EventsPage = () => {
   return (
     <div className="pt-24 px-6">
       <h1 className="text-2xl font-semibold">Events</h1>
-      <p className="mt-2 text-gray-300">Total fetched: {events.length}</p>
+      
+      {upcomingEvents.length === 0 ? (
+        <p className="mt-6 text-gray-300">No upcoming events right now.</p>
+      ) : (
+        <ul className="mt-6 space-y-4">
+          {upcomingEvents.map((event) => (
+            <li key={event.id} className="border-b border-gray-700 pb-4">
+              <p className="font-semibold">{event.title}</p>
+              <p className="text-sm text-gray-400">
+                {event.start_date} – {event.end_date}
+              </p>
+              {event.location && (
+                <p className="text-sm text-gray-400">{event.location}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      
   
       
     </div>

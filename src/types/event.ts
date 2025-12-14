@@ -5,6 +5,6 @@ export interface Event {
   location: string | null;
   image_url: string | null;
   start_date: string; // "YYYY-MM-DD"
-  end_date: string | null;
+  end_date: string;
   hours: string | null;
 };
