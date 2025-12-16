@@ -1,6 +1,6 @@
 
 import Image from "next/image";
-import CustomArtworkForm from "../components/CustomArtworkForm";
+import CustomForm from "../components/CustomForm";
 
 const CustomArtworkPage = () => {
 
@@ -24,7 +24,7 @@ const CustomArtworkPage = () => {
         <p className="text-xl m-12"> Bring your vision to life with a personalized KiloBoy piece. Whether it's your favorite athlete, character, or moment — let's create something iconic together.</p>
       </div>
       
-      <CustomArtworkForm />
+      <CustomForm />
 
       {/* CUSTOM WORK INSPIRATION */}
       <div className="p-4 text-xl m-12">
