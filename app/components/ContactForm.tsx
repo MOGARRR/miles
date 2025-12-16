@@ -51,78 +51,72 @@ const ContactForm = () => {
     } finally {
       setIsSending(false)
     }
-
   };
-
 
   return (
     <>
-    <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
           <fieldset className="fieldset p-4 m-12">
 
-          <label className="label">Name*</label>
-          <input 
-            type="text"
-            required
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setStatus("idle");
-            }}
-            className="border bg-black p-2" />
+            <label className="label">Name*</label>
+            <input 
+              type="text"
+              required
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setStatus("idle");
+              }}
+              className="border bg-black p-2" />
 
-          <label className="label">Email*</label>
-          <input 
-            type="email"
-            required
-            placeholder="email@email.com"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setStatus("idle");
-            }} 
-            className="border bg-black p-2" />
+            <label className="label">Email*</label>
+            <input 
+              type="email"
+              required
+              placeholder="email@email.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setStatus("idle");
+              }} 
+              className="border bg-black p-2" />
 
-          <label className="label">Subject*</label>
-          <input 
-            type="text" 
-            required
-            value={subject}
-            onChange={(e) => {
-              setSubject(e.target.value);
-              setStatus("idle");
-            }}
-            className="border bg-black p-2" />
+            <label className="label">Subject*</label>
+            <input 
+              type="text" 
+              required
+              value={subject}
+              onChange={(e) => {
+                setSubject(e.target.value);
+                setStatus("idle");
+              }}
+              className="border bg-black p-2" />
 
-          <label className="label">Message*</label>
-          <textarea 
-            required
-            value={message}
-            onChange={(e) => {
-              setMessage(e.target.value);
-              setStatus("idle");
-            }}
-            className="border bg-black"
-          />
+            <label className="label">Message*</label>
+            <textarea 
+              required
+              value={message}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                setStatus("idle");
+              }}
+              className="border bg-black"
+            />
 
-          <button
-            type="submit"
-            disabled={isSending}
-            className=" text-white btn btn-outline m-5 rounded-sm border-white">
-            {isSending ? "Sending..." : "Send"}
-          </button>
-        </fieldset>
-
+            <button
+              type="submit"
+              disabled={isSending}
+              className=" text-white btn btn-outline m-5 rounded-sm border-white">
+              {isSending ? "Sending..." : "Send"}
+            </button>
+          </fieldset>
         </form>
         
         <div>
           {status === "success" && <p>Your message was sent!</p>}
           {status === "error" && <p>{errorMsg}</p>}
-
         </div>
-        
-      </>
-    
+    </>
   );
 };
 

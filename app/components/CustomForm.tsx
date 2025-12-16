@@ -55,8 +55,8 @@ const CustomForm = () => {
 
   return (
    
-    <div className="p-4 text-xl m-12">
-      <h2>Request your custom piece</h2>
+    <div className="p-4 m-12">
+      <h2 className="text-4xl mb-4">Request your custom piece</h2>
       <p>Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>
       <br />
 
