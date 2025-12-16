@@ -58,7 +58,7 @@ const ContactForm = () => {
   return (
     <>
     <form onSubmit={handleSubmit}>
-          <fieldset className="fieldset p-4 text-xl m-12">
+          <fieldset className="fieldset p-4 m-12">
 
           <label className="label">Name*</label>
           <input 
@@ -108,7 +108,7 @@ const ContactForm = () => {
           <button
             type="submit"
             disabled={isSending}
-            className=" text-xl text-white btn btn-neutral btn-outline m-5 rounded-sm border-white">
+            className=" text-white btn btn-neutral btn-outline m-5 rounded-sm border-white">
             {isSending ? "Sending..." : "Send"}
           </button>
         </fieldset>
