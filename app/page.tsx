@@ -1,5 +1,5 @@
 import Hero from "./components/Hero";
-import Contact from "./components/Contact";
+import Contact from "./components/ContactForm";
 
 
 export default function Home() {

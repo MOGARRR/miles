@@ -9,6 +9,12 @@ const CustomArtworkPage = () => {
     "/images/custom-artwork3.jpg",
   ];
 
+  
+
+  const handleSubmit = async () => {
+
+  }
+
   return (
 
     <div>
@@ -28,18 +34,27 @@ const CustomArtworkPage = () => {
 
         <form>
           <fieldset className="fieldset ">
-            <label> Type of Request</label>
+            <label> Name</label>
             <input 
               type="text"
               required
-              placeholder="e.g. Portrait, Existing Design"
+              placeholder="Your Name"
               className="border p-2 bg-black"
             />
 
-            <label> Apparel Type (optional)</label>
+            <label> Email</label>
             <input 
               type="text"
-              placeholder="e.g. T-Shirt, Nike Shoes, Hat"
+              required
+              placeholder="Your E-mail"
+              className="border p-2 bg-black"
+            />
+
+            <label> Type of Request / Apparel</label>
+            <input 
+              type="text"
+              required
+              placeholder="e.g. T-Shirt, Nike Shoes, Portrait"
               className="border p-2 bg-black"
             />
 
@@ -89,12 +104,8 @@ const CustomArtworkPage = () => {
 
         </div>
 
-
       </div>
       
-
-
-
     </div>
   )
 }
