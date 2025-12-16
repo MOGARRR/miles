@@ -1,25 +1,97 @@
-
+"use client"
+import Image from "next/image";
 
 const CustomArtworkPage = () => {
+
+  const images = [
+    "/images/custom-artwork1.jpg",
+    "/images/custom-artwork2.jpg",
+    "/images/custom-artwork3.jpg",
+  ];
+
   return (
 
     <div>
-      <h1>Custom Artwork Page</h1>
-      <h1>Custom Artwork Page</h1>
-      <h1>Custom Artwork Page</h1>
-      <h1>Custom Artwork Page</h1>
-      <h1>Custom Artwork Page</h1>
 
-      https://images.unsplash.com/photo-1708005446636-8df4d035e84a?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+      {/* HERO  */}
+      <div>
+        <h1 className="text-5xl m-12">Custom Artwork</h1>
 
-      https://images.unsplash.com/photo-1585750130716-42e238075a88?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+        <p className="text-xl m-12"> Bring your vision to life with a personalized KiloBoy piece. Whether it's your favorite athlete, character, or moment — let's create something iconic together.</p>
+      </div>
+      
+      {/* FORM */}
+      <div className="p-4 text-xl m-12">
+        <h2>Request your custom piece</h2>
+        <p>Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>
+        <br />
 
-      https://images.unsplash.com/photo-1610899146640-f77e17056248?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+        <form>
+          <fieldset className="fieldset ">
+            <label> Type of Request</label>
+            <input 
+              type="text"
+              required
+              placeholder="e.g. Portrait, Existing Design"
+              className="border p-2 bg-black"
+            />
 
-      https://images.unsplash.com/photo-1678872844677-d650b788709b?q=80&w=465&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+            <label> Apparel Type (optional)</label>
+            <input 
+              type="text"
+              placeholder="e.g. T-Shirt, Nike Shoes, Hat"
+              className="border p-2 bg-black"
+            />
 
-      https://images.unsplash.com/photo-1763369521070-11b994aa6d7e?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+            <label> Specifications</label>
+            <input 
+              type="text"
+              required
+              placeholder="e.g. Size, Colors, Style Preferences"
+              className="border p-2 bg-black"
+            />
 
+            <label> Details </label>
+            <textarea
+              required
+              placeholder="Describe your vision in detail. Include references, inspirations, or specific elements you want included."
+              className="border p-2 bg-black"
+            />
+
+            <button>
+              Submit Request
+            </button>
+            
+          </fieldset>
+        </form>
+        <p className="text-sm ">We'll review your request and get back to you within 2-3 business days with a quote and timeline.</p>
+      </div>
+
+      {/* CUSTOM WORK INSPIRATION */}
+      <div className="p-4 text-xl m-12">
+        <h1> Custom work inspiration</h1>
+        <p> Check out some of our previous custom pieces to see what's possible. From NBA legends to comic book heroes, we bring your favorite icons to life.</p>
+
+        <div className="grid grid-cols-3 gap-4 mt-6">
+          {images.map((src, index) => (
+            <div key={index} className="relative w-full aspect-square"> 
+              <Image
+                src={src}
+                alt={`Custom artwork inspiration ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+
+            </div>
+            
+          ))}
+        
+
+        </div>
+
+
+      </div>
+      
 
 
 

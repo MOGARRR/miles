@@ -13,8 +13,6 @@ const ContactPage = () => {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -57,8 +55,6 @@ const ContactPage = () => {
 
   };
 
-
-
   return (
     <div className="">
       <div className="">
@@ -74,6 +70,7 @@ const ContactPage = () => {
           <label className="label">Name*</label>
           <input 
             type="text"
+            required
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -84,6 +81,7 @@ const ContactPage = () => {
           <label className="label">Email*</label>
           <input 
             type="email"
+            required
             placeholder="email@email.com"
             value={email}
             onChange={(e) => {
@@ -95,6 +93,7 @@ const ContactPage = () => {
           <label className="label">Subject*</label>
           <input 
             type="text" 
+            required
             value={subject}
             onChange={(e) => {
               setSubject(e.target.value);
@@ -104,6 +103,7 @@ const ContactPage = () => {
 
           <label className="label">Message*</label>
           <textarea 
+            required
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
@@ -124,7 +124,6 @@ const ContactPage = () => {
         {status === "success" && <p>Your message was sent!</p>}
         {status === "error" && <p>{errorMsg}</p>}
 
-        
       </div>
       
     </div>
