@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET() {
   return NextResponse.json({ ok: true, method: "GET" })
 }
+
+
 
 export async function POST(req: Request) {
   const { name, email, subject, message } = await req.json();
@@ -14,8 +19,20 @@ export async function POST(req: Request) {
     );
   }
 
+  await resend.emails.send({
+    from: process.env.CONTACT_FROM_EMAIL!,
+    to: process.env.CONTACT_TO_EMAIL!,
+    subject: `[KiloBoy Contact] ${subject}`,
+    html: `
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message}</p>
+    `,
+  });
+
+
     return NextResponse.json({ 
       ok: true, 
-      received: { name, email, subject, message },
     });
 }
