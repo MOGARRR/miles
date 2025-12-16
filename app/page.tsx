@@ -9,8 +9,14 @@ export default function Home() {
       {/* ///HERO/// */}
       <Hero />
 
-      {/* ///CONTACT INFO & HOURS///  */}
-      <Contact />
+      {/* /// FEATURED GALLERY /// */}
+
+
+      {/* ///UPCOMING EVENTS  */}
+      
+
+      {/* READY TO OWN A PICE?  */}
+
     </>
   );
 }

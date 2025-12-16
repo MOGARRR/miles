@@ -54,7 +54,14 @@ const ContactForm = () => {
   };
 
   return (
-    <>
+    <div>
+      <div>
+        <h1 className="text-5xl m-12 ">Contact Us</h1>
+        <h1 className="text-xl m-12 ">
+            Have any questions? <br /> Reach out and we'll be sure to get back to you as soon as we can.
+        </h1>
+      </div>
+      
       <form onSubmit={handleSubmit}>
           <fieldset className="fieldset p-4 m-12">
 
@@ -116,7 +123,7 @@ const ContactForm = () => {
           {status === "success" && <p>Your message was sent!</p>}
           {status === "error" && <p>{errorMsg}</p>}
         </div>
-    </>
+    </div>
   );
 };
 
