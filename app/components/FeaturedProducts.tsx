@@ -1,6 +1,8 @@
 import Link from "next/link";
-import ProductListItem from "./ProductListItem";
+import FeaturedProductsClient from "./FeaturedProductsClient";
 import { headers } from "next/headers";
+import { Product } from "@/src/types/product";
+import { Category } from "@/src/types/category";
 
 
 // Server Component: fetches data and renders featured products on the homepage
@@ -17,20 +19,20 @@ const FeaturedProducts = async () => {
   //fetch PRODUCTS from the api route
   // "no-store" ensures we always get fresh data (no caching)
   const res = await fetch(`${baseUrl}/api/products` , { cache: "no-store" });
-  const data = await res.json();
+  const data: { products: Product[] } = await res.json();
 
   //fetch CATEGORIES from the api route
   const categoriesRes = await fetch(`${baseUrl}/api/categories_products` , { cache: "no-store" });
   const categoriesData = await categoriesRes.json(); 
 
   //extract categories array (fallback to empty array)
-  const categories = categoriesData.categories_products ?? []; 
+  const categories: Category[] = categoriesData.categories_products ?? []; 
 
   // build category map - create a lookup object 
   // categoryId -> categoryTitle 
   // This makes it easy to get the category name for each product
   const categoryMap: Record<number, string> = {};
-  categories.forEach((c: any) => {
+  categories.forEach((c) => {
     categoryMap[c.id] = c.title
     
   }); 
@@ -38,10 +40,9 @@ const FeaturedProducts = async () => {
 
   // SELECT FEATURED PRODUCTS
   // available, not soldout, max=3
-  const featuredProducts = (data.products ?? [])
-    .filter((p: any) => p.is_available && !p.sold_out)
+  const featuredProducts: Product[] = (data.products ?? [])
+    .filter((p) => p.is_available && !p.sold_out)
     .slice(0, 3);
-
 
   return (
     <div>
@@ -54,27 +55,10 @@ const FeaturedProducts = async () => {
 
       {/* DISPLAY FEATURED PRODUC CARDS */}
       <div>
-        {featuredProducts.map((product: any) => {
-          // Get the category name using the category map (if category exists)
-          const categoryName = 
-             product.category_id !== null ? categoryMap[product.category_id] : undefined;
-          return (
-            <ProductListItem 
-            key={product.id}
-            id={product.id}
-            title={product.title}
-            description={product.description}
-            category_id={product.category_id}
-            category_name={categoryName}
-            image_URL={product.image_URL}
-            price_cents={product.price_cents}
-            sold_out={product.sold_out}
-            is_available={product.is_available}
-            created_at={product.created_at}
-            updated_at={product.updated_at}
-          />
-          )
-        })}
+        <FeaturedProductsClient
+          products={featuredProducts}
+          categoryMap={categoryMap}
+        />      
 
       </div>
 
