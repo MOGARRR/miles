@@ -37,7 +37,6 @@ const FeaturedProducts = async () => {
     
   }); 
 
-
   // SELECT FEATURED PRODUCTS
   // available, not soldout, max=3
   const featuredProducts: Product[] = (data.products ?? [])
@@ -45,27 +44,36 @@ const FeaturedProducts = async () => {
     .slice(0, 3);
 
   return (
-    <div>
+
+    <div className="max-w-7xl mx-auto">
 
       {/* HEADING */}
-      <div>
+      <div className="p-8">
         <h2 className="text-2xl font-semibold">Featured Drops</h2>
         <p> Limited edition artworks and exclusive pieces straight from the studio.</p>
       </div>
 
-      {/* DISPLAY FEATURED PRODUC CARDS */}
+      {/* DISPLAY FEATURED PRODUCT CARDS */}
       <div>
         <FeaturedProductsClient
           products={featuredProducts}
           categoryMap={categoryMap}
         />      
-
       </div>
 
       {/* SEE ALL BUTTON - REDIRECTS TO STORE PAGE */}
-      <div>
-        <Link href="/store">
-          Shop 
+      <div className="flex justify-center m-8">
+        <Link 
+          href="/store"
+          className="
+            inline-block
+            px-4 py-2
+            border
+            rounded
+            text-sm
+            hover:underline"
+        >
+          See All 
         </Link>
 
       </div>
