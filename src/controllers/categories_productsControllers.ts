@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 // GET all Categories products
 export async function getAllCategoriesProducts() {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("Categories_products").select("*");
+  const { data, error } = await supabase.from("categories_products").select("*");
   if (error) throw new Error(error.message);
   return data;
 }
@@ -13,7 +13,7 @@ export async function getAllCategoriesProducts() {
 export async function getCategorieProductById(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("Categories_products")
+    .from("categories_products")
     .select("*")
     .eq("id", id)
     .single();
@@ -25,7 +25,7 @@ export async function getCategorieProductById(id: string) {
 export async function createCategoriesProducts(categoriesProductsItem: any) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("Categories_products")
+    .from("categories_products")
     .insert([categoriesProductsItem])
     .select()
     .single();
@@ -40,7 +40,7 @@ export async function updateCategoriesProducts(id: string, updatedCategoriesProd
     Object.entries(updatedCategoriesProductsItem).filter(([_, v]) => v !== undefined)
   );
   const { data, error } = await supabase
-    .from("Categories_products")
+    .from("categories_products")
     .update(updates)
     .eq("id", id)
     .select()
@@ -53,7 +53,7 @@ export async function updateCategoriesProducts(id: string, updatedCategoriesProd
 export async function deleteCategoriesProducts(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("Categories_products")
+    .from("categories_products")
     .delete()
     .eq("id", id)
     .single();

@@ -18,13 +18,13 @@ const ProductList = async () => {
 
 
   //fetch PRODUCTS from the api route
-  const productsRes = await fetch(`${baseUrl}/api/products`, {cache: "no-store"});
+  const productsRes = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
 
   const productsData: { products: Product[] } = await productsRes.json();
   const products = productsData.products; // pulls out the PRODUCTS array
 
   //fetch CATEGORIES from the api route
-  const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, {cache: "no-store"});
+  const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, { cache: "no-store" });
 
   const categoriesData: { categories_products: Category[] } = await categoriesRes.json();
   const categories = categoriesData.categories_products;
@@ -32,7 +32,7 @@ const ProductList = async () => {
 
   //initiates categoryMap Object to store categoryId -> categoryName
   // Record<number, string> means the keys are numbers and the values are strings
-  const categoryMap: Record<number, string> = {}; 
+  const categoryMap: Record<number, string> = {};
 
   // loop through categories and fill up categoryMap
   categories.forEach((c) => {
@@ -42,12 +42,12 @@ const ProductList = async () => {
 
   return (
     <div>
- 
+
       <ProductListClient
         products={products}
         categoryMap={categoryMap}
       />
-    
+
     </div>
   )
 }
