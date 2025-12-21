@@ -1,5 +1,6 @@
 import Hero from "./components/Hero";
 import FeaturedProducts from "./components/FeaturedProducts";
+import FeaturedEvents from "./components/FeaturedEvents";
 
 
 
@@ -16,9 +17,7 @@ export default function Home() {
 
 
       {/* ///UPCOMING EVENTS  */}
-      <div>
-
-      </div>
+      <FeaturedEvents />
       
 
       {/* READY TO OWN A PICE?  */}

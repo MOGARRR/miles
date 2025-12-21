@@ -16,11 +16,6 @@ const FeaturedProducts = async () => {
   const protocol = h.get("x-forwarded-proto") ?? "http";
   const baseUrl = `${protocol}://${host}`;
 
-  //fetch PRODUCTS from the api route
-  // "no-store" ensures we always get fresh data (no caching)
-  const res = await fetch(`${baseUrl}/api/products` , { cache: "no-store" });
-  const data: { products: Product[] } = await res.json();
-
   //fetch CATEGORIES from the api route
   const categoriesRes = await fetch(`${baseUrl}/api/categories_products` , { cache: "no-store" });
   const categoriesData = await categoriesRes.json(); 
@@ -37,12 +32,20 @@ const FeaturedProducts = async () => {
     
   }); 
 
+
+  //fetch PRODUCTS from the api route
+  // "no-store" ensures we always get fresh data (no caching)
+  const res = await fetch(`${baseUrl}/api/products` , { cache: "no-store" });
+  const data: { products: Product[] } = await res.json();
+
   // SELECT FEATURED PRODUCTS
   // available, not soldout, max=3
   const featuredProducts: Product[] = (data.products ?? [])
     .filter((p) => p.is_available && !p.sold_out)
     .slice(0, 3);
 
+
+    
   return (
 
     <div className="max-w-7xl mx-auto">
