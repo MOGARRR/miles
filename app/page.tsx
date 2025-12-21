@@ -1,5 +1,6 @@
 import Hero from "./components/Hero";
-import Contact from "./components/ContactForm";
+import FeaturedProducts from "./components/FeaturedProducts";
+
 
 
 export default function Home() {
@@ -10,12 +11,20 @@ export default function Home() {
       <Hero />
 
       {/* /// FEATURED GALLERY /// */}
+      <FeaturedProducts />
+      
 
 
       {/* ///UPCOMING EVENTS  */}
+      <div>
+
+      </div>
       
 
       {/* READY TO OWN A PICE?  */}
+      <div>
+
+      </div>
 
     </>
   );
