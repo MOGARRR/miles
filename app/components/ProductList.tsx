@@ -28,7 +28,7 @@ const ProductList = async () => {
 
   const categoriesData: { categories_products: Category[] } = await categoriesRes.json();
   const categories = categoriesData.categories_products;
-  console.log("categories", categories);
+  // console.log("categories", categories);
 
   //initiates categoryMap Object to store categoryId -> categoryName
   // Record<number, string> means the keys are numbers and the values are strings
