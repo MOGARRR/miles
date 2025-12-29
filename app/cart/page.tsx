@@ -67,6 +67,13 @@ const CartPage = () => {
   const hst = (subtotalCents / 100) * 0.13;
   const total = subtotalCents / 100 + hst + shippingAmount;
 
+   // ----- CALCULATE TOTALS CENTS -------
+  // Convert total into cents for stripe price data   
+   const hstCents = Math.round(subtotalCents * 0.13);
+   const shippingCents = Math.round(shippingAmount * 100);
+
+  
+
   // ----- PROCEED TO CHECKOUT GUARD -------
   const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy;
 
@@ -78,7 +85,7 @@ const CartPage = () => {
     quantity: item.quantity,
   }));
 
-  const handleCheckout = async () => {
+  const handleCheckout = async () => { ////////REFACTOR
     const res = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
@@ -87,7 +94,8 @@ const CartPage = () => {
       body: JSON.stringify({
         cart: checkoutCart,
         shipping: shippingForm,
-        shippingAmount,
+        shippingCents,
+        hstCents,
       }),
     });
 

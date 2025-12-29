@@ -2,23 +2,42 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { stripe } from "../../lib/stripe";
+import { Currency } from "lucide-react";
 
 export async function POST(req: Request) {
   try {
-    const { cart, shippingAmount } = await req.json();
+    const { cart, shippingCents, hstCents } = await req.json();
     const headersList = await headers();
     const origin = headersList.get("origin");
     // Create Checkout Sessions from body params.
-    const line_items = cart.map((item: any) => ({
-      price_data: {
-        currency: "cad",
-        product_data: {
-          name: item.title,
+    const line_items = [
+      ...cart.map((item: any) => ({
+        price_data: {
+          currency: "cad",
+          product_data: {
+            name: item.title,
+          },
+          unit_amount: item.price_cents, // already in cents
         },
-        unit_amount: item.price_cents, // already in cents
+        quantity: item.quantity,
+      })),
+      {
+        price_data: {
+          currency: "cad",
+          product_data: { name: "HST (13%)" },
+          unit_amount: hstCents,
+        },
+        quantity: 1,
       },
-      quantity: item.quantity,
-    }));
+      {
+        price_data: {
+          currency: "cad",
+          product_data: { name: "Shipping" },
+          unit_amount: shippingCents,
+        },
+        quantity: 1,
+      },
+    ];
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
