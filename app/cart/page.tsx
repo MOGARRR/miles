@@ -30,33 +30,6 @@ const CartPage = () => {
     }
   }
 
-  //--------Stripe Intergration------------
-  const checkoutCart = groupedItems.map((item) => ({
-    id: item.id,
-    title: item.title,
-    price_cents: item.price_cents,
-    quantity: item.quantity,
-  }));
-
-  const handleCheckout = async () => {
-    const res = await fetch("/api/checkout_sessions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cart: checkoutCart,
-        shipping: shippingForm,
-        shippingAmount,
-      }),
-    });
-
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    }
-  };
-
   // ------ SHIPPING --------
 
   const [shippingForm, setShippingForm] = useState({
@@ -96,6 +69,33 @@ const CartPage = () => {
 
   // ----- PROCEED TO CHECKOUT GUARD -------
   const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy;
+
+  //--------Stripe Intergration------------
+  const checkoutCart = groupedItems.map((item) => ({
+    id: item.id,
+    title: item.title,
+    price_cents: item.price_cents,
+    quantity: item.quantity,
+  }));
+
+  const handleCheckout = async () => {
+    const res = await fetch("/api/checkout_sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cart: checkoutCart,
+        shipping: shippingForm,
+        shippingAmount,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    }
+  };
 
   return (
     <div className="pt-24 px-6">
