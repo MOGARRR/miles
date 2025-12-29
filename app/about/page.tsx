@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 
-const aboutPage = () => {
+const AboutPage = () => {
   return (
     // PAGE CONTAINER 
     <div className="
@@ -59,4 +59,4 @@ const aboutPage = () => {
   );
 };
 
-export default aboutPage;
+export default AboutPage;

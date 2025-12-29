@@ -5,8 +5,11 @@ import { Inter, Bebas_Neue } from "next/font/google";
 
 import "./globals.css";
 
+import { CartProvider } from "./components/CartContext";
+
 import TopNavBar from "./components/TopNavBar";
 import Footer from "./components/Footer";
+import CartPopup from "./components/CartPopup";
 
 
 // Initialize the Google fonts with variables for CSS usage
@@ -46,20 +49,25 @@ export default function RootLayout({
           min-h-screen
           font-sans "
       >
+        <CartProvider>
+          {/* Top navigation bar and cart popup visible on every page */}
+          <TopNavBar />
+          <CartPopup />
+
+          <main className="flex-grow mt-[60px] w-full">{children}</main>
+
+
+          {/* 
+            flex-grow → makes content area expand to fill leftover space 
+            ensures the footer stays at the bottom when content is short.
+          */}
+
         
-        {/* Top navigation bar (visible on every page) */}
-        <TopNavBar />
+          <Footer />
 
-        <main className="flex-grow mt-[60px] w-full">{children}</main>
-
-
-        {/* 
-          flex-grow → makes content area expand to fill leftover space 
-          ensures the footer stays at the bottom when content is short.
-        */}
-
-      
-        <Footer />
+        </CartProvider>
+        
+        
       
 
       </body>

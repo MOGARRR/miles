@@ -37,20 +37,28 @@ const Footer = () => {
         </div>
 
         <div className="text-center md:text-right space-y-1 ">
-          <p> (111) 111-1111 </p>
-          <p> email@email.com</p>
+          <Link
+            href="/contact"
+            className="text-lg hover:text-red-400 transition"
+            
+          >
+            <h1> Contact Us </h1>
+          </Link>
 
           <div className="flex justify-center md:justify-end mt-2">
+            
             <a 
               href="https://www.instagram.com/kiloboyartwork/" aria-label="Instagram"
               target="_blank"
               rel="noopener noreferrer"
               title="Follow us on Instagram"
-              >
-            <Instagram 
-              size={24}
-              className="text-white hover:text-red-400 transition" />
+            >
+              <Instagram 
+                size={24}
+                className="text-white hover:text-red-400 transition" 
+              />
             </a>
+            
           </div>
 
         </div>

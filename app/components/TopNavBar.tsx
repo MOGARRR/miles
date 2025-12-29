@@ -1,29 +1,39 @@
 "use client";
 import Image from "next/image";
 import NavMenu from "./NavMenu";
-import Cart from "./Cart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ShoppingCart, Menu, Linkedin } from "lucide-react";
+import { ShoppingCart, Menu } from "lucide-react";
+
+import { useCart } from "./CartContext";
+
 
 const TopNavBar = () => {
   const [navStatus, setNavStatus] = useState(false);
-  const [cartStatus, setCartStatus] = useState(false);
 
-  const links = [           
-                  { name: "About", path: "/about" }, 
-                  { name: "Gallery", path: "/store" }, 
-                  { name: "Custom", path: "/customArtwork" }, 
-                  { name: "Contact", path: "/contact" }, 
-                  { name: "Login", path: "/login" }, 
-                ]
+  const pathname = usePathname();
+
+  const { items } = useCart();
+  const hasItems = items.length > 0;
+
+  useEffect(() => {
+    // Whenever the URL/path changes, close the mobile menu
+    setNavStatus(false);
+  }, [pathname]);
+
+  const links = [
+    { name: "About", path: "/about" },
+    { name: "Gallery", path: "/store" },
+    { name: "Custom", path: "/customArtwork" },
+    { name: "Events", path: "/events" },
+  ]
 
 
-  const handleNav = (type: boolean) =>
-    type ? setNavStatus(false) : setNavStatus(true) ;
-  
-  const handleCart = (type: boolean) =>
-    type ? setCartStatus(false) : setCartStatus(true);
+  const handleNav = () => {
+    setNavStatus((prev) => !prev);
+  };
+
 
   return (
     <>
@@ -42,8 +52,7 @@ const TopNavBar = () => {
           "
           aria-label="Open menu"
           onClick={() => {
-            handleNav(navStatus);
-            handleCart(true);
+            handleNav();
           }}
         >
           < Menu size={24} />
@@ -51,7 +60,7 @@ const TopNavBar = () => {
 
         {/* ---------- CENTER Logo or Nav (depends on screen)---------- */}
         <div className="justify-self-center md:justify-self-start">
-          
+
           {/* Logo (mobile)*/}
           <Link href="/" className=" text-xl font-semibold tracking-wide hover:text-gray-300">
             <Image
@@ -64,46 +73,56 @@ const TopNavBar = () => {
             />
           </Link>
         </div>
-  
+
         {/* ------ NAV LINKS desktop only ----- */}
         {/* hidden by default, starting from the md (medium) breakpoint and above, apply display: flex */}
-        
-          <nav className="hidden md:flex justify-center gap-6 font-semibold ">
-            {links.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className="
+
+        <nav className="hidden md:flex justify-center gap-6 font-semibold ">
+          {links.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className="
                 btn btn-ghost text-white hover:text-black rounded-md
                 "
-              >
-                {link.name}
-              </Link>
-
-            ))}          
-            
-          </nav>
-
-          {/* ---------- RIGHT SECTION: CART ICON ---------- */}
-          <div className="justify-self-end">
-            <button
-              className="btn btn-ghost btn-circle"
-              aria-label="Cart Page"
-              onClick={() => {
-                handleCart(cartStatus);
-                handleNav(true);
-              }}
             >
-              < ShoppingCart 
-                size={24}
-              />
-            </button>
-          </div>
+              {link.name}
+            </Link>
+
+          ))}
+
+        </nav>
+
+        {/* ---------- RIGHT SECTION: CART ICON ---------- */}
+        <div className="justify-self-end">
+          <Link
+            href="/cart"
+            aria-label="Cart Page"
+            className="btn btn-ghost btn-circle relative"
+          >
+            < ShoppingCart
+              size={24}
+            />
+
+            
+          {hasItems && (
+            <span 
+              className="
+                absolute -top-0.5 -right-1
+                inline-block
+                h-3 w-3
+                bg-red-600
+                rounded-full"
+              ></span>
+          )}
+          </Link>
+
+        </div>
 
 
         {/* ---------- MOBILE MENU + CART ---------- */}
         {navStatus && <NavMenu active={navStatus} />}
-        {cartStatus && <Cart active={cartStatus} />}
+
 
       </header>
     </>

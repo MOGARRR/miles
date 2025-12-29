@@ -1,6 +1,6 @@
 import React from "react";
 
-const checkoutPage = () => {
+const CheckoutPage = () => {
   return (
     <div className="py-15 bg-slate-500 flex flex-col items-center">
       <div className="border-y-2 w-full mt-6 p-2">
@@ -115,4 +115,4 @@ const checkoutPage = () => {
   );
 };
 
-export default checkoutPage;
+export default CheckoutPage;
