@@ -1,5 +1,8 @@
 import Hero from "./components/Hero";
-import Contact from "./components/ContactForm";
+import FeaturedProducts from "./components/FeaturedProducts";
+import FeaturedEvents from "./components/FeaturedEvents";
+import CallToAction from "./components/CallToAction";
+
 
 
 export default function Home() {
@@ -10,12 +13,16 @@ export default function Home() {
       <Hero />
 
       {/* /// FEATURED GALLERY /// */}
+      <FeaturedProducts />
+      
 
 
       {/* ///UPCOMING EVENTS  */}
+      <FeaturedEvents />
       
 
       {/* READY TO OWN A PICE?  */}
+      <CallToAction />
 
     </>
   );
