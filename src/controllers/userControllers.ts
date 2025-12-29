@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 // GET all users
 export async function getAllUsers() {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("Users").select("*");
+  const { data, error } = await supabase.from("users").select("*");
   if (error) throw new Error(error.message);
   return data;
 }
@@ -12,7 +12,7 @@ export async function getAllUsers() {
 export async function getUsersById(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("Users")
+    .from("users")
     .select("*")
     .eq("id", id)
     .single();
@@ -24,7 +24,7 @@ export async function getUsersById(id: string) {
 export async function createUser(userItem: any) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("Users")
+    .from("users")
     .insert([userItem])
     .select()
     .single();
@@ -39,7 +39,7 @@ export async function updateUser(id: string, updatedUserItem: any) {
     Object.entries(updatedUserItem).filter(([_, v]) => v !== undefined)
   );
   const { data, error } = await supabase
-    .from("Users")
+    .from("users")
     .update(updates)
     .eq("id", id)
     .select()
@@ -52,7 +52,7 @@ export async function updateUser(id: string, updatedUserItem: any) {
 export async function deleteUser(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("Users")
+    .from("users")
     .delete()
     .eq("id", id)
     .single();
