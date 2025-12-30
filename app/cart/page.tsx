@@ -54,12 +54,39 @@ const CartPage = () => {
     }));
   };
 
-  // TODO: replace with backend request to Shippo/UPS to calculate actual shipping
-  const handleShippingEstimate = () => {
-    console.log("Estimating shipping with:", shippingForm);
+  // TODO: replace parcel information when available
+  const handleShippingEstimate = async () => {
+    try {
+      const response = await fetch("/api/shipping/rates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          addressTo: {
+            name: shippingForm.name,
+            street1: shippingForm.street1,
+            city: shippingForm.city,
+            state: shippingForm.state,
+            zip: shippingForm.zip,
+            country: shippingForm.country,
+          },
+          parcel: {
+            length: "10",
+            width: "8",
+            height: "4",
+            weight: "2",
+          },
+        }),
+      });
 
-    // temporary fake value - replace with real API result later
-    setShippingEstimate(12.99);
+      if (!response.ok) {
+        throw new Error("Failed to fetch shipping rates");
+      }
+
+      const data = await response.json();
+      setShippingEstimate(parseFloat(data.rate.amount));
+    } catch (err) {
+      console.error("Shipping estimate error:", err);
+    }
   };
 
   // ----- CALCULATE TOTALS -------
@@ -67,12 +94,10 @@ const CartPage = () => {
   const hst = (subtotalCents / 100) * 0.13;
   const total = subtotalCents / 100 + hst + shippingAmount;
 
-   // ----- CALCULATE TOTALS CENTS -------
-  // Convert total into cents for stripe price data   
-   const hstCents = Math.round(subtotalCents * 0.13);
-   const shippingCents = Math.round(shippingAmount * 100);
-
-  
+  // ----- CALCULATE TOTALS CENTS -------
+  // Convert total into cents for stripe price data
+  const hstCents = Math.round(subtotalCents * 0.13);
+  const shippingCents = Math.round(shippingAmount * 100);
 
   // ----- PROCEED TO CHECKOUT GUARD -------
   const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy;
@@ -85,7 +110,7 @@ const CartPage = () => {
     quantity: item.quantity,
   }));
 
-  const handleCheckout = async () => { ////////REFACTOR
+  const handleCheckout = async () => {
     const res = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
@@ -101,6 +126,7 @@ const CartPage = () => {
 
     const data = await res.json();
     if (data.url) {
+      // Redirect to stripe hosted page 
       window.location.href = data.url;
     }
   };
@@ -285,14 +311,13 @@ const CartPage = () => {
 
       {/* TODO: redirect to stripe    */}
 
-        <button
-          className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!canProceedToCheckout}
-          onClick={handleCheckout}
-        >
-          Proceed To Checkout
-        </button>
-
+      <button
+        className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={!canProceedToCheckout}
+        onClick={handleCheckout}
+      >
+        Proceed To Checkout
+      </button>
 
       <br />
       <br />

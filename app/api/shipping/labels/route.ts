@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       first_name: "John", /// CHANGE
       last_name: "Doe", /// CHANGE
       address_line_1: "somewhere street", /// CHANGE
-      address_line_2: 'somewhere else blvd', /// CHANGE
+      address_line_2: "somewhere else blvd", /// CHANGE
       postal: "123 ABC", /// CHANGE
       city: "City Place", /// CHANGE
       province: "AB", /// CHANGE
