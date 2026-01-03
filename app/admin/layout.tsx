@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+// usePathname gives us the current URL path 
 
 const adminLinks = [
   { name: "Dashboard", path: "/admin" },
@@ -20,6 +24,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
 
+  const pathname = usePathname();
+
   return (
     <div className="flex min-h-screen">
 
@@ -31,16 +37,21 @@ export default function AdminLayout({
           <ul className="space-y-2">
 
             {/* Loop over adminLinks to generate navigation items */}
-            {adminLinks.map((link) => (
-              <li key={link.path}>
-                <Link 
-                  href={link.path}
-                  className="hover:underline"
-                >
-                  {link.name}
-                </Link>
-              </li>
-            ))}
+            {adminLinks.map((link) => {
+
+              const isActive = pathname === link.path;
+
+              return (             
+                <li key={link.path}>
+                  <Link 
+                    href={link.path}
+                    className={`${isActive ? "font-semibold underline" : "hover:underline"}`}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </aside>
