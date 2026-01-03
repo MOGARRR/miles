@@ -1,18 +1,33 @@
 "use client"
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const CreateCategoryForm = () => {
 
   // state for form fields [no image upload yet]
-
   const [title, setTitle] = useState(""); 
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent)=> {
+  const router = useRouter(); 
+
+  const handleSubmit = async (e: React.FormEvent)=> {
     e.preventDefault(); 
 
-    console.log({title, description});
+    // Create a new category 
+    await fetch("/api/categories_products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+      }),
+    });
+
+    // Trigger a re-render of the Server Component 
+    router.refresh();
 
   }
 
