@@ -3,7 +3,7 @@ import ProductListClient from "./ProductListClient";
 import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
 
-import { getBaseUrl } from "@/src/helpers/getBaseURL";
+import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 
 
 const ProductList = async () => {

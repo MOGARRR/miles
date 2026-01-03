@@ -1,5 +1,6 @@
-import { getBaseUrl } from "@/src/helpers/getBaseURL";
+import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import type { Category } from "@/src/types/category";
+import CreateCategoryForm from "./CreateCategoryForm";
 
 
 
@@ -16,28 +17,37 @@ const AdminCategoriesPage = async () => {
     throw new Error("Failed to fetch categories");
   }
 
-  const data = await res.json(); 
+  const data = await res.json();
 
-  const categories: Category[] = data.categories_products ?? []; 
+  const categories: Category[] = data.categories_products ?? [];
 
 
   return (
-    <div>
+    <div >
       <h1 className="text-3xl">CATEGORIES ADMIN</h1>
 
       <p>
         Manage Product Categories
       </p>
+
+      <br /> <br /> <br />
+
+      <CreateCategoryForm/>
+
+
       {categories.length === 0 ? (
         <p>No categories found.</p>
       ) : (
-        <ul>
+        <ul className="space-y-4">
           {categories.map((category) => (
-            <li key={category.id}>
-              <p>{category.title}</p>
+            <li
+              key={category.id}
+              className="rounded border p-4"
+            >
+              <p className="font-medium">{category.title}</p>
 
               {category.description && (
-                <p>{category.description} </p>
+                <p className="mt-2 text-sm">{category.description} </p>
               )}
             </li>
           ))}
@@ -45,7 +55,7 @@ const AdminCategoriesPage = async () => {
       )}
 
 
-      
+
     </div>
   )
 };
