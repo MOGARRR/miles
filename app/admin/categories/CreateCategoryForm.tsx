@@ -13,6 +13,9 @@ const CreateCategoryForm = () => {
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
 
+  // state for errors 
+  const [error, setError] = useState<string | null>(null);
+
   const isTitleEmpty = title.trim() === "";
 
   const router = useRouter(); 
@@ -23,10 +26,11 @@ const CreateCategoryForm = () => {
     if (isTitleEmpty) return;
 
     setIsLoading(true);
+    setError(null); //clear previous errors
 
     // Create a new category 
     try {
-      await fetch("/api/categories_products", {
+      const res = await fetch("/api/categories_products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,12 +41,20 @@ const CreateCategoryForm = () => {
         }),
       });
 
+      if (!res.ok) {
+        throw new Error("Failed to create category");
+
+      }
+
       // Trigger a re-render of the Server Component 
       router.refresh();
 
       // Reset form fields
       setTitle("");
       setDescription("");
+    } catch (err) {
+      setError("Something went wrong. Please try again.")
+
 
       // Ensures loading state resets even if something goes wrong
     } finally {
@@ -69,13 +81,18 @@ const CreateCategoryForm = () => {
         <label className="text-sm">
           Description
         </label>
-        <input
-          type="text"
+        <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className=" rounded border w-full  mt-1 p-2 text-sm"
+          className=" rounded border w-full mt-1 p-2 text-sm"
         />
       </div>
+
+      {error && (
+        <p className="text-sm text-red-600 mt-2">
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"
