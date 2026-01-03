@@ -1,9 +1,15 @@
-"use client"
+import { headers } from "next/headers";
 
 const AdminCategories = () => {
   return (
     <div>
-      <h1>I am the admin categories page</h1>
+      <h1 className="text-3xl">CATEGORIES ADMIN</h1>
+
+      <p>
+        Manage Product Categories
+      </p>
+
+
       
     </div>
   )
