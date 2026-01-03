@@ -3,19 +3,12 @@ import ProductListClient from "./ProductListClient";
 import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
 
-import { headers } from "next/headers";
+import { getBaseUrl } from "@/src/helpers/getBaseURL";
 
 
 const ProductList = async () => {
 
-  // Build the absolute base URL on the server.
-  // Server Components cannot reliably use relative URLs ("/api/..."),
-  // so we read the request headers to determine the current protocol and host
-  const h = await headers();
-  const host = h.get("host");
-  const protocol = h.get("x-forwarded-proto") ?? "http";
-  const baseUrl = `${protocol}://${host}`;
-
+  const baseUrl = await getBaseUrl();
 
   //fetch PRODUCTS from the api route
   const productsRes = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });

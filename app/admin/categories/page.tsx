@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { getBaseUrl } from "@/src/helpers/getBaseURL";
 import type { Category } from "@/src/types/category";
 
 
@@ -6,10 +6,7 @@ import type { Category } from "@/src/types/category";
 const AdminCategoriesPage = async () => {
 
   // Get the current host so fetch works in all environments
-  const h = await headers();
-  const host = h.get("host");
-  const protocol = h.get("x-forwarded-proto") ?? "http";
-  const baseUrl = `${protocol}://${host}`;
+  const baseUrl = await getBaseUrl();
 
   const res = await fetch(`${baseUrl}/api/categories_products`, {
     cache: "no-store", // always show fresh data in admin
