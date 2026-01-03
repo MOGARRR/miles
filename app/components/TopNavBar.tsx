@@ -27,6 +27,9 @@ const TopNavBar = () => {
     { name: "Gallery", path: "/store" },
     { name: "Custom", path: "/customArtwork" },
     { name: "Events", path: "/events" },
+
+    // ADMIN LINK JUST FOR TESTING, REMOVE IT LATER 
+    { name: "Admin", path: "/admin" },
   ]
 
 

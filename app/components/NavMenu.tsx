@@ -14,11 +14,14 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
 
   const links = [
                   { name: "Home", path: "/" }, 
-                  { name: "Gallery", path: "/store" }, 
-                  { name: "Custom Artwork", path: "/customArtwork" }, 
                   { name: "About", path: "/about" }, 
-                  { name: "Contact us", path: "/contact" }, 
-                  { name: "Login / Register", path: "/login" }, 
+                  { name: "Gallery", path: "/store" }, 
+                  { name: "Custom", path: "/customArtwork" }, 
+                  { name: "Events", path: "/events" }, 
+
+                  // ADMIN LINK JUST FOR TESTING, REMOVE IT LATER 
+                  { name: "Admin", path: "/admin" }, 
+
                 ]
 
   return (
