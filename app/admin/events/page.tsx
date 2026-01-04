@@ -9,6 +9,16 @@ const AdminEventsPage = async () => {
 
   const baseUrl = await getBaseUrl(); 
 
+  const isPastEvent = (endDate: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize to start of today
+
+    const eventEnd = new Date(endDate);
+    eventEnd.setHours(0, 0, 0, 0);
+
+    return eventEnd < today;
+  };
+
   const res = await fetch(`${baseUrl}/api/events`, {
     cache: "no-store"
   }); 
@@ -39,9 +49,23 @@ const AdminEventsPage = async () => {
         ) : (
           <ul className="space-y-8">
             {events.map((event) => (
-              <li>
+              <li key={event.id}>
+                <div>
+                  <p className="font-medium">{event.title}</p>
+                  {isPastEvent(event.end_date) && (
+                    <span className="text-xs rounded bg-gray-600 px-2 py-0.5"> PAST</span>
+                  )}
 
-                <p className="font-medium">{event.title}</p>
+                </div>
+
+                {event.image_url && (
+                  <img 
+                    src={event.image_url}
+                    alt={event.title}
+                    className=" w-48 h-32 object-cover rounded border mt-3 mb-3"
+                    
+                  />
+                )}
 
                 {event.description && (
                   <p className="mt-2 text-sm"> {event.description} </p>
