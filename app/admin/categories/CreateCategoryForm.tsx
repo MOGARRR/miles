@@ -64,44 +64,51 @@ const CreateCategoryForm = () => {
 
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <div>
-        <label className="text-sm">
-          Title
-        </label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-        />
-      </div>
-        
-      <div>
-        <label className="text-sm">
-          Description
-        </label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className=" rounded border w-full mt-1 p-2 text-sm"
-        />
+        Add New Category
       </div>
 
-      {error && (
-        <p className="text-sm text-red-600 mt-2">
-          {error}
-        </p>
-      )}
+    
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label className="text-sm">
+            Title
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className=" rounded border w-full  mt-1 p-2 text-sm"
+          />
+        </div>
+          
+        <div>
+          <label className="text-sm">
+            Description
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className=" rounded border w-full mt-1 p-2 text-sm"
+          />
+        </div>
 
-      <button
-        type="submit"
-        disabled={isLoading || isTitleEmpty}
-        className="rounded border p-3 my-6 text-sm ">
-        {isLoading ? <LoadingAnimation /> : "Create Category"}
-      </button>
+        {error && (
+          <p className="text-sm text-red-600 mt-2">
+            {error}
+          </p>
+        )}
 
-    </form>
+        <button
+          type="submit"
+          disabled={isLoading || isTitleEmpty}
+          className="rounded border p-3 my-6 text-sm ">
+          {isLoading ? <LoadingAnimation /> : "Create Category"}
+        </button>
+
+      </form>
+    </div>
   );
 };
 

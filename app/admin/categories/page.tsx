@@ -3,7 +3,6 @@ import type { Category } from "@/src/types/category";
 import CreateCategoryForm from "./CreateCategoryForm";
 
 
-
 const AdminCategoriesPage = async () => {
 
   // Get the current host so fetch works in all environments
@@ -24,11 +23,13 @@ const AdminCategoriesPage = async () => {
 
   return (
     <div >
-      <h1 className="text-3xl">CATEGORIES ADMIN</h1>
-
-      <p>
-        Manage Product Categories
-      </p>
+      <div>
+        <h1 className="text-3xl">CATEGORIES ADMIN</h1>
+        <p>
+          Manage Product Categories
+        </p>
+      </div>
+      
 
       <br /> <br /> <br />
 
