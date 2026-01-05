@@ -14,6 +14,7 @@ const CreateProductForm = ({ categories }: Props) => {
 
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
+  const [categoryId, setCategoryId] = useState<number | "">(""); 
   const [description, setDescription] = useState(""); 
   const [price, setPrice] = useState("");
   const [isAvailable, setIsAvailable] = useState(true); 
@@ -25,8 +26,10 @@ const CreateProductForm = ({ categories }: Props) => {
   // state for errors 
   const [error, setError] = useState<string | null>(null);
 
+  // guards for empty price, title or category
   const isTitleEmpty = title.trim() === "";
   const isPriceInvalid = Number(price) <= 0;
+  const isCategoryInvalid = categoryId === "";
 
   // guard to prevent invalid image URL (would crash next image)
   const isImageUrlValid =
@@ -40,7 +43,14 @@ const CreateProductForm = ({ categories }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isTitleEmpty || !isImageUrlValid) return;
+    if (
+      isTitleEmpty || 
+      isPriceInvalid ||
+      !isImageUrlValid || 
+      isCategoryInvalid
+    ) {
+      return;
+    } 
 
     setIsLoading(true);
     setError(null); //clear previous errors
@@ -54,6 +64,7 @@ const CreateProductForm = ({ categories }: Props) => {
         },
         body: JSON.stringify({
           title,
+          category_id: categoryId,
           description,
           price_cents: Math.round(Number(price) * 100),
           image_URL: imageUrl, 
@@ -70,6 +81,7 @@ const CreateProductForm = ({ categories }: Props) => {
 
       // reset form
       setTitle("");
+      setCategoryId("");
       setDescription("");
       setPrice("");
       setImageUrl("");
@@ -101,6 +113,30 @@ const CreateProductForm = ({ categories }: Props) => {
             className=" rounded border w-full  mt-1 p-2 text-sm"
           />
         </div>
+
+        <div>
+          <label>Category</label>
+          <select 
+            value={categoryId}
+            onChange={(e) => setCategoryId(Number(e.target.value))}
+            className="rounded border w-full mt-1 p-2 text-sm bg-black text-white"         
+          >
+            <option value="">Select a category</option>
+
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.title}
+              </option>
+            ))}
+
+          </select>
+        </div>
+
+        {isCategoryInvalid && (
+          <p className="text-sm text-red-600 mt-1">
+            Please select a category
+          </p>
+        )}
 
         <div>
           <label>Description</label>
@@ -155,7 +191,13 @@ const CreateProductForm = ({ categories }: Props) => {
 
         <button
           type="submit"
-          disabled={isLoading || isTitleEmpty || isPriceInvalid || !isImageUrlValid}
+          disabled={
+            isLoading || 
+            isTitleEmpty || 
+            isPriceInvalid || 
+            !isImageUrlValid ||
+            isCategoryInvalid
+          }
           className="rounded border p-3 my-6 text-sm disabled:opacity-50"
         >
           {isLoading ? <LoadingAnimation /> : "Create Product"}
