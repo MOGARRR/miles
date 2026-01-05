@@ -1,10 +1,16 @@
 "use client"
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
+import { Category } from "@/src/types/category";
+
+type Props = {
+  categories: Category[];
+};
 
 
-const CreateProductForm = () => {
+const CreateProductForm = ({ categories }: Props) => {
 
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
@@ -23,8 +29,6 @@ const CreateProductForm = () => {
   const isPriceInvalid = Number(price) <= 0;
 
   const router = useRouter();
-
-
 
 
   const handleSubmit = async (e: React.FormEvent) => {

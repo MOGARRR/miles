@@ -1,26 +1,47 @@
-
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import { Product } from "@/src/types/product";
+import { Category } from "@/src/types/category";
 import CreateProductForm from "./CreateProductForm";
-// import { formatDate } from "@/src/helpers/formatDate";
-
 
 
 const AdminProductsPage = async () => {
 
   const baseUrl = await getBaseUrl(); 
 
-  const res = await fetch(`${baseUrl}/api/products`, {
+  // fetch products 
+  const productsRes = await fetch(`${baseUrl}/api/products`, {
     cache: "no-store"
   }); 
 
-  if (!res.ok) {
+  if (!productsRes.ok) {
     throw new Error("Failed to fetch products");
   }
 
-  const data = await res.json(); 
+  const productsData = await productsRes.json(); 
+  const products: Product[] = productsData.products ?? []; 
 
-  const products: Product[] = data.products ?? []; 
+
+  //fetch categories
+  const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, {
+    cache: "no-store",
+  }); 
+
+  if (!categoriesRes.ok) {
+    throw new Error("Failed to fetch categories");
+  }
+
+  const categoriesData = await categoriesRes.json(); 
+  const categories: Category[] = categoriesData.categories_products ?? [];
+
+  // cretate category map to look at the title 
+  const categoryMap: Record<number, string> = {}; 
+
+  categories.forEach((category) => {
+    categoryMap[category.id] = category.title
+  }); 
+  // console.log(categoryMap);
+
+
 
 
   return (
@@ -31,7 +52,7 @@ const AdminProductsPage = async () => {
       </p>
 
       <br /> <br /> <br />
-      <CreateProductForm />
+      <CreateProductForm categories={categories}/>
       <br /> <br /> <br />
 
       <div>
@@ -40,7 +61,7 @@ const AdminProductsPage = async () => {
         ) : (
           <ul className="space-y-8">
             {products.map((product) => (
-              <li>
+              <li key={product.id}>
                 <p className="font-medium">{product.title}</p>
 
                 <img 
@@ -48,6 +69,12 @@ const AdminProductsPage = async () => {
                   alt={product.title}
                   className="w-48 h-32 object-cover rounded border mt-3 mb-3"
                 />
+
+                <p>
+                  Category: {product.category_id
+                    ? categoryMap[product.category_id]
+                    : "Uncategorized"}
+                </p>
 
                 <p className="mt-2 text-sm">{product.description}</p>
 
