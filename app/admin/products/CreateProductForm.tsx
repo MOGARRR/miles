@@ -28,13 +28,19 @@ const CreateProductForm = ({ categories }: Props) => {
   const isTitleEmpty = title.trim() === "";
   const isPriceInvalid = Number(price) <= 0;
 
+  // guard to prevent invalid image URL (would crash next image)
+  const isImageUrlValid =
+    imageUrl === "" ||
+    imageUrl.startsWith("/") ||
+    imageUrl.startsWith("http");
+
   const router = useRouter();
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isTitleEmpty) return;
+    if (isTitleEmpty || !isImageUrlValid) return;
 
     setIsLoading(true);
     setError(null); //clear previous errors
@@ -57,10 +63,8 @@ const CreateProductForm = ({ categories }: Props) => {
 
       if (!res.ok) {
         throw new Error("Failed to create product");
-
       }
     
-
       // Trigger a re-render of the Server Component 
       router.refresh();
 
@@ -70,7 +74,6 @@ const CreateProductForm = ({ categories }: Props) => {
       setPrice("");
       setImageUrl("");
       setIsAvailable(true);
-
 
     } catch (err) {
       setError("Something went wrong. Please try again.")
@@ -129,6 +132,12 @@ const CreateProductForm = ({ categories }: Props) => {
           />
         </div>
 
+        {!isImageUrlValid && (
+          <p className="text-sm text-red-600 mt-1">
+            Image URL must start with "/" or "http"
+          </p>
+        )}
+
         <div>
           <input 
             type="checkbox"
@@ -146,8 +155,8 @@ const CreateProductForm = ({ categories }: Props) => {
 
         <button
           type="submit"
-          disabled={isLoading || isTitleEmpty || isPriceInvalid}
-          className="rounded border p-3 my-6 text-sm "
+          disabled={isLoading || isTitleEmpty || isPriceInvalid || !isImageUrlValid}
+          className="rounded border p-3 my-6 text-sm disabled:opacity-50"
         >
           {isLoading ? <LoadingAnimation /> : "Create Product"}
         </button> 
