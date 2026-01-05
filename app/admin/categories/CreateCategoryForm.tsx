@@ -1,5 +1,6 @@
 "use client"
 
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
@@ -72,9 +73,7 @@ const CreateCategoryForm = () => {
     
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="text-sm">
-            Title
-          </label>
+          <label className="text-sm">Title</label>
           <input
             type="text"
             value={title}
@@ -84,9 +83,7 @@ const CreateCategoryForm = () => {
         </div>
           
         <div>
-          <label className="text-sm">
-            Description
-          </label>
+          <label className="text-sm">Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
