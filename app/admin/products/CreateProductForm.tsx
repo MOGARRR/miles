@@ -6,25 +6,73 @@ import LoadingAnimation from "@/app/components/LoadingAnimation";
 
 const CreateProductForm = () => {
 
-  // state [ no image upload yet ]
+  // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
   const [description, setDescription] = useState(""); 
   const [priceCents, setPriceCents] = useState("");
   const [isAvailable, setIsAvailable] = useState(true); 
   const [imageUrl, setImageUrl] = useState(""); 
 
+  // state for loading page
+  const [isLoading, setIsLoading] = useState(false);
+
+  // state for errors 
+  const [error, setError] = useState<string | null>(null);
+
+  const isTitleEmpty = title.trim() === "";
+
+  const router = useRouter();
+
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log({
-                  title,
-                  description,
-                  priceCents,
-                  imageUrl,
-                  isAvailable,
-                });
+    if (isTitleEmpty) return;
 
+    setIsLoading(true);
+    setError(null); //clear previous errors
+
+    //create a new product
+    try {
+      const res = await fetch ("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          price_cents: Number(priceCents), 
+          image_URL: imageUrl, 
+          is_available: isAvailable
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create product");
+
+      }
+    
+
+      // Trigger a re-render of the Server Component 
+      router.refresh();
+
+      // reset form
+      setTitle("");
+      setDescription("");
+      setPriceCents("");
+      setImageUrl("");
+      setIsAvailable(true);
+
+
+    } catch (err) {
+      setError("Something went wrong. Please try again.")
+
+    } finally {
+      setIsLoading(false);
+    }
   }
 
 
@@ -84,11 +132,19 @@ const CreateProductForm = () => {
           <label>Available</label>
         </div>
 
+        {error && (
+          <p className="text-sm text-red-600 mt-2">
+            {error}
+          </p>
+        )}
+
+
         <button
           type="submit"
+          disabled={isLoading || isTitleEmpty}
           className="rounded border p-3 my-6 text-sm "
         >
-          Create Product
+          {isLoading ? <LoadingAnimation /> : "Create Category"}
         </button> 
 
       </form>
