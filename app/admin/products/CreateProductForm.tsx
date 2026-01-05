@@ -9,7 +9,7 @@ const CreateProductForm = () => {
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
   const [description, setDescription] = useState(""); 
-  const [priceCents, setPriceCents] = useState("");
+  const [price, setPrice] = useState("");
   const [isAvailable, setIsAvailable] = useState(true); 
   const [imageUrl, setImageUrl] = useState(""); 
 
@@ -20,6 +20,7 @@ const CreateProductForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   const isTitleEmpty = title.trim() === "";
+  const isPriceInvalid = Number(price) <= 0;
 
   const router = useRouter();
 
@@ -44,7 +45,7 @@ const CreateProductForm = () => {
         body: JSON.stringify({
           title,
           description,
-          price_cents: Number(priceCents), 
+          price_cents: Math.round(Number(price) * 100),
           image_URL: imageUrl, 
           is_available: isAvailable
         }),
@@ -62,7 +63,7 @@ const CreateProductForm = () => {
       // reset form
       setTitle("");
       setDescription("");
-      setPriceCents("");
+      setPrice("");
       setImageUrl("");
       setIsAvailable(true);
 
@@ -104,11 +105,12 @@ const CreateProductForm = () => {
         </div>
 
         <div>
-          <label>Price (cents)</label>
+          <label>Price</label>
           <input 
             type="number"
-            value={priceCents}
-            onChange={(e) => setPriceCents(e.target.value)}
+            step="0.01"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             className=" rounded border w-full  mt-1 p-2 text-sm"
           />
         </div>
@@ -138,13 +140,12 @@ const CreateProductForm = () => {
           </p>
         )}
 
-
         <button
           type="submit"
-          disabled={isLoading || isTitleEmpty}
+          disabled={isLoading || isTitleEmpty || isPriceInvalid}
           className="rounded border p-3 my-6 text-sm "
         >
-          {isLoading ? <LoadingAnimation /> : "Create Category"}
+          {isLoading ? <LoadingAnimation /> : "Create Product"}
         </button> 
 
       </form>
