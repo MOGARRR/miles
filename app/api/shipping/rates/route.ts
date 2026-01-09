@@ -52,6 +52,9 @@ export async function POST(request: Request) {
       async: false,
     });
 
+    console.log("Shipment status:", shipment.status);
+console.log("Shipment messages:", shipment.messages);
+
     // loop through rates and find provider or default to the first one
     const rate =
       shipment.rates.find((r) => r.provider === "UPS") || shipment.rates[0];

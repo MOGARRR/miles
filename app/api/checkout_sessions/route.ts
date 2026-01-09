@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "../../lib/stripe";
 
-
 export async function POST(req: Request) {
   try {
-    const { cart, shippingCents, hstCents } = await req.json();
+    const { cart, shippingCents, hstCents, shipping } = await req.json();
     const headersList = await headers();
     const origin = headersList.get("origin");
     // Create Checkout Sessions from body params.
@@ -43,6 +42,15 @@ export async function POST(req: Request) {
       line_items,
       success_url: `${origin}/checkout_success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cart`,
+      metadata: {
+        shipping_name: shipping.name,
+        shipping_phone_number: shipping.phoneNumber,
+        shipping_address1: shipping.street1,
+        shipping_address2: shipping.address2 ?? "",
+        shipping_city: shipping.city,
+        shipping_province: shipping.state,
+        shipping_postal: shipping.zip,
+      },
     });
 
     return NextResponse.json({ url: session.url });
