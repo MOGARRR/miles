@@ -21,7 +21,7 @@ export async function getProductById(id: string) {
   return data;
 }
 
-// POST user
+// POST
 export async function createProduct(userItem: any) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -33,7 +33,7 @@ export async function createProduct(userItem: any) {
   return data;
 }
 
-// PUT user
+// PUT 
 export async function updateProduct(id: string, updatedProductItem: any) {
   const supabase = await createClient();
   const updates = Object.fromEntries(
@@ -49,7 +49,7 @@ export async function updateProduct(id: string, updatedProductItem: any) {
   return data;
 }
 
-// DELETE user
+// DELETE 
 export async function deleteProduct(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
