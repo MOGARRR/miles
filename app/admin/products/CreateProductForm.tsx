@@ -19,6 +19,7 @@ const CreateProductForm = ({ categories }: Props) => {
   const [price, setPrice] = useState("");
   const [isAvailable, setIsAvailable] = useState(true); 
   const [imageUrl, setImageUrl] = useState(""); 
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
@@ -26,14 +27,15 @@ const CreateProductForm = ({ categories }: Props) => {
   // state for errors 
   const [error, setError] = useState<string | null>(null);
 
-  // guards for empty price, title or category
+  // guards for empty price, title, image or category
   const isTitleEmpty = title.trim() === "";
   const isPriceInvalid = Number(price) <= 0;
   const isCategoryInvalid = categoryId === "";
+  const hasImage = imageUrl !== "" || imageFile !== null;
 
   // guard to prevent invalid image URL (would crash next image)
-  const isImageUrlValid =
-    imageUrl === "" ||
+  const isImageValid =
+    imageFile !== null ||
     imageUrl.startsWith("/") ||
     imageUrl.startsWith("http");
 
@@ -46,8 +48,9 @@ const CreateProductForm = ({ categories }: Props) => {
     if (
       isTitleEmpty || 
       isPriceInvalid ||
-      !isImageUrlValid || 
-      isCategoryInvalid
+      !isImageValid || 
+      isCategoryInvalid ||
+      !hasImage
     ) {
       return;
     } 
@@ -57,6 +60,26 @@ const CreateProductForm = ({ categories }: Props) => {
 
     //create a new product
     try {
+      let finalImageUrl = imageUrl;
+
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        const uploadRes = await fetch("/api/upload/product-image", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error("Image upload failed");
+        }
+
+        const data = await uploadRes.json();
+        finalImageUrl = data.publicUrl;
+      }
+
+
       const res = await fetch ("/api/products", {
         method: "POST",
         headers: {
@@ -67,7 +90,7 @@ const CreateProductForm = ({ categories }: Props) => {
           category_id: categoryId,
           description,
           price_cents: Math.round(Number(price) * 100),
-          image_URL: imageUrl, 
+          image_URL: finalImageUrl, 
           is_available: isAvailable
         }),
       });
@@ -85,10 +108,11 @@ const CreateProductForm = ({ categories }: Props) => {
       setDescription("");
       setPrice("");
       setImageUrl("");
+      setImageFile(null);
       setIsAvailable(true);
 
-    } catch (err) {
-      setError("Something went wrong. Please try again.")
+    } catch (err: any) {
+      setError(err.message || "Something went wrong. Please try again.");
 
     } finally {
       setIsLoading(false);
@@ -132,11 +156,11 @@ const CreateProductForm = ({ categories }: Props) => {
           </select>
         </div>
 
-        {isCategoryInvalid && (
+        {/* {isCategoryInvalid && (
           <p className="text-sm text-red-600 mt-1">
             Please select a category
           </p>
-        )}
+        )} */}
 
         <div>
           <label>Description</label>
@@ -159,18 +183,43 @@ const CreateProductForm = ({ categories }: Props) => {
         </div>
 
         <div>
-          <label>Image URL</label>
+          <label>Image URL </label>
           <input 
             type="text"
             value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
+            onChange={(e) => {
+              setImageUrl(e.target.value)
+              setImageFile(null); // URL wins
+            }}
             className=" rounded border w-full  mt-1 p-2 text-sm"
           />
         </div>
 
-        {!isImageUrlValid && (
+        <div>
+          <label>OR upload image</label>
+          <input 
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                setImageFile(e.target.files[0]);
+                setImageUrl(""); // file wins
+              }
+            }}
+            className="rounded border w-full mt-1 p-2 text-sm"
+          />
+
+        </div>
+
+        {/* {!isImageValid && (
           <p className="text-sm text-red-600 mt-1">
             Image URL must start with "/" or "http"
+          </p>
+        )} */}
+
+        {imageFile && (
+          <p className="text-sm text-gray-600 mt-1">
+            Selected image: {imageFile.name}
           </p>
         )}
 
@@ -195,8 +244,9 @@ const CreateProductForm = ({ categories }: Props) => {
             isLoading || 
             isTitleEmpty || 
             isPriceInvalid || 
-            !isImageUrlValid ||
-            isCategoryInvalid
+            !isImageValid ||
+            isCategoryInvalid ||
+            !hasImage
           }
           className="rounded border p-3 my-6 text-sm disabled:opacity-50"
         >
