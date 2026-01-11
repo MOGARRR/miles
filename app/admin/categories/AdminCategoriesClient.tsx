@@ -15,6 +15,8 @@
 import { useState } from "react";
 import type { Category } from "@/src/types/category";
 import CreateCategoryForm from "./CategoryForm";
+import { useRouter } from "next/navigation";
+
 
 type Props = {
   categories: Category[];
@@ -24,6 +26,45 @@ const AdminCategoriesClient = ({ categories }: Props) => {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  const router = useRouter();
+
+
+
+  const handleDelete = async (categoryId: number) => {
+    
+    const confirmed = confirm(
+      "Are you sure you want to delete this category? This action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeleteError(null);
+      setDeletingId(categoryId);
+
+      const res = await fetch(
+        `/api/categories_products/${categoryId}`,
+        { method: "DELETE" }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete category");
+      }
+
+      router.refresh();
+
+    } catch (err: any) {
+      setDeleteError(err.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div>
@@ -48,6 +89,13 @@ const AdminCategoriesClient = ({ categories }: Props) => {
             setEditingCategory(null);
           }} />
       )}
+
+      {deleteError && (
+        <p className="text-sm text-red-400 mb-4">
+          {deleteError}
+        </p>
+      )}
+
 
       <h1>All Categories</h1>
 
@@ -75,6 +123,14 @@ const AdminCategoriesClient = ({ categories }: Props) => {
                 className="mt-3 text-sm underline"
               >
                 Edit
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDelete(category.id)}
+                className="mt-3 ml-4 text-sm text-red-400 underline"
+              >
+                Delete
               </button>
             </li>
           ))}

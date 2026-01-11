@@ -53,7 +53,6 @@ export async function updateCategoriesProducts(id: string, updatedCategoriesProd
 export async function deleteCategoriesProducts(id: string) {
   const supabase = await createClient();
 
-
   // 1. Check if there are products associated with this category
   const { count, error: countError } = await supabase
     .from("products")
