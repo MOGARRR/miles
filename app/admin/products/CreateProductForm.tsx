@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
+import FormAlert from "@/app/components/FormAlert";
 
 type Props = {
   categories: Category[];
@@ -25,11 +26,13 @@ const CreateProductForm = ({ categories }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // prevent the form from starting with errors later
+  // “The user has attempted to submit the form at least once.”
   const [hasSubmitted, setHasSubmitted] = useState(false);
   
 
   // state for errors 
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // guards for empty price, title, image or category
   const isPriceInvalid = Number(price) <= 0;
@@ -48,6 +51,8 @@ const CreateProductForm = ({ categories }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setHasSubmitted(true);
+
     if (
       isPriceInvalid ||
       !isImageValid || 
@@ -59,6 +64,7 @@ const CreateProductForm = ({ categories }: Props) => {
 
     setIsLoading(true);
     setError(null); //clear previous errors
+    setSuccessMessage(null);
 
     //create a new product
     try {
@@ -104,6 +110,11 @@ const CreateProductForm = ({ categories }: Props) => {
       // Trigger a re-render of the Server Component 
       router.refresh();
 
+      setSuccessMessage("New product created successfully!");
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+
       // reset form
       setTitle("");
       setCategoryId("");
@@ -112,7 +123,7 @@ const CreateProductForm = ({ categories }: Props) => {
       setImageUrl("");
       setImageFile(null);
       setIsAvailable(true);
-      setHasSubmitted(true);
+      setHasSubmitted(false);
 
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -237,11 +248,15 @@ const CreateProductForm = ({ categories }: Props) => {
           <label>Available</label>
         </div>
 
-        {error && (
-          <p className="text-sm text-red-600 mt-2">
-            {error}
-          </p>
+        {successMessage && (
+          <FormAlert type="success" message={successMessage} />
         )}
+
+        {error && (
+          <FormAlert type="error" message={error} />
+        )}
+
+        
 
         <button
           type="submit"

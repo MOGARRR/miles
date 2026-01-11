@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
-import { Event } from "@/src/types/event";
+import FormAlert from "@/app/components/FormAlert";
 
 
 const CreateEventsForm = () => {
@@ -27,7 +27,7 @@ const CreateEventsForm = () => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
-
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -49,6 +49,7 @@ const CreateEventsForm = () => {
 
     setIsLoading(true);
     setError(null); // clear previous errors
+    setSuccessMessage(null);
 
     try {
 
@@ -96,6 +97,11 @@ const CreateEventsForm = () => {
 
       // Trigger a re-render of the Server Component 
       router.refresh();
+
+      setSuccessMessage("New event created successfully!");
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
 
       // Reset form
       setTitle("");
@@ -226,11 +232,14 @@ const CreateEventsForm = () => {
         </div>
 
         {error && (
-          <p className="text-sm text-red-600 mt-2">
-            {error}
-          </p>
+          <FormAlert type="error" message={error} />
         )}
 
+        {successMessage && (
+          <FormAlert type="success" message={successMessage} />
+        )}
+
+        
         <button
           type="submit"
           disabled={isLoading}
