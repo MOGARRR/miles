@@ -14,21 +14,26 @@
 
 import { useState } from "react";
 import type { Category } from "@/src/types/category";
-import CreateCategoryForm from "./CreateCategoryForm";
+import CreateCategoryForm from "./CategoryForm";
 
 type Props = {
   categories: Category[];
 };
 
 const AdminCategoriesClient = ({ categories }: Props) => {
+
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <button
           type="button"
-          onClick={() => setIsFormOpen((prev) => !prev)}
+          onClick={() => {
+            setIsFormOpen((prev) => !prev);
+            setEditingCategory(null);
+          }}
           className="rounded border px-3 py-1 text-sm"
         >
           {isFormOpen ? "Close" : "Add New Category"}
@@ -36,7 +41,12 @@ const AdminCategoriesClient = ({ categories }: Props) => {
       </div>
 
       {isFormOpen && (
-        <CreateCategoryForm onSuccess={() => setIsFormOpen(false)} />
+        <CreateCategoryForm 
+          category={editingCategory ?? undefined}
+          onSuccess={() => {
+            setIsFormOpen(false);
+            setEditingCategory(null);
+          }} />
       )}
 
       <h1>All Categories</h1>
@@ -55,10 +65,23 @@ const AdminCategoriesClient = ({ categories }: Props) => {
               {category.description && (
                 <p className="mt-2 text-sm">{category.description}</p>
               )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingCategory(category);
+                  setIsFormOpen(true);
+                }}
+                className="mt-3 text-sm underline"
+              >
+                Edit
+              </button>
             </li>
           ))}
         </ul>
       )}
+
+      
     </div>
   );
 };

@@ -1,19 +1,23 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FormAlert from "@/app/components/FormAlert";
+import { Category } from "@/src/types/category";
+
+
 
 type Props = {
+  category?: Category;  // present = edit mode
   onSuccess?: () => void;
 };
 
-const CreateCategoryForm = ({ onSuccess }: Props) => {
+const CategoryForm = ({ category, onSuccess }: Props) => {
 
   // state for form fields [no image upload yet]
-  const [title, setTitle] = useState(""); 
-  const [description, setDescription] = useState("");
+  const [title, setTitle] =  useState(category?.title ?? ""); 
+  const [description, setDescription] = useState(category?.description ?? "");
 
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +25,14 @@ const CreateCategoryForm = ({ onSuccess }: Props) => {
   // state for errors 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // define if is in edit or create mode 
+  const isEditMode = Boolean(category);
+
+  useEffect(() => {
+    setTitle(category?.title ?? "");
+    setDescription(category?.description ?? "");
+  }, [category]);
 
 
   const router = useRouter(); 
@@ -35,8 +47,14 @@ const CreateCategoryForm = ({ onSuccess }: Props) => {
 
     // Create a new category 
     try {
-      const res = await fetch("/api/categories_products", {
-        method: "POST",
+      const endpoint = isEditMode 
+      ? `/api/categories_products/${category!.id}`
+      : "/api/categories_products";
+
+      const method = isEditMode ? "PUT" : "POST";
+
+      const res = await fetch(endpoint, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -55,16 +73,21 @@ const CreateCategoryForm = ({ onSuccess }: Props) => {
       router.refresh();
 
       // Notify parent (page/client wrapper) that creation succeeded
-      onSuccess?.();
-      
-      setSuccessMessage("New category created successfully!");
+           
+      setSuccessMessage(
+        isEditMode
+          ? "Category updated successfully!"
+          : "New category created successfully!"
+      );
       setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
+        onSuccess?.();
+      }, 1500);
 
-      // Reset form fields
-      setTitle("");
-      setDescription("");
+      // Reset form fields only when creating, not editing 
+      if (!isEditMode) {
+        setTitle("");
+        setDescription("");
+      }
     } catch (err) {
       setError("Something went wrong. Please try again.")
 
@@ -79,7 +102,9 @@ const CreateCategoryForm = ({ onSuccess }: Props) => {
   return (
     <div>
       <div>
-        Add New Category
+        <h2 className="text-lg font-medium">
+          {isEditMode ? "Edit Category" : "Add New Category"}
+        </h2>
       </div>
 
     
@@ -116,7 +141,7 @@ const CreateCategoryForm = ({ onSuccess }: Props) => {
           type="submit"
           disabled={isLoading}
           className="rounded border p-3 my-6 text-sm ">
-          {isLoading ? <LoadingAnimation /> : "Create Category"}
+          {isLoading ? <LoadingAnimation /> : (isEditMode ? "Save Changes" : "Create Category")}
         </button>
 
       </form>
@@ -124,4 +149,4 @@ const CreateCategoryForm = ({ onSuccess }: Props) => {
   );
 };
 
-export default CreateCategoryForm;
+export default CategoryForm;
