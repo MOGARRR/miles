@@ -52,11 +52,33 @@ export async function updateCategoriesProducts(id: string, updatedCategoriesProd
 // DELETE Categories products
 export async function deleteCategoriesProducts(id: string) {
   const supabase = await createClient();
+
+
+  // 1. Check if there are products associated with this category
+  const { count, error: countError } = await supabase
+    .from("products")
+    .select("*", { count: "exact", head: true })
+    .eq("category_id", id);
+
+  if (countError) {
+    throw new Error(countError.message);
+  }
+
+  // 2. Block deletion if products exist
+  if (count && count > 0) {
+    throw new Error(
+      "This category cannot be deleted because it is associated with one or more products."
+    );
+  }
+
+  // 3. Safe to delete
   const { data, error } = await supabase
     .from("categories_products")
     .delete()
     .eq("id", id)
     .single();
+
   if (error) throw new Error(error.message);
+
   return data;
 }
