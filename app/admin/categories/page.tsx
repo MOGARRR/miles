@@ -1,6 +1,7 @@
+
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import type { Category } from "@/src/types/category";
-import CreateCategoryForm from "./CreateCategoryForm";
+import AdminCategoriesClient from "./AdminCategoriesClient";
 
 
 const AdminCategoriesPage = async () => {
@@ -33,29 +34,10 @@ const AdminCategoriesPage = async () => {
 
       <br /> <br /> <br />
 
-      <CreateCategoryForm/>
-
-
-      {categories.length === 0 ? (
-        <p>No categories found.</p>
-      ) : (
-        <ul className="space-y-4">
-          {categories.map((category) => (
-            <li
-              key={category.id}
-              className="rounded border p-4"
-            >
-              <p className="font-medium">{category.title}</p>
-
-              {category.description && (
-                <p className="mt-2 text-sm">{category.description} </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-
-
+      {/* Pass fetched categories to the client wrapper.
+      The server component handles data fetching,
+      while the client component owns all interactive UI state. */}
+      <AdminCategoriesClient categories={categories} />
 
     </div>
   )

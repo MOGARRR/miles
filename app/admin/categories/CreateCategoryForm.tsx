@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FormAlert from "@/app/components/FormAlert";
 
-const CreateCategoryForm = () => {
+type Props = {
+  onSuccess?: () => void;
+};
+
+const CreateCategoryForm = ({ onSuccess }: Props) => {
 
   // state for form fields [no image upload yet]
   const [title, setTitle] = useState(""); 
@@ -50,6 +54,9 @@ const CreateCategoryForm = () => {
       // Trigger a re-render of the Server Component 
       router.refresh();
 
+      // Notify parent (page/client wrapper) that creation succeeded
+      onSuccess?.();
+      
       setSuccessMessage("New category created successfully!");
       setTimeout(() => {
         setSuccessMessage(null);
