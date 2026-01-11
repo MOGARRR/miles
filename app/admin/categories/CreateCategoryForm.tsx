@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
+import FormAlert from "@/app/components/FormAlert";
 
 const CreateCategoryForm = () => {
 
@@ -15,18 +16,18 @@ const CreateCategoryForm = () => {
 
   // state for errors 
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const isTitleEmpty = title.trim() === "";
 
   const router = useRouter(); 
 
   const handleSubmit = async (e: React.FormEvent)=> {
     e.preventDefault(); 
 
-    if (isTitleEmpty) return;
 
     setIsLoading(true);
     setError(null); //clear previous errors
+    setSuccessMessage(null); 
 
     // Create a new category 
     try {
@@ -48,6 +49,11 @@ const CreateCategoryForm = () => {
 
       // Trigger a re-render of the Server Component 
       router.refresh();
+
+      setSuccessMessage("New category created successfully!");
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
 
       // Reset form fields
       setTitle("");
@@ -75,6 +81,7 @@ const CreateCategoryForm = () => {
           <label className="text-sm">Title</label>
           <input
             type="text"
+            required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className=" rounded border w-full  mt-1 p-2 text-sm"
@@ -91,14 +98,16 @@ const CreateCategoryForm = () => {
         </div>
 
         {error && (
-          <p className="text-sm text-red-600 mt-2">
-            {error}
-          </p>
+          <FormAlert type="error" message={error} />
+        )}
+
+        {successMessage && (
+          <FormAlert type="success" message={successMessage} />
         )}
 
         <button
           type="submit"
-          disabled={isLoading || isTitleEmpty}
+          disabled={isLoading}
           className="rounded border p-3 my-6 text-sm ">
           {isLoading ? <LoadingAnimation /> : "Create Category"}
         </button>
