@@ -7,7 +7,7 @@ export async function GET() {
     const orders_product = await getAllOrderProducts();
     return NextResponse.json({ orders: orders_product }, { status: 200 });
   } catch (error: any) {
-    console.error("GET /api/orders_products error:", error.message);
+    console.error("GET /api/order_products error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const order_product = await createOrderProduct(order_productItem);
     return NextResponse.json({ order_product }, { status: 201 });
   } catch (error: any) {
-    console.error("POST /api/orders_products error:", error.message);
+    console.error("POST /api/order_products error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
