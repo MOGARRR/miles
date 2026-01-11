@@ -13,18 +13,18 @@ type Props = {
   events: Event[];
 };
 
+const isPastEvent = (endDate: string) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const eventEnd = new Date(endDate);
+  eventEnd.setHours(0, 0, 0, 0);
+
+  return eventEnd < today;
+};
+
 const AdminEventsClient = ({ events }: Props) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-
-  const isPastEvent = (endDate: string) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const eventEnd = new Date(endDate);
-    eventEnd.setHours(0, 0, 0, 0);
-
-    return eventEnd < today;
-  };
 
   return (
     <div>

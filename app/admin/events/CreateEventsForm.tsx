@@ -107,6 +107,8 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
         setSuccessMessage(null);
       }, 3000);
 
+      onSuccess?.();      
+
       // Reset form
       setTitle("");
       setDescription("");

@@ -8,10 +8,12 @@ import FormAlert from "@/app/components/FormAlert";
 
 type Props = {
   categories: Category[];
+  onSuccess?: () => void;
+
 };
 
 
-const CreateProductForm = ({ categories }: Props) => {
+const CreateProductForm = ({ categories, onSuccess }: Props) => {
 
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
@@ -115,6 +117,7 @@ const CreateProductForm = ({ categories }: Props) => {
         setSuccessMessage(null);
       }, 3000);
 
+     
       // reset form
       setTitle("");
       setCategoryId("");
