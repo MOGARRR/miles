@@ -25,8 +25,12 @@ const AdminProductsClient = ({
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
+
+  
 
   const router = useRouter();
 
@@ -39,6 +43,7 @@ const AdminProductsClient = ({
 
     try {
       setDeleteError(null);
+      setDeleteSuccess(null);
       setDeletingId(productId);
 
       const res = await fetch(`/api/products/${productId}`, {
@@ -51,7 +56,14 @@ const AdminProductsClient = ({
         throw new Error(data.error);
       }
 
+      setDeleteSuccess("Product deleted successfully");
+
       router.refresh();
+
+      // auto-hide success message
+      setTimeout(() => {
+        setDeleteSuccess(null);
+      }, 3000);
 
     } catch (err: any) {
       setDeleteError(err.message);
@@ -82,6 +94,18 @@ const AdminProductsClient = ({
             setEditingProduct(null);
           }}
         />
+      )}
+
+      {deleteSuccess && (
+        <p className="text-sm text-green-600 mb-4">
+          {deleteSuccess}
+        </p>
+      )}
+
+      {deleteError && (
+        <p className="text-sm text-rose-500 mb-4">
+          {deleteError}
+        </p>
       )}
 
       {products.length === 0 ? (

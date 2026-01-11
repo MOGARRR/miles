@@ -28,7 +28,9 @@ const AdminEventsClient = ({ events }: Props) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -42,6 +44,7 @@ const AdminEventsClient = ({ events }: Props) => {
 
     try {
       setDeleteError(null);
+      setDeleteSuccess(null);
       setDeletingId(eventId);
 
       const res = await fetch(`/api/events/${eventId}`, {
@@ -54,7 +57,15 @@ const AdminEventsClient = ({ events }: Props) => {
         throw new Error(data.error || "Failed to delete event");
       }
 
+      setDeleteSuccess("Event deleted successfully");
       router.refresh();
+
+      // auto-hide success message
+      setTimeout(() => {
+        setDeleteSuccess(null);
+      }, 3000);
+
+
 
     } catch (err: any) {
       setDeleteError(err.message);
@@ -83,6 +94,18 @@ const AdminEventsClient = ({ events }: Props) => {
             setEditingEvent(null);
           }}
         />
+      )}
+
+      {deleteSuccess && (
+        <p className="text-sm text-emerald-600 mb-4">
+          {deleteSuccess}
+        </p>
+      )}
+
+      {deleteError && (
+        <p className="text-sm text-rose-500 mb-4">
+          {deleteError}
+        </p>
       )}
 
       {events.length === 0 ? (
