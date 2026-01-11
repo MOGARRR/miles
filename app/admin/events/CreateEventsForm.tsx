@@ -8,8 +8,7 @@ import { Event } from "@/src/types/event";
 
 const CreateEventsForm = () => {
 
-  const [isLoading, setIsLoading] = useState(false); 
-  
+ 
   // state for form fields
   const [title, setTitle] = useState(""); 
   const [description, setDescription] = useState(""); 
@@ -22,6 +21,16 @@ const CreateEventsForm = () => {
   const [imageUrl, setImageUrl] = useState(""); 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const [isLoading, setIsLoading] = useState(false); 
+
+  // prevent the form from starting with errors later
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
+
+
+  const router = useRouter();
+
   const isImageValid =
     imageFile !== null ||
     imageUrl.startsWith("/") ||
@@ -32,15 +41,85 @@ const CreateEventsForm = () => {
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault(); 
 
-    console.log("Submit form");
-  }; 
+    setHasSubmitted(true);
+
+    if (!isImageValid) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null); // clear previous errors
+
+    try {
+
+      //RESOLVE FINAL IMAGE UPLOAD VS URL
+      let finalImageUrl = imageUrl;
+
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        const uploadRes = await fetch("/api/upload/image", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error("Image upload failed");
+        }
+
+        const data = await uploadRes.json();
+        finalImageUrl = data.publicUrl;
+      }
+
+      //CREATE EVENT
+      const res = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          start_date: startDate,
+          end_date: endDate,
+          hours,
+          location,
+          image_url: finalImageUrl,
+          is_active: isActive,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create event");
+      }
+
+      // Trigger a re-render of the Server Component 
+      router.refresh();
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setStartDate("");
+      setEndDate("");
+      setHours("");
+      setLocation("");
+      setImageUrl("");
+      setImageFile(null);
+      setIsActive(false);
+      setHasSubmitted(false);
+
+    } catch (err: any) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
-  
   
   return (
     <div>
-
 
       <div>
         <h1> Add New Event </h1>     
@@ -51,6 +130,7 @@ const CreateEventsForm = () => {
           <label>Title</label>
           <input
             type="text"
+            required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className=" rounded border w-full mt-1 p-2 text-sm"
@@ -60,6 +140,7 @@ const CreateEventsForm = () => {
         <div>
           <label>Description</label>
           <textarea
+            required
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className=" rounded border w-full mt-1 p-2 text-sm"
@@ -94,7 +175,7 @@ const CreateEventsForm = () => {
           />
         </div>
 
-        {!isImageValid && (
+        {hasSubmitted && !isImageValid && (
           <p className="text-sm text-red-600 mt-1">
             Image URL must start with "/" or "http"
           </p>
@@ -104,6 +185,7 @@ const CreateEventsForm = () => {
           <label>Start Date</label>
           <input
             type="date"
+            required
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             className="rounded border w-full mt-1 p-2 text-sm"
@@ -114,6 +196,7 @@ const CreateEventsForm = () => {
           <label>End Date</label>
           <input
             type="date"
+            required
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             className="rounded border w-full mt-1 p-2 text-sm"
@@ -124,6 +207,7 @@ const CreateEventsForm = () => {
           <label>Hours</label>
           <input
             type="text"
+            required
             value={hours}
             onChange={(e) => setHours(e.target.value)}
             className="rounded border w-full mt-1 p-2 text-sm"
@@ -134,11 +218,18 @@ const CreateEventsForm = () => {
           <label>Location</label>
           <input
             type="text"
+            required
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             className="rounded border w-full mt-1 p-2 text-sm"
           />
         </div>
+
+        {error && (
+          <p className="text-sm text-red-600 mt-2">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
@@ -147,7 +238,6 @@ const CreateEventsForm = () => {
           {isLoading ? <LoadingAnimation /> : "Create Event"}
           
         </button>
-
 
       </form>
 

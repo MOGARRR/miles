@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { uploadProductImage } from "@/src/controllers/uploadControllers";
 
-// POST /api/upload/product-image
+// POST /api/upload/image
 export async function POST(req: Request) {
   try {
     // Parse multipart/form-data
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     );
 
   } catch (error: any) {
-    console.error("POST /api/upload/product-image error:", error.message);
+    console.error("POST /api/upload/image error:", error.message);
 
     return NextResponse.json(
       { error: error.message || "Image upload failed" },

@@ -24,11 +24,14 @@ const CreateProductForm = ({ categories }: Props) => {
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
 
+  // prevent the form from starting with errors later
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  
+
   // state for errors 
   const [error, setError] = useState<string | null>(null);
 
   // guards for empty price, title, image or category
-  const isTitleEmpty = title.trim() === "";
   const isPriceInvalid = Number(price) <= 0;
   const isCategoryInvalid = categoryId === "";
   const hasImage = imageUrl !== "" || imageFile !== null;
@@ -46,7 +49,6 @@ const CreateProductForm = ({ categories }: Props) => {
     e.preventDefault();
 
     if (
-      isTitleEmpty || 
       isPriceInvalid ||
       !isImageValid || 
       isCategoryInvalid ||
@@ -66,7 +68,7 @@ const CreateProductForm = ({ categories }: Props) => {
         const formData = new FormData();
         formData.append("file", imageFile);
 
-        const uploadRes = await fetch("/api/upload/product-image", {
+        const uploadRes = await fetch("/api/upload/image", {
           method: "POST",
           body: formData,
         });
@@ -110,6 +112,7 @@ const CreateProductForm = ({ categories }: Props) => {
       setImageUrl("");
       setImageFile(null);
       setIsAvailable(true);
+      setHasSubmitted(true);
 
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -132,6 +135,7 @@ const CreateProductForm = ({ categories }: Props) => {
           <label>Title</label>
           <input 
             type="text" 
+            required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className=" rounded border w-full  mt-1 p-2 text-sm"
@@ -175,6 +179,7 @@ const CreateProductForm = ({ categories }: Props) => {
           <label>Price</label>
           <input 
             type="number"
+            required
             step="0.01"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
@@ -242,7 +247,6 @@ const CreateProductForm = ({ categories }: Props) => {
           type="submit"
           disabled={
             isLoading || 
-            isTitleEmpty || 
             isPriceInvalid || 
             !isImageValid ||
             isCategoryInvalid ||
