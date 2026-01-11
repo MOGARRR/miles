@@ -49,15 +49,32 @@ export async function updateProduct(id: string, updatedProductItem: any) {
   return data;
 }
 
-// DELETE 
+// DELETE Product
 export async function deleteProduct(id: string) {
   const supabase = await createClient();
+
+  // 1. Check if product is associated with any order
+  const { data: orderRefs, error: refError } = await supabase
+    .from("order_products")
+    .select("id")
+    .eq("product_id", id)
+    .limit(1);
+
+  if (refError) throw new Error(refError.message);
+
+  if (orderRefs && orderRefs.length > 0) {
+    throw new Error("Product cannot be deleted because it is associated with an order.");
+  }
+
+  // 2. Safe to delete
   const { data, error } = await supabase
     .from("products")
     .delete()
     .eq("id", id)
     .single();
+
   if (error) throw new Error(error.message);
+
   return data;
 }
 
