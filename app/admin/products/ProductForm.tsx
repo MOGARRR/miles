@@ -1,19 +1,21 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
+import { Product } from "@/src/types/product";
 import FormAlert from "@/app/components/FormAlert";
 
 type Props = {
+  product?: Product;     // edit mode
   categories: Category[];
   onSuccess?: () => void;
 
 };
 
 
-const CreateProductForm = ({ categories, onSuccess }: Props) => {
+const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
@@ -47,7 +49,22 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
     imageUrl.startsWith("/") ||
     imageUrl.startsWith("http");
 
+  const isEditMode = Boolean(product);
+
   const router = useRouter();
+
+
+  useEffect(() => {
+    if (!product) return;
+
+    setTitle(product.title);
+    setCategoryId(product.category_id ?? "");
+    setDescription(product.description ?? "");
+    setPrice((product.price_cents / 100).toString());
+    setImageUrl(product.image_URL ?? "");
+    setImageFile(null);
+    setIsAvailable(product.is_available);
+  }, [product]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,8 +85,9 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
     setError(null); //clear previous errors
     setSuccessMessage(null);
 
-    //create a new product
     try {
+
+      //handle image upload
       let finalImageUrl = imageUrl;
 
       if (imageFile) {
@@ -89,9 +107,15 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
         finalImageUrl = data.publicUrl;
       }
 
+      //create or edit mode ; define method
+      const endpoint = isEditMode
+        ? `/api/products/${product!.id}`
+        : "/api/products";
 
-      const res = await fetch ("/api/products", {
-        method: "POST",
+      const method = isEditMode ? "PUT" : "POST";
+
+      const res = await fetch (endpoint, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -112,21 +136,29 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
       // Trigger a re-render of the Server Component 
       router.refresh();
 
-      setSuccessMessage("New product created successfully!");
+      setSuccessMessage(
+        isEditMode
+          ? "Product updated successfully!"
+          : "New product created successfully!"
+      );
+
       setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
+        onSuccess?.();
+      }, 1500);
 
      
-      // reset form
-      setTitle("");
-      setCategoryId("");
-      setDescription("");
-      setPrice("");
-      setImageUrl("");
-      setImageFile(null);
-      setIsAvailable(true);
-      setHasSubmitted(false);
+      // reset form only when creating 
+      if (!isEditMode) {
+        setTitle("");
+        setCategoryId("");
+        setDescription("");
+        setPrice("");
+        setImageUrl("");
+        setImageFile(null);
+        setIsAvailable(true);
+        setHasSubmitted(false);
+      }
+      
 
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -140,7 +172,9 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
   return (
     <div>
       <div>
-        <h1>Add a New Product</h1>
+        <h2 className="text-lg font-medium">
+          {isEditMode ? "Edit Product" : "Add New Product"}
+        </h2>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -272,7 +306,13 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
           }
           className="rounded border p-3 my-6 text-sm disabled:opacity-50"
         >
-          {isLoading ? <LoadingAnimation /> : "Create Product"}
+          {isLoading ? (
+            <LoadingAnimation />
+          ) : isEditMode ? (
+            "Save Changes"
+          ) : (
+            "Create Product"
+          )}
         </button> 
 
       </form>
@@ -281,4 +321,4 @@ const CreateProductForm = ({ categories, onSuccess }: Props) => {
   )
 };
 
-export default CreateProductForm;
+export default ProductForm;

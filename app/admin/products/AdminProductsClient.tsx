@@ -8,7 +8,8 @@
 import { useState } from "react";
 import type { Product } from "@/src/types/product";
 import type { Category } from "@/src/types/category";
-import CreateProductForm from "./CreateProductForm";
+import CreateProductForm from "./ProductForm";
+import { useRouter } from "next/navigation";
 
 type Props = {
   products: Product[];
@@ -21,7 +22,44 @@ const AdminProductsClient = ({
   categories,
   categoryMap,
 }: Props) => {
+
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  const router = useRouter();
+
+  const handleDelete = async (productId: number) => {
+    const confirmed = confirm(
+      "Are you sure you want to delete this product? This action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeleteError(null);
+      setDeletingId(productId);
+
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error);
+      }
+
+      router.refresh();
+
+    } catch (err: any) {
+      setDeleteError(err.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+    
 
   return (
     <div>
@@ -37,8 +75,12 @@ const AdminProductsClient = ({
 
       {isFormOpen && (
         <CreateProductForm
+          product={editingProduct ?? undefined}
           categories={categories}
-          onSuccess={() => setIsFormOpen(false)}
+          onSuccess={() => {
+            setIsFormOpen(false); 
+            setEditingProduct(null);
+          }}
         />
       )}
 
@@ -80,6 +122,29 @@ const AdminProductsClient = ({
                 Status:{" "}
                 {product.is_available ? "Available" : "Not Available"}
               </p>
+
+              <div className="flex gap-4 mt-3">
+                <button
+                  onClick={() => {
+                    setEditingProduct(product);
+                    setIsFormOpen(true);
+                  }}
+                  className="text-sm underline"
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  className="text-sm text-rose-600 underline"
+                >
+                  Delete
+                </button>
+
+
+              </div>
+
+            
             </li>
           ))}
         </ul>
