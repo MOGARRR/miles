@@ -81,6 +81,7 @@ const AdminEventsPage = async () => {
                 </p>
 
                 <p className="mt-2 text-sm"> {event.hours}</p>
+                <p className="mt-2 text-sm"> {event.location}</p>
 
 
 
