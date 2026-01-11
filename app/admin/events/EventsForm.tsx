@@ -1,37 +1,44 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FormAlert from "@/app/components/FormAlert";
+import { Event } from "@/src/types/event";
 
 type Props = {
+  event?: Event; // present = edit mode
   onSuccess?: () => void;
 };
 
 
-const CreateEventsForm = ({ onSuccess }: Props) => {
+const EventsForm = ({ event, onSuccess }: Props) => {
 
  
   // state for form fields
-  const [title, setTitle] = useState(""); 
-  const [description, setDescription] = useState(""); 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate]  = useState("");
-  const [location, setLocation] = useState(""); 
-  const [hours, setHours] = useState(""); 
-  const [isActive, setIsActive] = useState(false); 
+  const [title, setTitle] = useState(event?.title ?? "");
+  const [description, setDescription] = useState(event?.description ?? "");
+  const [startDate, setStartDate] = useState(event?.start_date ?? "");
+  const [endDate, setEndDate] = useState(event?.end_date ?? "");
+  const [location, setLocation] = useState(event?.location ?? "");
+  const [hours, setHours] = useState(event?.hours ?? "");
 
-  const [imageUrl, setImageUrl] = useState(""); 
+  const [imageUrl, setImageUrl] = useState(event?.image_url ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
+
 
   const [isLoading, setIsLoading] = useState(false); 
 
   // prevent the form from starting with errors later
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
+  //error and success messages
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Detect edit vs create
+  const isEditMode = Boolean(event);
+
 
   const router = useRouter();
 
@@ -40,8 +47,21 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
     imageUrl.startsWith("/") ||
     imageUrl.startsWith("http");
 
+  // Sync when switching which event is being edited
+  useEffect(() => {
+    if (!event) return;
 
+    setTitle(event.title);
+    setDescription(event.description ?? "");
+    setStartDate(event.start_date);
+    setEndDate(event.end_date);
+    setLocation(event.location);
+    setHours(event.hours);
+    setImageUrl(event.image_url ?? "");
+    setImageFile(null);
+  }, [event]);
 
+  
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault(); 
 
@@ -77,9 +97,15 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
         finalImageUrl = data.publicUrl;
       }
 
+      const endpoint = isEditMode
+        ? `/api/events/${event!.id}`
+        : "/api/events";
+
+      const method = isEditMode ? "PUT" : "POST";
+
       //CREATE EVENT
-      const res = await fetch("/api/events", {
-        method: "POST",
+      const res = await fetch(endpoint, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -91,7 +117,6 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
           hours,
           location,
           image_url: finalImageUrl,
-          is_active: isActive,
         }),
       });
 
@@ -102,24 +127,27 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
       // Trigger a re-render of the Server Component 
       router.refresh();
 
-      setSuccessMessage("New event created successfully!");
+      setSuccessMessage(
+        isEditMode
+          ? "Event updated successfully!"
+          : "New event created successfully!"
+      );
       setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
+        onSuccess?.();
+      }, 1500);     
 
-      onSuccess?.();      
-
-      // Reset form
-      setTitle("");
-      setDescription("");
-      setStartDate("");
-      setEndDate("");
-      setHours("");
-      setLocation("");
-      setImageUrl("");
-      setImageFile(null);
-      setIsActive(false);
-      setHasSubmitted(false);
+      // Reset form if NOT in edit mode
+      if (!isEditMode) {
+        setTitle("");
+        setDescription("");
+        setStartDate("");
+        setEndDate("");
+        setHours("");
+        setLocation("");
+        setImageUrl("");
+        setImageFile(null);
+        setHasSubmitted(false);
+      }
 
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -128,14 +156,13 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
     }
   };
 
-
   
   return (
     <div>
 
-      <div>
-        <h1> Add New Event </h1>     
-      </div>
+      <h2 className="text-lg font-medium">
+        {isEditMode ? "Edit Event" : "Add New Event"}
+      </h2>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -250,7 +277,13 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
           type="submit"
           disabled={isLoading}
           className="rounded border p-3 my-6 text-sm ">
-          {isLoading ? <LoadingAnimation /> : "Create Event"}
+          {isLoading ? (
+            <LoadingAnimation />
+          ) : isEditMode ? (
+            "Save Changes"
+          ) : (
+            "Create Event"
+          )}
           
         </button>
 
@@ -260,7 +293,7 @@ const CreateEventsForm = ({ onSuccess }: Props) => {
   )
 };
 
-export default CreateEventsForm;
+export default EventsForm;
 
 
 

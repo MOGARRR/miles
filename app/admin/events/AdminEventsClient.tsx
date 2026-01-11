@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import type { Event } from "@/src/types/event";
-import CreateEventsForm from "./CreateEventsForm";
+import CreateEventsForm from "./EventsForm";
 import { formatDate } from "@/src/helpers/formatDate";
+import { useRouter } from "next/navigation";
 
 // Client wrapper owns all interactive UI for events:
 // - toggling create form
@@ -25,6 +26,42 @@ const isPastEvent = (endDate: string) => {
 
 const AdminEventsClient = ({ events }: Props) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const router = useRouter();
+
+
+  const handleDelete = async (eventId: number) => {
+    const confirmed = confirm(
+      "Are you sure you want to delete this event?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeleteError(null);
+      setDeletingId(eventId);
+
+      const res = await fetch(`/api/events/${eventId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete event");
+      }
+
+      router.refresh();
+
+    } catch (err: any) {
+      setDeleteError(err.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div>
@@ -39,7 +76,13 @@ const AdminEventsClient = ({ events }: Props) => {
       </div>
 
       {isFormOpen && (
-        <CreateEventsForm onSuccess={() => setIsFormOpen(false)} />
+        <CreateEventsForm
+          event={editingEvent ?? undefined}
+          onSuccess={() => {
+            setIsFormOpen(false);
+            setEditingEvent(null);
+          }}
+        />
       )}
 
       {events.length === 0 ? (
@@ -81,6 +124,28 @@ const AdminEventsClient = ({ events }: Props) => {
 
               <p className="mt-2 text-sm">{event.hours}</p>
               <p className="mt-2 text-sm">{event.location}</p>
+
+              <div className="flex gap-4 mt-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingEvent(event);
+                    setIsFormOpen(true);
+                  }}
+                  className="text-sm underline"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDelete(event.id)}
+                  className="text-sm text-rose-600 underline"
+                >
+                  Delete
+                </button>
+              </div>
+
             </li>
           ))}
         </ul>
