@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FormAlert from "@/app/components/FormAlert";
 
+type Props = {
+  onSuccess?: () => void;
+};
 
-const CreateEventsForm = () => {
+
+const CreateEventsForm = ({ onSuccess }: Props) => {
 
  
   // state for form fields
