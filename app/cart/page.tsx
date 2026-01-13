@@ -330,7 +330,7 @@ const CartPage = () => {
 
       <button
         className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        // disabled={!canProceedToCheckout}
+        disabled={!canProceedToCheckout}
         onClick={handleCheckout}
       >
         Proceed To Checkout

@@ -5,6 +5,7 @@ import { createShippingLabel } from "@/app/lib/shipping/createShippingLabel";
 import {
   createOrder,
   getOrderByStripeSessionId,
+  updateOrder,
 } from "@/src/controllers/orderControllers";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 
@@ -37,6 +38,28 @@ export async function POST(req: NextRequest) {
       limit: 100,
     });
 
+    /// Email Formatting 
+    const html = `
+      <h1>Test</h1>
+      <p><strong>Order Items:</strong>
+      <ul>
+        ${lineItems.data
+          .map(
+            (item) => `
+              <li>
+                ${item.description} × ${item.quantity ?? 1}  -
+                $${(item.amount_total! / 100).toFixed(2)}
+              </li>
+            `
+          )
+          .join("")}
+      </ul>
+
+      <p><strong>Total paid:</strong> $${(session.amount_total! / 100).toFixed(
+        2
+      )}</p>
+    `;
+
     const shipping = {
       name: session.metadata?.shipping_name,
       phoneNumber: session.metadata?.shipping_phone_number,
@@ -61,36 +84,22 @@ export async function POST(req: NextRequest) {
       !shipping.province ||
       !shipping.postal
     ) {
-      throw new Error("Incomplete shipping address from Stripe metadata");
+      console.warn(
+        "Incomplete shipping address from Stripe metadata",
+        session.id
+      );
+      return NextResponse.json({ received: true });
     }
-
+    
+    /// Check if order exist to prevent duplicates
     const existingOrder = await getOrderByStripeSessionId(session.id);
     if (existingOrder) {
       console.log("Order already processed:", session.id);
       return NextResponse.json({ received: true });
     }
+    ///// CREATE ORDER_PRODUCTS TOO!!!!!!!!!!!!!
 
-    const label = await createShippingLabel({
-      addressTo: {
-        name: shipping.name,
-        phone: normalizePhone(shipping.phoneNumber),
-        street1: shipping.address1,
-        street2: shipping.address2,
-        city: shipping.city,
-        state: shipping.province,
-        zip: shipping.postal,
-        country: shipping.country,
-      },
-      parcel: {
-        length: "10",
-        width: "8",
-        height: "4",
-        weight: "2",
-        distanceUnit: DistanceUnitEnum.In,
-        massUnit: WeightUnitEnum.Lb,
-      },
-    });
-
+    /// Create order to DB
     const order = await createOrder({
       stripe_session_id: session.id,
       email: customerEmail,
@@ -103,41 +112,77 @@ export async function POST(req: NextRequest) {
       city: shipping.city,
       province: shipping.province,
       postal: shipping.postal,
-      shopping_fee_cents: Math.round(Number(label.shoppingFeeCents) * 100),
-      tracking_number: label.trackingNumber,
-      estimated_delivery: label.estimatedDelivery,
-      shipping_status: label.shippingStatus,
-      label_url: label.labelUrl,
       phone_number: normalizePhone(shipping.phoneNumber),
     });
 
-    // Email Format, Change before Production
-    const html = `
-      <h1>Test</h1>
-      <p><strong>Order Items:</strong>
-      <ul>
-        ${lineItems.data
-          .map(
-            (item) => `
-              <li>
-                ${item.description} × ${item.quantity ?? 1}  -
-                $${(item.amount_total! / 100).toFixed(2)}
-              </li>
-            `
-          )
-          .join("")}
-      </ul>
+    try {
+      /// Create/Buy Shipping label for owner
+      const label = await createShippingLabel({
+        addressTo: {
+          name: shipping.name,
+          phone: normalizePhone(shipping.phoneNumber),
+          street1: shipping.address1,
+          street2: shipping.address2,
+          city: shipping.city,
+          state: shipping.province,
+          zip: shipping.postal,
+          country: shipping.country,
+        },
+        /// UPDATE WHEN PARCEL WITH REAL DATA WHEN AVAILABLE 
+        parcel: {
+          length: "10",
+          width: "8",
+          height: "4",
+          weight: "2",
+          distanceUnit: DistanceUnitEnum.In,
+          massUnit: WeightUnitEnum.Lb,
+        },
+      });
+      ///////////////////
+      try {
+        /// Send Email Receipt to Customer Email
 
-      <p><strong>Total paid:</strong> $${(session.amount_total! / 100).toFixed(
-        2
-      )}</p>
-    `;
+        console.log("Sending email...");
+        await sendEmail({
+          to: "alicea.9a@gmail.com", /// REPLACE WITH customerEmail BEFORE PRODUCTION
+          subject: "KiloBoy Order Receipt",
+          html,
+        });
+        console.log("Email sent");
+      } catch (err) {
+        console.error("EMAIL FAILED:", err);
+      }
+      ////////////////////
 
-    await sendEmail({
-      to: "alicea.9a@gmail.com",
-      subject: "KiloBoy Order Receipt",
-      html,
-    });
+      try {
+        // Update order with shipping label information
+        console.log("Updating Order ...");
+        await updateOrder(order.id, {
+          updated_at: new Date().toISOString(),
+          shopping_fee_cents: Math.round(Number(label.shoppingFeeCents) * 100),
+          tracking_number: label.trackingNumber,
+          estimated_delivery: label.estimatedDelivery,
+          shipping_status: label.shippingStatus,
+          label_url: label.labelUrl,
+        });
+        console.log("Order Updated");
+      } catch (err) {
+        console.error("UPDATING ORDER FAILED:", err);
+      }
+      /////////////////////
+    } catch {
+      /////////////////////
+
+      try {
+        // Update order shipping status if label creation failed 
+        await updateOrder(order.id, {
+          shipping_status: "FAILED",
+        });
+      } catch (err) {
+        console.error("ORDER UPDATE FAILED (LABEL FAILURE):", err);
+      }
+      ///////////////////////
+    }
   }
 
   return NextResponse.json({ received: true });
