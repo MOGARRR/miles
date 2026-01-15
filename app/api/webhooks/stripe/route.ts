@@ -7,7 +7,9 @@ import {
   getOrderByStripeSessionId,
   updateOrder,
 } from "@/src/controllers/orderControllers";
+import { createOrderProduct } from "@/src/controllers/order_productsControllers";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const normalizePhone = (phone: string) =>
@@ -36,9 +38,24 @@ export async function POST(req: NextRequest) {
     const customerEmail = session.customer_details?.email;
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
       limit: 100,
+      expand: ["data.price.product"],
+    });
+    
+    // Get product meta data information 
+    const orderItems = lineItems.data.map((item) => {
+      const product = item.price?.product as Stripe.Product | null;
+      return {
+        productId: product?.metadata?.productId ?? null,
+        quantity: item.quantity ?? 1,
+        amount_total: item.amount_total,
+        description: item.description,
+      };
     });
 
-    /// Email Formatting 
+    // Filter out Hst and shipping from meta data
+    const filteredOrderItems = orderItems.filter((item) => item.productId);
+
+    // /// Email Formatting
     const html = `
       <h1>Test</h1>
       <p><strong>Order Items:</strong>
@@ -90,14 +107,14 @@ export async function POST(req: NextRequest) {
       );
       return NextResponse.json({ received: true });
     }
-    
+
     /// Check if order exist to prevent duplicates
     const existingOrder = await getOrderByStripeSessionId(session.id);
     if (existingOrder) {
       console.log("Order already processed:", session.id);
       return NextResponse.json({ received: true });
     }
-    ///// CREATE ORDER_PRODUCTS TOO!!!!!!!!!!!!!
+
 
     /// Create order to DB
     const order = await createOrder({
@@ -115,6 +132,18 @@ export async function POST(req: NextRequest) {
       phone_number: normalizePhone(shipping.phoneNumber),
     });
 
+    //// Create order products to DB
+    await Promise.all(
+      filteredOrderItems.map((item) => {
+        createOrderProduct({
+          product_id: item.productId,
+          order_id: order.id,
+          quantity: item.quantity,
+          unit_price_cents: item.amount_total,
+        });
+      })
+    );
+
     try {
       /// Create/Buy Shipping label for owner
       const label = await createShippingLabel({
@@ -128,7 +157,7 @@ export async function POST(req: NextRequest) {
           zip: shipping.postal,
           country: shipping.country,
         },
-        /// UPDATE WHEN PARCEL WITH REAL DATA WHEN AVAILABLE 
+        /// UPDATE WHEN PARCEL WITH REAL DATA WHEN AVAILABLE
         parcel: {
           length: "10",
           width: "8",
@@ -141,14 +170,11 @@ export async function POST(req: NextRequest) {
       ///////////////////
       try {
         /// Send Email Receipt to Customer Email
-
-        console.log("Sending email...");
         await sendEmail({
           to: "alicea.9a@gmail.com", /// REPLACE WITH customerEmail BEFORE PRODUCTION
           subject: "KiloBoy Order Receipt",
           html,
         });
-        console.log("Email sent");
       } catch (err) {
         console.error("EMAIL FAILED:", err);
       }
@@ -156,7 +182,6 @@ export async function POST(req: NextRequest) {
 
       try {
         // Update order with shipping label information
-        console.log("Updating Order ...");
         await updateOrder(order.id, {
           updated_at: new Date().toISOString(),
           shopping_fee_cents: Math.round(Number(label.shoppingFeeCents) * 100),
@@ -165,7 +190,6 @@ export async function POST(req: NextRequest) {
           shipping_status: label.shippingStatus,
           label_url: label.labelUrl,
         });
-        console.log("Order Updated");
       } catch (err) {
         console.error("UPDATING ORDER FAILED:", err);
       }
@@ -174,7 +198,7 @@ export async function POST(req: NextRequest) {
       /////////////////////
 
       try {
-        // Update order shipping status if label creation failed 
+        // Update order shipping status if label creation failed
         await updateOrder(order.id, {
           shipping_status: "FAILED",
         });

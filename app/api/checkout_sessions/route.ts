@@ -14,8 +14,11 @@ export async function POST(req: Request) {
           currency: "cad",
           product_data: {
             name: item.title,
+            metadata: {
+              productId: item.id,
+            },
           },
-          unit_amount: item.price_cents, // already in cents
+          unit_amount: item.price_cents,
         },
         quantity: item.quantity,
       })),
