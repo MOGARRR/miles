@@ -21,6 +21,19 @@ export async function getOrderById(id: string) {
   return data;
 }
 
+// GET Order by Stripe Session id
+export async function getOrderByStripeSessionId(sessionId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("stripe_session_id", sessionId)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 // POST Orders
 export async function createOrder(orderItem: any) {
   const supabase = await createClient();

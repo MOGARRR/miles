@@ -9,17 +9,28 @@ import {
 } from "shippo";
 
 const shippo = new Shippo({ apiKeyHeader: process.env.SHIPPO_API_KEY });
-//
+
+// Form with store owner info
+const ADDRESS_FROM: AddressCreateRequest = {
+  name: process.env.SHIP_FROM_NAME!,
+  company: process.env.SHIP_FROM_COMPANY!,
+  street1: process.env.SHIP_FROM_STREET1!,
+  street2: process.env.SHIP_FROM_STREET2 || "",
+  city: process.env.SHIP_FROM_CITY!,
+  state: process.env.SHIP_FROM_STATE!,
+  zip: process.env.SHIP_FROM_ZIP!,
+  country: "CA",
+};
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { addressFrom, addressTo, parcel } = body;
+    const { addressTo, parcel, orderInfo} = body;
 
-    if (!addressFrom || !addressTo || !parcel) {
+    if (!addressTo || !parcel || !orderInfo) {
       return NextResponse.json(
-        { error: "Missing required fields: addressFrom, addressTo, parcel." },
+        { error: "Missing required fields: addressTo, parcel, orderInfo." },
         { status: 400 }
       );
     }
@@ -35,7 +46,7 @@ export async function POST(request: Request) {
 
     //  Create shipment object
     const shipment = await shippo.shipments.create({
-      addressFrom: addressFrom as AddressCreateRequest,
+      addressFrom: ADDRESS_FROM,
       addressTo: addressTo as AddressCreateRequest,
       parcels: [parcelRequest],
       async: false,
@@ -62,30 +73,14 @@ export async function POST(request: Request) {
 
     /// CHANGE MOCK DATA BEFORE PRODUCTION ///
     const orderRecord = {
-      email_id: 1, /// CHANGE
-      first_name: "John", /// CHANGE
-      last_name: "Doe", /// CHANGE
-      address_line_1: "somewhere street", /// CHANGE
-      address_line_2: "somewhere else blvd", /// CHANGE
-      postal: "123 ABC", /// CHANGE
-      city: "City Place", /// CHANGE
-      province: "AB", /// CHANGE
-      total_cents: 1999, ///CHANGE
-      stripe_session_id: "cs_test_a1B2c3D4e5F6g7H8i9J0klmnop", /// CHANGE
       status: transaction.status,
-      payment_status: transaction.status,
-      shopping_fee_cents: Math.round(parseFloat(rate.amount) * 100),
-      tracking_number: transaction.trackingNumber,
-      label_url: transaction.labelUrl,
-      estimated_delivery: transaction.eta,
-      shipping_status: shipment.status,
+      shoppingFeeCents: rate.amount,
+      trackingNumber: transaction.trackingNumber,
+      labelUrl: transaction.labelUrl,
+      estimatedDelivery: transaction.eta,
+      shippingStatus: shipment.status,
     };
 
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderRecord),
-    });
 
     return NextResponse.json({
       orderRecord,

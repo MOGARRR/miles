@@ -3,6 +3,7 @@ import { useCart } from "../components/CartContext";
 import { CartProduct } from "../components/CartContext";
 import { useState } from "react";
 import Link from "next/link";
+import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 
 type GroupedCartItem = CartProduct & {
   quantity: number;
@@ -34,7 +35,9 @@ const CartPage = () => {
 
   const [shippingForm, setShippingForm] = useState({
     name: "",
+    phoneNumber: "",
     street1: "",
+    address2: "",
     city: "",
     state: "",
     zip: "",
@@ -63,6 +66,7 @@ const CartPage = () => {
         body: JSON.stringify({
           addressTo: {
             name: shippingForm.name,
+            phone: shippingForm.phoneNumber,
             street1: shippingForm.street1,
             city: shippingForm.city,
             state: shippingForm.state,
@@ -74,6 +78,8 @@ const CartPage = () => {
             width: "8",
             height: "4",
             weight: "2",
+            distanceUnit: DistanceUnitEnum.In,
+                    massUnit: WeightUnitEnum.Lb,
           },
         }),
       });
@@ -191,6 +197,17 @@ const CartPage = () => {
             value={shippingForm.name}
             onChange={handleShippingChange}
             placeholder="Your name"
+            className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
+          />
+          <br />
+           <label>Phone Number</label>
+          <input
+            id="phoneNumber"
+            name="phoneNumber"
+            type='tel'
+            value={shippingForm.phoneNumber}
+            onChange={handleShippingChange}
+            placeholder="Format: 123-456-7890"
             className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
           />
           <br />
