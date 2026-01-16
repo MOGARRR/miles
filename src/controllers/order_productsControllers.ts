@@ -21,6 +21,17 @@ export async function getOrderProductById(id: string) {
   return data;
 }
 
+// GET OrderProducts by OrderId
+export async function getOrderProductByOrderId(orderId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("order_products")
+    .select("*")
+    .eq("order_id", orderId)
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 // POST OrderProducts
 export async function createOrderProduct(OrderProductItem: any) {
   const supabase = await createClient();
