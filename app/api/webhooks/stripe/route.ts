@@ -10,10 +10,7 @@ import {
 import { createOrderProduct } from "@/src/controllers/order_productsControllers";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const normalizePhone = (phone: string) =>
-  phone.replace(/[^\d]/g, "").slice(0, 15);
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -40,8 +37,8 @@ export async function POST(req: NextRequest) {
       limit: 100,
       expand: ["data.price.product"],
     });
-    
-    // Get product meta data information 
+
+    // Get product meta data information
     const orderItems = lineItems.data.map((item) => {
       const product = item.price?.product as Stripe.Product | null;
       return {
@@ -115,7 +112,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-
     /// Create order to DB
     const order = await createOrder({
       stripe_session_id: session.id,
@@ -129,7 +125,7 @@ export async function POST(req: NextRequest) {
       city: shipping.city,
       province: shipping.province,
       postal: shipping.postal,
-      phone_number: normalizePhone(shipping.phoneNumber),
+      phone_number: shipping.phoneNumber,
     });
 
     //// Create order products to DB
@@ -149,7 +145,7 @@ export async function POST(req: NextRequest) {
       const label = await createShippingLabel({
         addressTo: {
           name: shipping.name,
-          phone: normalizePhone(shipping.phoneNumber),
+          phone: shipping.phoneNumber,
           street1: shipping.address1,
           street2: shipping.address2,
           city: shipping.city,

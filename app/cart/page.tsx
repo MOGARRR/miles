@@ -5,6 +5,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 
+import {
+  normalizePhone,
+  normalizePostal,
+  getNormalizedShipping,
+} from "@/src/helpers/normalizeShipping";
+
 type GroupedCartItem = CartProduct & {
   quantity: number;
 };
@@ -66,11 +72,11 @@ const CartPage = () => {
         body: JSON.stringify({
           addressTo: {
             name: shippingForm.name,
-            phone: shippingForm.phoneNumber,
+            phone: normalizePhone(shippingForm.phoneNumber),
             street1: shippingForm.street1,
             city: shippingForm.city,
             state: shippingForm.state,
-            zip: shippingForm.zip,
+            zip: normalizePostal(shippingForm.zip),
             country: shippingForm.country,
           },
           parcel: {
@@ -79,7 +85,7 @@ const CartPage = () => {
             height: "4",
             weight: "2",
             distanceUnit: DistanceUnitEnum.In,
-                    massUnit: WeightUnitEnum.Lb,
+            massUnit: WeightUnitEnum.Lb,
           },
         }),
       });
@@ -117,6 +123,8 @@ const CartPage = () => {
   }));
 
   const handleCheckout = async () => {
+    const normalizedShipping = getNormalizedShipping(shippingForm);
+
     const res = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
@@ -124,7 +132,7 @@ const CartPage = () => {
       },
       body: JSON.stringify({
         cart: checkoutCart,
-        shipping: shippingForm,
+        shipping: normalizedShipping,
         shippingCents,
         hstCents,
       }),
@@ -132,7 +140,7 @@ const CartPage = () => {
 
     const data = await res.json();
     if (data.url) {
-      // Redirect to stripe hosted page 
+      // Redirect to stripe hosted page
       window.location.href = data.url;
     }
   };
@@ -200,11 +208,11 @@ const CartPage = () => {
             className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
           />
           <br />
-           <label>Phone Number</label>
+          <label>Phone Number</label>
           <input
             id="phoneNumber"
             name="phoneNumber"
-            type='tel'
+            type="tel"
             value={shippingForm.phoneNumber}
             onChange={handleShippingChange}
             placeholder="Format: 123-456-7890"
@@ -217,6 +225,7 @@ const CartPage = () => {
             name="zip"
             type="text"
             value={shippingForm.zip}
+            maxLength={7}
             onChange={handleShippingChange}
             placeholder="e.g. M5V 2T6"
             className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "

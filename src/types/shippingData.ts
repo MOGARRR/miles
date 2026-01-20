@@ -1,0 +1,10 @@
+export interface ShippingData {
+  name: string;
+  phoneNumber: string;
+  street1: string;
+  address2?: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+};

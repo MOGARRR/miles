@@ -21,7 +21,7 @@ const AdminOrders = async () => {
       </div>
       <br />
       {orderData.orders.map((order: any) => (
-        <div className="bg-stone-800 " key={order.id}>
+        <div className="bg-stone-800 m-5 p-5" key={order.id}>
           <div>
             <h1>Order ID: {order.id}</h1>
             <p>Status: {order.status}</p>
