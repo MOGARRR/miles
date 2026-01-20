@@ -21,7 +21,6 @@ const AdminCategoriesPage = async () => {
 
   const categories: Category[] = data.categories_products ?? [];
 
-
   return (
     <div >
       <div>

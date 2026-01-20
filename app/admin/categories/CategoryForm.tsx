@@ -6,8 +6,6 @@ import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FormAlert from "@/app/components/FormAlert";
 import { Category } from "@/src/types/category";
 
-
-
 type Props = {
   category?: Category;  // present = edit mode
   onSuccess?: () => void;
@@ -33,7 +31,6 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
     setTitle(category?.title ?? "");
     setDescription(category?.description ?? "");
   }, [category]);
-
 
   const router = useRouter(); 
 
@@ -106,7 +103,6 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
           {isEditMode ? "Edit Category" : "Add New Category"}
         </h2>
       </div>
-
     
       <form onSubmit={handleSubmit}>
         <div>

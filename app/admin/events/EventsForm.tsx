@@ -14,7 +14,7 @@ type Props = {
 
 const EventsForm = ({ event, onSuccess }: Props) => {
 
- 
+
   // state for form fields
   const [title, setTitle] = useState(event?.title ?? "");
   const [description, setDescription] = useState(event?.description ?? "");
