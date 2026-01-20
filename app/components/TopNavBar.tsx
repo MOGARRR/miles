@@ -22,6 +22,18 @@ const TopNavBar = () => {
     setNavStatus(false);
   }, [pathname]);
 
+  useEffect(() => {
+    // Close mobile menu when screen size changes to desktop
+    const handleResize = () => {
+      if (window.innerWidth >= 768) { // md breakpoint
+        setNavStatus(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const links = [
     { name: "About", path: "/about" },
     { name: "Gallery", path: "/store" },
@@ -80,13 +92,14 @@ const TopNavBar = () => {
         {/* ------ NAV LINKS desktop only ----- */}
         {/* hidden by default, starting from the md (medium) breakpoint and above, apply display: flex */}
 
-        <nav className="hidden md:flex justify-center gap-6 font-semibold ">
+        <nav className="hidden md:flex justify-center gap-16 ">
           {links.map((link) => (
             <Link
               key={link.path}
               href={link.path}
               className="
-                btn btn-ghost text-white hover:text-black rounded-md
+                text-white hover:underline
+                transition-colors duration-200
                 "
             >
               {link.name}
@@ -107,17 +120,17 @@ const TopNavBar = () => {
               size={24}
             />
 
-            
-          {hasItems && (
-            <span 
-              className="
+
+            {hasItems && (
+              <span
+                className="
                 absolute -top-0.5 -right-1
                 inline-block
                 h-3 w-3
                 bg-red-600
                 rounded-full"
               ></span>
-          )}
+            )}
           </Link>
 
         </div>
