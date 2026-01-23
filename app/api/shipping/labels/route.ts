@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     /// CHANGE MOCK DATA BEFORE PRODUCTION ///
     const orderRecord = {
       status: transaction.status,
-      shoppingFeeCents: rate.amount,
+      shippingFeeCents: rate.amount,
       trackingNumber: transaction.trackingNumber,
       labelUrl: transaction.labelUrl,
       estimatedDelivery: transaction.eta,
