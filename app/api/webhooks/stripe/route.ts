@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
         // Update order with shipping label information
         await updateOrder(order.id, {
           updated_at: new Date().toISOString(),
-          shopping_fee_cents: Math.round(Number(label.shoppingFeeCents) * 100),
+          shipping_fee_cents: Math.round(Number(label.shippingFeeCents) * 100),
           tracking_number: label.trackingNumber,
           estimated_delivery: label.estimatedDelivery,
           shipping_status: label.shippingStatus,
