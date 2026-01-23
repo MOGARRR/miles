@@ -3,7 +3,10 @@ import { createClient } from "@/utils/supabase/server";
 // GET all Orders
 export async function getAllOrders() {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("orders").select("*");
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data;
 }
