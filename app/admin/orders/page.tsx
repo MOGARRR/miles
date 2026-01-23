@@ -1,13 +1,15 @@
 // "use client";
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
-import AdminOrdersClient from "./AdminOrdersClient";
+
+import Link from "next/link";
 
 const AdminOrders = async () => {
   const baseUrl = await getBaseUrl();
-  const orderRes = await fetch(`${baseUrl}/api/orders`, {cache: "no-store",});
+  const orderRes = await fetch(`${baseUrl}/api/orders`, { cache: "no-store" });
+  if (!orderRes.ok) {
+    throw new Error("Failed to fetch products");
+  }
 
-  if (!orderRes.ok) {throw new Error("Failed to fetch products");}
-  
   const orderData = await orderRes.json();
 
   return (
@@ -17,9 +19,19 @@ const AdminOrders = async () => {
         <p>Manage Orders</p>
       </div>
       <br />
-      {/* <pre>{JSON.stringify(orderData.orders, null, 2)}</pre> */}
       {orderData.orders.map((order: any) => (
-        <AdminOrdersClient key={order.id} order={order}/>
+        <div key={order.id} className="bg-stone-800 m-5 p-5">
+          <p>Order Number / ID: {order.id} </p>
+          <p>Status: {order.status}</p>
+          <p>Customer Name: {order.full_name}</p>
+          <p>Total Amount: {order.total_cents}</p>
+          <p>Shipping Status: {order.shipping_status}</p>
+          <p>Order Date: {order.created_at}</p>
+          <p>Last Updated: {order.updated_at}</p>
+          <Link href={`/admin/orders/${order.id}`}>
+            <button className="bg-gray-400 p-2 rounded-lg">View Details</button>
+          </Link>
+        </div>
       ))}
     </div>
   );
