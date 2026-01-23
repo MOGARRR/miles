@@ -8,7 +8,6 @@ export async function getAllOrders() {
   return data;
 }
 
-
 // GET Order by id
 export async function getOrderById(id: string) {
   const supabase = await createClient();
@@ -17,6 +16,27 @@ export async function getOrderById(id: string) {
     .select("*")
     .eq("id", id)
     .single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+//Get Orders and its Products
+export async function getOrderWithProducts(orderId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .select(
+      `
+      *,
+      order_products (
+        *,
+        products (*)
+      )
+    `
+    )
+    .eq("id", orderId)
+    .single();
+
   if (error) throw new Error(error.message);
   return data;
 }
