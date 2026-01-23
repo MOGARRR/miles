@@ -4,9 +4,8 @@ import FeaturedEvents from "./components/FeaturedEvents";
 import CallToAction from "./components/CallToAction";
 
 
-
 export default function Home() {
-  
+
 
   return (
     <>
@@ -15,12 +14,12 @@ export default function Home() {
 
       {/* /// FEATURED GALLERY /// */}
       <FeaturedProducts />
-      
+
 
 
       {/* ///UPCOMING EVENTS  */}
       <FeaturedEvents />
-      
+
 
       {/* READY TO OWN A PICE?  */}
       <CallToAction />

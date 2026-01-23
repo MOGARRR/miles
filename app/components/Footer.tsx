@@ -29,7 +29,7 @@ const Footer = () => {
 
           <Link
             href="/privacy"
-            className="text-xs text-white hover:text-red-400 transition"
+            className="text-xs text-white hover:underline transition"
           >
             Privacy Policy & Terms & Conditions
           </Link>
