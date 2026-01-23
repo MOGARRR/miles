@@ -1,7 +1,6 @@
-// "use client";
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
-
 import Link from "next/link";
+import { formatDate } from "@/src/helpers/formatDate";
 
 const AdminOrders = async () => {
   const baseUrl = await getBaseUrl();
@@ -10,6 +9,7 @@ const AdminOrders = async () => {
     throw new Error("Failed to fetch products");
   }
 
+ 
   const orderData = await orderRes.json();
 
   return (
@@ -26,11 +26,12 @@ const AdminOrders = async () => {
           <p>Customer Name: {order.full_name}</p>
           <p>Total Amount: {order.total_cents}</p>
           <p>Shipping Status: {order.shipping_status}</p>
-          <p>Order Date: {order.created_at}</p>
-          <p>Last Updated: {order.updated_at}</p>
-          <Link href={`/admin/orders/${order.id}`}>
-            <button className="bg-gray-400 p-2 rounded-lg">View Details</button>
+          <p>Order Date: {formatDate(order.created_at)}</p>
+          <p>Last Updated: {formatDate(order.updated_at) || 'N/A'}</p>
+          <Link  href={`/admin/orders/${order.id}`}>
+          <button className="bg-gray-400 p-2 rounded-lg">View Details</button>
           </Link>
+          
         </div>
       ))}
     </div>

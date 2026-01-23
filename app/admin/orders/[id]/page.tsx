@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { getOrderWithProducts } from "@/src/controllers/orderControllers";
 import Link from "next/link";
+import { formatDate } from "@/src/helpers/formatDate";
 
 interface OrderDetailsProps {
   params: {
@@ -27,8 +28,8 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
           </p>
           <p>Total Order Amount: ${orderData.total_cents / 100}</p>
           <p>Payment Status: {orderData.payment_status}</p>
-          <p>Order Created : {orderData.created_at}</p>
-          <p>Order Last Updated : {orderData.updated_at}</p>
+          <p>Order Created : {formatDate(orderData.created_at)}</p>
+          <p>Order Last Updated : {formatDate(orderData.updated_at)}</p>
         </div>
         <br />
         <br />
@@ -54,7 +55,7 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
         <div>
           <p>Customer Name: {orderData.full_name}</p>
           <p>Address Line 1: {orderData.address_line_1}</p>
-          <p>Address Line 2: {orderData.address_line_2}</p>
+          <p>Address Line 2: {orderData.address_line_2 || 'N/A'}</p>
           <p>Postal : {orderData.postal}</p>
           <p>City : {orderData.city}</p>
           <p>email : {orderData.email}</p>
@@ -70,7 +71,8 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
         <p>Tracking Number : {orderData.tracking_number}</p>
         <p className="max-w-full break-all overflow-hidden">
           Label URL: {orderData.label_url}
-        </p>
+        </p> 
+        {/* Add formatDate function if real labels need it */}
         <p>Estimated Delivery Time: {orderData.estimated_delivery || "N/A"}</p>
       </section>
     </div>
