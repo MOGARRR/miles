@@ -69,7 +69,7 @@ export async function createShippingLabel({
 
   return {
     status: transaction.status,
-    shoppingFeeCents: rate.amount,
+    shippingFeeCents: rate.amount,
     trackingNumber: transaction.trackingNumber,
     labelUrl: transaction.labelUrl,
     estimatedDelivery: transaction.eta,
