@@ -6,7 +6,7 @@ const Hero = () => {
     <section className="
       bg-gradient-to-l from-[#46403F] to-[#26262B]
       text-white
-      py-20
+      py-24
       ">
       
       {/* CONTENT SECTION */}
@@ -22,12 +22,15 @@ const Hero = () => {
           Bold Art. Fierce Style.
         </h1>
 
-        <h2 className="text-lg md:text-3xl max-w-2xl leading-relaxed">
+        <p className="
+          text-lg md:text-2xl 
+          mt-6
+          text-kilotextlight">
           Pop culture-inspired artworks that speak to the streets.
-        </h2>
+        </p>
 
         {/* BUTTONS */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-6">
+        <div className="flex flex-col sm:flex-row gap-4 mt-2">
           <LinkButton href="/store">
             SHOP NOW
           </LinkButton>
