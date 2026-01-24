@@ -54,7 +54,10 @@ export default function RootLayout({
           <TopNavBar />
           <CartPopup />
 
-          <main className="flex-grow mt-[60px] w-full">{children}</main>
+          <main className="flex-grow mt-[60px] w-full">
+            {children}
+
+          </main>
 
 
           {/* 

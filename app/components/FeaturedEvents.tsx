@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import { headers } from "next/headers";
 import { Event } from "@/src/types/event";
 import EventCard from "./EventCard";
@@ -6,13 +7,7 @@ import EventCard from "./EventCard";
 
 const FeaturedEvents = async () => {
 
-  // Build the absolute base URL on the server.
-  // Server Components cannot reliably use relative URLs ("/api/..."),
-  // so we read the request headers to determine the current protocol and host
-  const h = await headers();
-  const host = h.get("host");
-  const protocol = h.get("x-forwarded-proto") ?? "http";
-  const baseUrl = `${protocol}://${host}`;
+  const baseUrl = await getBaseUrl();
 
   //fetch EVENTS from the api route
   const res = await fetch(`${baseUrl}/api/events`, { cache: "no-store" });
@@ -27,12 +22,14 @@ const FeaturedEvents = async () => {
   .slice(0, 3);
 
 
-
-
   return (
-    <div className="max-w-7xl mx-auto">
+    <section>
+      <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16
+      ">
       {/* HEADING */}
-      <div className="p-8">
+      <div className="py-8">
         <h2 className="text-2xl font-semibold">Upcoming Events</h2>
         <p> Catch KiloBoy live at these exclusive pop-ups and exhibitions.</p>
       </div>
@@ -76,6 +73,9 @@ const FeaturedEvents = async () => {
       
       
     </div>
+
+    </section>
+    
   )
 };
 

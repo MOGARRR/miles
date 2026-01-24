@@ -11,7 +11,7 @@ const AboutPage = () => {
       justify-between
       gap-10
       px-6 md:px-16 py-12 md:py-20 
-      max-w-6xl mx-auto ">
+      ">
 
       {/* TEXT + SIGNATURE */}
       {/* flex-1 tells an element to grow and take up all available space inside its flex container */}

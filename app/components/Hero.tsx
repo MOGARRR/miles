@@ -8,8 +8,10 @@ const Hero = () => {
     <section className="
       bg-gradient-to-l from-[#46403F] to-[#26262B]
       text-white
-      py-20">
-
+      py-20
+      ">
+      
+      {/* CONTENT SECTION */}
       <div className="
         max-w-7xl mx-auto
         px-6 md:px-16

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FeaturedProductsClient from "./FeaturedProductsClient";
+import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import { headers } from "next/headers";
 import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
@@ -8,13 +9,7 @@ import { Category } from "@/src/types/category";
 // Server Component: fetches data and renders featured products on the homepage
 const FeaturedProducts = async () => {
 
-  // Build the absolute base URL on the server.
-  // Server Components cannot reliably use relative URLs ("/api/..."),
-  // so we read the request headers to determine the current protocol and host
-  const h = await headers();
-  const host = h.get("host");
-  const protocol = h.get("x-forwarded-proto") ?? "http";
-  const baseUrl = `${protocol}://${host}`;
+  const baseUrl = await getBaseUrl();
 
   //fetch CATEGORIES from the api route
   const categoriesRes = await fetch(`${baseUrl}/api/categories_products` , { cache: "no-store" });
@@ -48,41 +43,50 @@ const FeaturedProducts = async () => {
     
   return (
 
-    <div className="max-w-7xl mx-auto">
+    <section className="">
 
-      {/* HEADING */}
-      <div className="p-8">
-        <h2 className="text-2xl font-semibold">Featured Drops</h2>
-        <p> Limited edition artworks and exclusive pieces straight from the studio.</p>
+      {/* CONTENT SECTION */}
+      <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16
+      ">
+        {/* HEADING */}
+        <div className="py-8">
+          <h2 className="text-2xl font-semibold">Featured Drops</h2>
+          <p> Limited edition artworks and exclusive pieces straight from the studio.</p>
+        </div>
+
+        {/* DISPLAY FEATURED PRODUCT CARDS */}
+        <div>
+          <FeaturedProductsClient
+            products={featuredProducts}
+            categoryMap={categoryMap}
+          />      
+        </div>
+
+        {/* SEE ALL BUTTON - REDIRECTS TO STORE PAGE */}
+        <div className="flex justify-center m-8">
+          <Link 
+            href="/store"
+            className="
+              inline-block
+              px-4 py-2
+              border
+              rounded
+              text-sm
+              hover:underline"
+          >
+            See All 
+          </Link>
+
+        </div>
+
       </div>
 
-      {/* DISPLAY FEATURED PRODUCT CARDS */}
-      <div>
-        <FeaturedProductsClient
-          products={featuredProducts}
-          categoryMap={categoryMap}
-        />      
-      </div>
-
-      {/* SEE ALL BUTTON - REDIRECTS TO STORE PAGE */}
-      <div className="flex justify-center m-8">
-        <Link 
-          href="/store"
-          className="
-            inline-block
-            px-4 py-2
-            border
-            rounded
-            text-sm
-            hover:underline"
-        >
-          See All 
-        </Link>
-
-      </div>
+      
      
       
-    </div>
+    </section>
   )
 };
 
