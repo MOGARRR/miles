@@ -1,7 +1,5 @@
 import React from "react";
-import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
-
+import LinkButton from "./ui/LinkButton";
 
 const Hero = () => {
   return (
@@ -19,9 +17,8 @@ const Hero = () => {
         items-start text-left
         space-y-6">
 
-          
 
-        <h1 className="text-4xl md:text-6xl font-bold text-[#E14747] ">
+        <h1 className="text-4xl md:text-6xl font-bold text-kilored ">
           Bold Art. Fierce Style.
         </h1>
 
@@ -29,34 +26,15 @@ const Hero = () => {
           Pop culture-inspired artworks that speak to the streets.
         </h2>
 
-
+        {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
-          {/* RED BUTTON */}
-          <Link
-            href="/store"
-            className="
-              bg-[#E14747] text-white text-center
-              px-6 py-2 text-sm
-              md:px-8 md:py-3 md:text-base
-              rounded-md font-semibold 
-              hover:bg-[#B53535] transition-colors duration-200"
-          >
+          <LinkButton href="/store">
             SHOP NOW
-          </Link>
+          </LinkButton>
 
-          {/* BLACK BUTTON */}
-          <Link
-            href="/customArtwork"
-            className="
-              bg-[#1C1C21] text-white text-center
-              px-6 py-2 text-sm
-              md:px-8 md:py-3 md:text-base
-              rounded-md font-semibold 
-              hover:bg-[#0f0f11] transition-colors duration-200"
-          >
+          <LinkButton href="/customArtwork" variant="secondary">
             REQUEST CUSTOM
-          </Link>
-
+          </LinkButton>
         </div>
       </div>
     </section>
