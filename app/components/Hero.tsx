@@ -19,6 +19,8 @@ const Hero = () => {
         items-start text-left
         space-y-6">
 
+          
+
         <h1 className="text-4xl md:text-6xl font-bold text-[#E14747] ">
           Bold Art. Fierce Style.
         </h1>

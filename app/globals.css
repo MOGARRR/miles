@@ -1,45 +1,43 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @plugin "daisyui";
 
+/* =====================
+   Root variables
+   ===================== */
 :root {
   --background: #26262B;
   --foreground: #FAFAFA;
 }
 
+/* =====================
+   Base styles 
+   ===================== */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter);
-  
-  
 }
-
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-bebas);
   letter-spacing: 0.5px;
 }
 
-
-
-
-
-
+/* =====================
+   Tailwind color mapping 
+   ===================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
+  --color-kilored: #E14747;
 }
 
+/* =====================
+   Dark mode override (same as before)
+   ===================== */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #1c1c21;
     --foreground: #FAFAFA;
   }
 }
-
-
