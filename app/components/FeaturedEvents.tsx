@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LinkButton from "./ui/LinkButton";
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import { headers } from "next/headers";
 import { Event } from "@/src/types/event";
@@ -23,15 +23,27 @@ const FeaturedEvents = async () => {
 
 
   return (
-    <section>
+    <section className="bg-kilodarkgrey">
       <div className="
         max-w-7xl mx-auto
         px-6 md:px-16
       ">
       {/* HEADING */}
-      <div className="py-8">
-        <h1 className="text-3xl md:text-5xl font-bold">Upcoming Events</h1>
-        <p> Catch KiloBoy live at these exclusive pop-ups and exhibitions.</p>
+      <div className="pt-20 pb-16">
+        <h1 className="
+          text-3xl md:text-5xl leading-tight
+          font-bold"
+        >
+          Upcoming Events
+        </h1>
+
+        <p className="
+          text-base md:text-xl
+          text-kilotextgrey
+          pt-6"
+        >
+          Catch KiloBoy live at these exclusive pop-ups and exhibitions.
+        </p>
       </div>
 
       {/* DISPLAY FEATURED EVENT CARDS */}
@@ -44,7 +56,7 @@ const FeaturedEvents = async () => {
           // Each column must be at least 280px wide
           // Columns can grow to fill the row (1fr)
           // If there are fewer items, the grid shrinks naturally
-          <ul className="grid gap-16 px-8 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+          <ul className="grid gap-12 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
           {featuredEvents.map((e) => (
             <EventCard 
               key={e.id} event={e}
@@ -55,19 +67,10 @@ const FeaturedEvents = async () => {
       </div>
 
       {/* SEE ALL BUTTON - REDIRECTS TO EVENTS PAGE */}
-      <div className="flex justify-center m-8">
-        <Link 
-          href="/events"
-          className="
-            inline-block
-            px-4 py-2
-            border
-            rounded
-            text-sm
-            hover:underline"
-        >
-          See All Events
-        </Link>
+      <div className="flex justify-center pt-8 pb-12">
+        <LinkButton href="/events" variant="secondary">
+          Browse All Events
+        </LinkButton>
       </div>
 
       

@@ -103,11 +103,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
             {title}
           </h1>
 
-          
-
           <p className="
-            text-xs md:text-sm text-kilotextgrey
-            ">
+            text-xs md:text-sm text-kilotextgrey"
+          >
             {description}
           </p>
         </div>

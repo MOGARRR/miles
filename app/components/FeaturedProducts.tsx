@@ -1,7 +1,6 @@
-import Link from "next/link";
 import FeaturedProductsClient from "./FeaturedProductsClient";
+import LinkButton from "./ui/LinkButton";
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
-import { headers } from "next/headers";
 import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
 
@@ -75,25 +74,12 @@ const FeaturedProducts = async () => {
 
         {/* SEE ALL BUTTON - REDIRECTS TO STORE PAGE */}
         <div className="flex justify-center m-8">
-          <Link 
-            href="/store"
-            className="
-              inline-block
-              px-4 py-2
-              border
-              rounded
-              text-sm
-              hover:underline"
-          >
+          <LinkButton href="/store"  variant="secondary">
             See All 
-          </Link>
-
+            </LinkButton>
         </div>
 
       </div>
-
-      
-     
       
     </section>
   )

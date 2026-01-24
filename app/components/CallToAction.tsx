@@ -3,7 +3,9 @@ import Link from "next/link";
 const CallToAction = () => {
   return (
 
-    <section>
+    <section className="
+      bg-gradient-to-l from-[#1C1C21] to-[#46403F]"
+    >
       <div className="
         max-w-7xl mx-auto
         px-6 md:px-16
@@ -14,7 +16,7 @@ const CallToAction = () => {
           <p>Browse the full collection or request a custom artwork tailored to your vision. Every piece tells a story.</p>
         </div>
 
-        <div className=" flex justify-center gap-4 m-4 p-4 ">
+        <div className=" flex justify-center gap-4 p-4 ">
           <Link 
             href="/store"
             className="
