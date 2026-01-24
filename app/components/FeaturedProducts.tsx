@@ -1,5 +1,6 @@
 import FeaturedProductsClient from "./FeaturedProductsClient";
-import LinkButton from "./ui/LinkButton";
+import Link from "next/link";
+import { MoveRight } from "lucide-react";
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import { Product } from "@/src/types/product";
 import { Category } from "@/src/types/category";
@@ -73,10 +74,22 @@ const FeaturedProducts = async () => {
         </div>
 
         {/* SEE ALL BUTTON - REDIRECTS TO STORE PAGE */}
-        <div className="flex justify-center m-8">
-          <LinkButton href="/store"  variant="secondary">
-            See All 
-            </LinkButton>
+        <div className="flex justify-center m-12">
+          <Link
+            href="/store"
+            className="
+              inline-flex items-center gap-2
+              text-base md:text-lg font-semibold
+              text-kilotextgrey
+              group
+              transition
+            "
+          >
+            SEE ALL DROPS
+            <MoveRight 
+              size={20}
+              className="transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
 
       </div>

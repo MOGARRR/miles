@@ -6,9 +6,10 @@ type LinkButtonProps = {
   href: string; // Destination URL for the button
   children: React.ReactNode; // Button text or content
   variant?: "primary" | "secondary"; // Visual style of the button primary=red ; secondary = black
+  className?: string;
 };
 
-const LinkButton = ({ href, children, variant = "primary" }: LinkButtonProps) => {
+const LinkButton = ({ href, children, variant = "primary", className }: LinkButtonProps) => {
   return (
     <Link
       href={href}
@@ -21,9 +22,13 @@ const LinkButton = ({ href, children, variant = "primary" }: LinkButtonProps) =>
         "border border-[#3a3a41] rounded-lg ",
         "transition-colors duration-200",
 
+        className,
+
         // variants
         variant === "primary" && "bg-kilored text-white hover:bg-[#B53535]",
-        variant === "secondary" && "bg-kiloblack text-white hover:bg-[#0f0f11]"
+        variant === "secondary" && "bg-kiloblack text-white hover:bg-[#0f0f11]", 
+
+        
       )}
     >
       {children}

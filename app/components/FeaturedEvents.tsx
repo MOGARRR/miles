@@ -1,4 +1,5 @@
-import LinkButton from "./ui/LinkButton";
+import Link from "next/link";
+import { MoveRight } from "lucide-react";
 import { getBaseUrl } from "@/src/helpers/getBaseUrl";
 import { headers } from "next/headers";
 import { Event } from "@/src/types/event";
@@ -67,10 +68,22 @@ const FeaturedEvents = async () => {
       </div>
 
       {/* SEE ALL BUTTON - REDIRECTS TO EVENTS PAGE */}
-      <div className="flex justify-center pt-8 pb-12">
-        <LinkButton href="/events" variant="secondary">
-          Browse All Events
-        </LinkButton>
+      <div className="flex justify-center p-12">
+        <Link
+            href="/events"
+            className="
+              inline-flex items-center gap-2
+              text-base md:text-lg font-semibold
+              text-kilotexlight
+              group
+              transition
+            "
+          >
+            BROWSE ALL EVENTS
+            <MoveRight 
+              size={20}
+              className="transition-transform group-hover:translate-x-1" />
+          </Link>
       </div>
 
       
