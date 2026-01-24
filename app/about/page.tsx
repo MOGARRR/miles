@@ -10,8 +10,11 @@ const AboutPage = () => {
       items-center md:items-start
       justify-between
       gap-10
+      max-w-7xl mx-auto
       px-6 md:px-16 py-12 md:py-20 
       ">
+
+    
 
       {/* TEXT + SIGNATURE */}
       {/* flex-1 tells an element to grow and take up all available space inside its flex container */}

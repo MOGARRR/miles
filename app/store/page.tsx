@@ -6,7 +6,10 @@ const StorePage = () => {
   return (
   
     // PAGE CONTAINER 
-    <div>
+    <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16 py-8
+      ">
       <div className="text-center p-8 ">
         <h1 className="text-4xl md:text-6xl font-bold text-[#E14747] p-3">
           THE GALLERY
