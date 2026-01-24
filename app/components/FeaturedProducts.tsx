@@ -51,8 +51,8 @@ const FeaturedProducts = async () => {
         px-6 md:px-16
       ">
         {/* HEADING */}
-        <div className="py-8">
-          <h2 className="text-2xl font-semibold">Featured Drops</h2>
+        <div className="py-12">
+          <h1 className="text-3xl md:text-5xl font-bold">Featured Drops</h1>
           <p> Limited edition artworks and exclusive pieces straight from the studio.</p>
         </div>
 

@@ -10,7 +10,7 @@ const CallToAction = () => {
       ">
 
         <div className="py-8">
-          <h1 className="text-2xl font-semibold">Ready to Own a Piece?</h1>
+          <h1 className="text-3xl md:text-5xl font-bold">Ready to Own a Piece?</h1>
           <p>Browse the full collection or request a custom artwork tailored to your vision. Every piece tells a story.</p>
         </div>
 

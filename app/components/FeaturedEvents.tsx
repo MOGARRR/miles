@@ -30,7 +30,7 @@ const FeaturedEvents = async () => {
       ">
       {/* HEADING */}
       <div className="py-8">
-        <h2 className="text-2xl font-semibold">Upcoming Events</h2>
+        <h1 className="text-3xl md:text-5xl font-bold">Upcoming Events</h1>
         <p> Catch KiloBoy live at these exclusive pop-ups and exhibitions.</p>
       </div>
 
