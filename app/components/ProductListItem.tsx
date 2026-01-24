@@ -64,7 +64,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
     >
 
       {/* Clickable area: image + main content */}
-      <Link href={`/storeItem/${id}`}>
+      {/* <Link href={`/storeItem/${id}`}> */}
       
         {/* IMAGE */}
         <div className="pt-3 pb-3 bg-[#3F3F46]">
@@ -82,14 +82,14 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
       
 
         {/* CONTENT */}
-        <div className="flex flex-col p-6 pb-3">
+        <div className="flex flex-col py-4 px-6 gap-2">
 
           {/* reference to categories table later to fetch title */}
           {/* w-fit ensures the badge sizes to its content
             (prevents stretching when parent uses flex/grid) */}
           <span className=" 
             w-fit
-            px-3 py-0.5 
+            px-3 py-0.5
             text-sm font-semibold
             bg-kilored 
             rounded-full
@@ -98,35 +98,38 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
             {category_name}
           </span>
 
-          <h1 className="py-6">
+          <h1 className="
+            mt-2 mb-2 text-lg md:text-xl font-bold">
             {title}
           </h1>
 
           
 
-          <p className="text-sm leading-snug">
+          <p className="
+            text-xs md:text-sm text-kilotextgrey
+            ">
             {description}
           </p>
         </div>
-      </Link>
+      {/* </Link> */}
       
       {/* PRICE AND BUY NOW BUTTON ROW*/}
       <div className="
         mt-auto
         flex items-center justify-between
-        px-4 pb-4 pt-2
+        px-6 pb-6 pt-2
         
       ">
     
         {sold_out ? ( 
           <>
-          <p className="text-red-500 text-base font-semibold">
+          <p className="text-kilored text-base font-semibold">
             Sold Out
             </p>
           </>
           
         ) : (
-          <p className="text-base font-semibold">
+          <p className="text-kilored text-lg font-semibold">
           ${ price_cents / 100 }
           </p>)}
 
@@ -137,15 +140,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
             addToCart(productToAdd);
           }}
           className={`
-          bg-[#E14747]
+          bg-kilored
           px-4 py-2
-          rounded-full
+          border border-[#3a3a41] rounded-lg
           font-semibold
           flex items-center gap-2
-          transition
-          duration-150
-          hover:bg-[#f05a5a]
-          active:scale-95
+          transition-colors duration-200
+          hover:bg-[#B53535]
           cursor-pointer
                 
           ${sold_out ? "opacity-40 cursor-not-allowed" : ""}`}

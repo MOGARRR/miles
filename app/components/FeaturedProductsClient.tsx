@@ -26,7 +26,7 @@ const FeaturedProductsClient = ({
 }: FeaturedProductsClientProps) => {
 
   return (
-    <div className=" grid grid-cols-3 gap-6 ">
+    <div className=" grid grid-cols-1 md:grid-cols-3 gap-8 ">
       {products.map((product) => {
         // Resolve the category name using the category map
         // (only if the product has a category_id)
