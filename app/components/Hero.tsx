@@ -4,7 +4,7 @@ import LinkButton from "./ui/LinkButton";
 const Hero = () => {
   return (
     <section className="
-      bg-gradient-to-l from-[#46403F] to-[#26262B]
+      bg-gradient-to-l from-[#1C1C21] to-[#46403F]
       text-white
       py-24
       ">

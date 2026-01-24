@@ -5,7 +5,7 @@
    Root variables
    ===================== */
 :root {
-  --background: #26262B;
+  --background: #1C1C21;
   --foreground: #FAFAFA;
 }
 
@@ -32,6 +32,7 @@ h1, h2, h3, h4, h5, h6 {
   --color-kilored: #E14747;
   --color-kiloblack: #1C1C21;
   --color-kilotextlight: #E5E7EB;
+  --color-kilotextgrey: #A0A0A7;
 }
 
 /* =====================

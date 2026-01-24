@@ -24,7 +24,6 @@ const FeaturedProducts = async () => {
   const categoryMap: Record<number, string> = {};
   categories.forEach((c) => {
     categoryMap[c.id] = c.title
-    
   }); 
 
 
@@ -38,12 +37,10 @@ const FeaturedProducts = async () => {
   const featuredProducts: Product[] = (data.products ?? [])
     .filter((p) => p.is_available && !p.sold_out)
     .slice(0, 3);
-
-
-    
+   
   return (
 
-    <section className="">
+    <section>
 
       {/* CONTENT SECTION */}
       <div className="
@@ -51,9 +48,21 @@ const FeaturedProducts = async () => {
         px-6 md:px-16
       ">
         {/* HEADING */}
-        <div className="py-12">
-          <h1 className="text-3xl md:text-5xl font-bold">Featured Drops</h1>
-          <p> Limited edition artworks and exclusive pieces straight from the studio.</p>
+        <div className="py-20">
+          <h1 className="
+            text-3xl md:text-5xl leading-tight
+            font-bold"
+          >
+            Featured Drops
+          </h1>
+
+          <p className="
+            text-base md:text-xl
+            text-kilotextgrey
+            pt-6"
+          > 
+            Limited edition artworks and exclusive pieces straight from the studio.
+          </p>
         </div>
 
         {/* DISPLAY FEATURED PRODUCT CARDS */}
