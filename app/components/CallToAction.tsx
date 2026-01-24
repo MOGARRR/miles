@@ -31,7 +31,13 @@ const CallToAction = () => {
 
         </div>
 
-        <div className=" flex justify-center gap-4 p-4 ">
+        <div className="
+          flex flex-col
+          items-center
+          gap-4
+          md:flex-row
+          md:justify-center"
+        >
           <LinkButton href="/store">
             EXPLORE GALLERY
           </LinkButton>
