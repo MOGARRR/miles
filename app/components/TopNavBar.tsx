@@ -98,8 +98,10 @@ const TopNavBar = () => {
               key={link.path}
               href={link.path}
               className="
-                text-white hover:underline
-                transition-colors duration-200
+                text-white
+                transition-transform duration-200
+                hover:-translate-y-0.5
+                
                 "
             >
               {link.name}
