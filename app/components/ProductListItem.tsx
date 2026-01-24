@@ -8,7 +8,6 @@ import { useCart } from "./CartContext";
 import { CartProduct } from "./CartContext";
 
 
-
 // the interface defines what props the component must receive
 interface ProductListItemProps {
   id: number;
@@ -52,7 +51,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
     price_cents,
     category_id,
     image_URL,
-
   }
 
   
@@ -60,9 +58,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
 
     <div className="
       flex flex-col
-      rounded-2xl
-      bg-[#2E2E33]
-      p-3
+      rounded-b-lg border border-[#3a3a41]
+      bg-kilodarkgrey
       "
     >
 
@@ -70,30 +67,42 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
       <Link href={`/storeItem/${id}`}>
       
         {/* IMAGE */}
-        <div className="gap-2 p-4 pb-3">
-          <div className="relative w-full aspect-[1/1] rounded-xl overflow-hidden">
+        <div className="pt-3 pb-3 bg-[#3F3F46]">
+          <div className="
+            relative w-full aspect-[1/1] overflow-hidden"
+          >
             <Image
             src={image_URL}
             alt={title}
             fill
             className="object-cover"
-            
-          />
-
+            />
           </div>
         </div>
       
 
         {/* CONTENT */}
-        <div className="flex flex-col gap-2 p-4 pb-3">
-          <h1 className="">
+        <div className="flex flex-col p-6 pb-3">
+
+          {/* reference to categories table later to fetch title */}
+          {/* w-fit ensures the badge sizes to its content
+            (prevents stretching when parent uses flex/grid) */}
+          <span className=" 
+            w-fit
+            px-3 py-0.5 
+            text-sm font-semibold
+            bg-kilored 
+            rounded-full
+            " 
+          >
+            {category_name}
+          </span>
+
+          <h1 className="py-6">
             {title}
           </h1>
 
-          {/* reference to categories table later to fetch title */}
-          <h2>
-            {category_name}
-          </h2>
+          
 
           <p className="text-sm leading-snug">
             {description}

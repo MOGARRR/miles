@@ -29,8 +29,12 @@ h1, h2, h3, h4, h5, h6 {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-kilored: #E14747;
   --color-kiloblack: #1C1C21;
+  --color-kilodarkgrey: #26262B;
+
+
   --color-kilotextlight: #E5E7EB;
   --color-kilotextgrey: #A0A0A7;
 }
