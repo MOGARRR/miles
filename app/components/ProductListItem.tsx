@@ -24,7 +24,6 @@ interface ProductListItemProps {
 }
 
 
-
 // React.FC means Functional Component
 // ProductListItem is a functional component and its props must follow the ProductListItemProps interface.
 const ProductListItem: React.FC<ProductListItemProps> = ({

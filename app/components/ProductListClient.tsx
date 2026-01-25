@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ProductListItem from "./ProductListItem";
 import { Product } from "@/src/types/product";
 import SearchBar from "./ui/SearchBar";
+import { useDebounce } from "@/src/hooks/useDebounce";
 
 // defines the type of props 
 type ProductListClientProps = {
@@ -13,7 +14,14 @@ type ProductListClientProps = {
 
 const ProductListClient: React.FC<ProductListClientProps> = ({ products, categoryMap, }) => {
 
-  const [search, setSearch] = useState(""); 
+  // Raw input value (updates on keystroke)
+  const [searchInput, setSearchInput] = useState("");
+  // Debounced value used for filtering
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  // True while debounce delay is still running
+  const isSearching = searchInput !== debouncedSearch;
+
 
   const filteredProducts = products.filter((product) => {
     // only show available products
@@ -21,7 +29,8 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
 
     //lower case
     const title = product.title.toLowerCase(); 
-    const term = search.toLowerCase(); 
+    const term = debouncedSearch.toLowerCase(); 
+
     // get the category name from the map (if exists)
     const categoryName = categoryMap[product.category_id || 0]; 
     const category = categoryName ? categoryName.toLowerCase() : ""; 
@@ -35,11 +44,19 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
 
       {/* Basic search input field  */}
       <SearchBar 
-        value={search}
-        onChange={setSearch}
+        value={searchInput}
+        onChange={setSearchInput}
         placeholder="Search by name or category"
       />
-      
+
+      <div className="flex items-center gap-2 mt-2 min-h-[20px]">
+        {isSearching && (
+          <span className="text-xs text-kilotextlight italic">
+            Searching…
+          </span>
+        )}
+      </div>
+            
 
       {/* <p>Found {filteredProducts.length} results</p> */}
 
