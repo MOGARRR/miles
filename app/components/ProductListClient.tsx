@@ -1,11 +1,9 @@
-// client side component 
-// 
-
 "use client"; 
 
 import React, { useState } from "react";
 import ProductListItem from "./ProductListItem";
 import { Product } from "@/src/types/product";
+import SearchBar from "./ui/SearchBar";
 
 // defines the type of props 
 type ProductListClientProps = {
@@ -28,7 +26,6 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
     const categoryName = categoryMap[product.category_id || 0]; 
     const category = categoryName ? categoryName.toLowerCase() : ""; 
 
-
     return title.includes(term) || category.includes(term);
   })
 
@@ -37,26 +34,12 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
     <div >
 
       {/* Basic search input field  */}
-      <input
-        type="text"
-        placeholder="Search by name or category"
+      <SearchBar 
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="
-          bg-black/20
-          w-full max-w-md
-          px-4
-          py-2
-          ml-10
-          mt-10
-          rounded-md
-          border
-          border-gray-500
-          text-white
-          placeholder-gray-400            
-        "
-
+        onChange={setSearch}
+        placeholder="Search by name or category"
       />
+      
 
       {/* <p>Found {filteredProducts.length} results</p> */}
 

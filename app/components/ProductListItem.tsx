@@ -58,7 +58,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
 
     <div className="
       flex flex-col
-      rounded-b-lg border border-[#3a3a41]
+      rounded-lg border border-[#3a3a41]
       bg-kilodarkgrey
       "
     >
@@ -67,7 +67,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
       {/* <Link href={`/storeItem/${id}`}> */}
       
         {/* IMAGE */}
-        <div className="pt-3 pb-3 bg-[#3F3F46]">
+        <div className="pt-3 pb-3 bg-[#3F3F46] rounded-t-lg">
           <div className="
             relative w-full aspect-[1/1] overflow-hidden"
           >
