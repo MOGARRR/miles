@@ -6,7 +6,7 @@ const ContactPage = () => {
 
 
   return (
-    <div className=" m-12">
+    <div>
   
         <ContactForm />
          

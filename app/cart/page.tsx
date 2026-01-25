@@ -146,7 +146,10 @@ const CartPage = () => {
   };
 
   return (
-    <div className="pt-24 px-6">
+    <section className="
+      max-w-7xl mx-auto
+      px-6 md:px-16 py-24"
+    >
       <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
       <p>Total Items: {items.length}</p>
 
@@ -349,7 +352,7 @@ const CartPage = () => {
       <br />
       <br />
       <br />
-    </div>
+    </section>
   );
 };
 

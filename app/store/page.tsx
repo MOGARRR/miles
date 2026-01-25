@@ -6,11 +6,11 @@ const StorePage = () => {
   return (
   
     // PAGE CONTAINER 
-    <div className="
-        max-w-7xl mx-auto
-        px-6 md:px-16 py-8
-      ">
-      <div className="text-center p-8 ">
+    <section className="
+      max-w-7xl mx-auto
+      px-6 md:px-16 py-24"
+    >
+      <div className="text-center">
         <h1 className="text-4xl md:text-6xl font-bold text-[#E14747] p-3">
           THE GALLERY
         </h1>
@@ -21,7 +21,7 @@ const StorePage = () => {
 
 
       <ProductList />
-    </div>
+    </section>
 
   );
 };

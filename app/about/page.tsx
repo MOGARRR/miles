@@ -11,7 +11,7 @@ const AboutPage = () => {
       justify-between
       gap-10
       max-w-7xl mx-auto
-      px-6 md:px-16 py-12 md:py-20 
+      px-6 md:px-16 py-24
       ">
 
     
