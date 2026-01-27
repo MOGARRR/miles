@@ -1,6 +1,6 @@
 "use client"; 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProductListItem from "./ProductListItem";
 import { Product } from "@/src/types/product";
 import SearchBar from "./ui/SearchBar";
@@ -15,12 +15,52 @@ type ProductListClientProps = {
 const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) => {
 
   //LAZY LOADING 
-  const PAGE_SIZE = 9;
+  const PAGE_SIZE = 6;
 
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+
+  /**
+   * Fetch products from the API using page-based pagination.
+   * Page 1 replaces products, next pages append to the list.
+   */
+  const fetchProducts = async (pageToLoad: number) => {
+    try {
+      setIsLoading(true);
+
+      const res = await fetch(
+        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}`
+      );
+
+      const data = await res.json();
+
+      // First page replaces existing products
+      if (pageToLoad === 1) {
+        setProducts(data.products);
+        setHasMore(true); // reset when starting fresh
+      } else {
+        // Next pages append to existing list (lazy loading)
+        setProducts((prev) => [...prev, ...data.products]);
+      }
+
+      // If we received fewer than PAGE_SIZE items,
+      // there are no more products to load
+      if (data.products.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial page load
+  useEffect(() => {
+    fetchProducts(1);
+  }, []);
 
 
   // SEARCH
@@ -45,6 +85,8 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
 
     return title.includes(term) || category.includes(term);
   })
+
+  
 
 
   return (
@@ -106,7 +148,34 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
           )
         })}
 
+        
+
       </div>
+
+      {hasMore && (
+          <div className="flex justify-center pb-12">
+            <button
+              onClick={() => {
+                if (isLoading) return;
+
+                const nextPage = page + 1;
+                setPage(nextPage);
+                fetchProducts(nextPage);
+              }}
+              disabled={isLoading}
+              className="
+                px-6 py-2
+                border border-black
+                text-sm uppercase tracking-wide
+                hover:bg-black hover:text-white
+                transition
+                disabled:opacity-50
+              "
+            >
+              {isLoading ? "Loading…" : "Load more"}
+            </button>
+          </div>
+        )}
       
     </section>
   )
