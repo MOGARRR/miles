@@ -127,7 +127,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           
         ) : (
           <p className="text-kilored text-lg font-semibold">
-          ${ price_cents / 100 }
+          ${ (price_cents / 100).toFixed(2) }
           </p>)}
 
         <button

@@ -8,20 +8,28 @@ import { useDebounce } from "@/src/hooks/useDebounce";
 
 // defines the type of props 
 type ProductListClientProps = {
-  products: Product[];
+
   categoryMap: Record<number, string>;
 }; 
 
-const ProductListClient: React.FC<ProductListClientProps> = ({ products, categoryMap, }) => {
+const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) => {
 
+  //LAZY LOADING 
+  const PAGE_SIZE = 9;
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+
+  // SEARCH
   // Raw input value (updates on keystroke)
   const [searchInput, setSearchInput] = useState("");
   // Debounced value used for filtering
   const debouncedSearch = useDebounce(searchInput, 300);
-
   // True while debounce delay is still running
   const isSearching = searchInput !== debouncedSearch;
-
 
   const filteredProducts = products.filter((product) => {
     // only show available products

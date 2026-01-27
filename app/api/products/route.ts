@@ -1,11 +1,34 @@
 import { NextResponse} from "next/server";
 import { getAllProducts, createProduct } from "@/src/controllers/productControllers";
 
-//GET
-export async function GET() {
+
+/**
+ * GET /api/products
+ *
+ * Supports pagination for the products gallery (infinite scroll / discovery view).
+ * Query params:
+ *  - page: page number (1-based)
+ *  - limit: number of products per request (default: 9)
+ */
+export async function GET(req: Request) {
   try {
-    const products = await getAllProducts();
+
+    // Extract query parameters from the request URL
+    const { searchParams } = new URL(req.url);
+
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 9;
+
+    // Convert page to offset for database queries
+    // page 1 -> offset 0
+    // page 2 -> offset limit
+    const offset = (page - 1) * limit;
+
+    // Fetch paginated products from the controller
+    const products = await getAllProducts({ limit, offset });
+
     return NextResponse.json({ products }, { status: 200 });
+
   } catch (error: any) {
     console.error("GET /api/products error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

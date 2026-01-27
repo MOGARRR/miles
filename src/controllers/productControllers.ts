@@ -1,9 +1,37 @@
 import { createClient } from "@/utils/supabase/server";
 
-// GET all Products
-export async function getAllProducts() {
+/**
+ * Fetch products with pagination support.
+ * This is used by the products gallery (infinite scroll / discovery view).
+ *
+ * @param limit  - number of products to fetch per request
+ * @param offset - starting index (calculated from page)
+ */
+
+type GetAllProductsOptions = {
+  limit: number;
+  offset: number;
+};
+
+
+// GET all Products PAGINATED
+export async function getAllProducts({
+  limit,
+  offset,
+}: GetAllProductsOptions) {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("products").select("*");
+
+
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+
+    // Stable ordering is required for pagination / infinite scroll
+    .order("created_at", { ascending: false })
+    // Supabase range is inclusive, so we subtract 1 from the end
+    .range(offset, offset + limit - 1);
+
+
   if (error) throw new Error(error.message);
   return data;
 }

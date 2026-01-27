@@ -10,11 +10,7 @@ const ProductList = async () => {
 
   const baseUrl = await getBaseUrl();
 
-  //fetch PRODUCTS from the api route
-  const productsRes = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
 
-  const productsData: { products: Product[] } = await productsRes.json();
-  const products = productsData.products; // pulls out the PRODUCTS array
 
   //fetch CATEGORIES from the api route
   const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, { cache: "no-store" });
@@ -37,7 +33,6 @@ const ProductList = async () => {
     <div>
 
       <ProductListClient
-        products={products}
         categoryMap={categoryMap}
       />
 
