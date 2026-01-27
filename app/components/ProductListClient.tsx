@@ -40,16 +40,21 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
 
 
   return (
-    <div >
+    <section className="mt-20" >
 
       {/* Basic search input field  */}
-      <SearchBar 
-        value={searchInput}
-        onChange={setSearchInput}
-        placeholder="Search by name or category"
-      />
+      <div className="
+        px-10
+      ">
+        <SearchBar 
+          value={searchInput}
+          onChange={setSearchInput}
+          placeholder="Search by name or category"
+        />
 
-      <div className="flex items-center gap-2 mt-2 min-h-[20px]">
+      </div>
+      
+      <div className="flex items-center gap-2 mt-2 min-h-[20px] px-10">
         {isSearching && (
           <span className="text-xs text-kilotextlight italic">
             Searching…
@@ -65,7 +70,7 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
         grid-cols-1
         sm:grid-cols-2
         md:grid-cols-3
-        gap-12
+        gap-8
         p-10
         
       ">
@@ -95,7 +100,7 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ products, categor
 
       </div>
       
-    </div>
+    </section>
   )
 
 }
