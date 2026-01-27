@@ -5,6 +5,8 @@ import ProductListItem from "./ProductListItem";
 import { Product } from "@/src/types/product";
 import SearchBar from "./ui/SearchBar";
 import { useDebounce } from "@/src/hooks/useDebounce";
+import ProductSkeletonCard from "./ProductSkeletonCard";
+
 
 // defines the type of props 
 type ProductListClientProps = {
@@ -148,8 +150,14 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
           )
         })}
 
-        
+        {/* Skeleton cards while loading */}
+        {isLoading &&
+          Array.from({ length: PAGE_SIZE }).map((_, index) => (
+            <ProductSkeletonCard key={`skeleton-${index}`} />
+          ))
+        }
 
+  
       </div>
 
       {hasMore && (
