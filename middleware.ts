@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
-// gets cookies and validate session
+  // gets cookies and validate session
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -23,17 +23,10 @@ export async function middleware(req: NextRequest) {
   );
 
   // checks for user in db and if not present, will send them to login page
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+ const user = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  // admin check (role-based)
-  if (user.role !== "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return res;
@@ -43,3 +36,4 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/admin/:path*"],
 };
+
