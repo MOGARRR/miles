@@ -12,17 +12,26 @@ const CustomArtworkPage = () => {
 
   return (
 
-    <section className="
-      max-w-7xl mx-auto
-      px-6 md:px-16 py-24"
+    <section className=""
     >
 
       {/* HERO  */}
-      <div>
-        <h1 className="text-5xl">Custom Artwork</h1>
+      <div className="bg-kilodarkgrey py-24">
+        <div className="
+          max-w-7xl mx-auto
+          px-6 md:px-16 
+          text-center"
+        >
+            <h1 className="text-4xl md:text-6xl font-bold text-[#E14747]">
+              Custom Artwork
+            </h1>
 
-        <p className="text-xl"> Bring your vision to life with a personalized KiloBoy piece. Whether it's your favorite athlete, character, or moment — let's create something iconic together.</p>
+            <p className="text-base md:text-lg text-gray-200 max-w-[800px] mx-auto mt-8"> 
+              Bring your vision to life with a personalized KiloBoy piece. Whether it's your favorite athlete, character, or moment — let's create something iconic together.
+            </p>
+        </div>
       </div>
+      
       
       {/* CUSTOM FORM */}
       <CustomForm />

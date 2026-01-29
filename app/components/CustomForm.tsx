@@ -54,86 +54,123 @@ const CustomForm = () => {
   }
 
   return (
-   
-    <div className="p-4 m-12">
-      <h2 className="text-4xl mb-4">Request your custom piece</h2>
-      <p>Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>
-      <br />
+    
+    <section className="bg-kiloblack">
 
-      <form onSubmit={handleSubmit}>
-        <fieldset className="fieldset ">
-          <label>Name</label>
-          <input 
-            type="text"
-            required
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value)
-              setStatus("idle")
-            }}
-            className="border p-2 bg-black"
-          />
+      <div className="
+          max-w-[768px] mx-auto
+          px-6 md:px-16 md:py-16
+          my-16
+          rounded-lg border border-[#3a3a41]
+          bg-kilodarkgrey"
+      >
+        <h2 className="text-3xl mb-4 text-kilored">Request your custom piece</h2>
+        <p className="text-base text-kilotextgrey ">Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>
+        <br />
 
-          <label>Email</label>
-          <input 
-            type="email"
-            required
-            placeholder="Your E-mail"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value)
-              setStatus("idle")
-            }}
-            className="border p-2 bg-black"
-          />
+        <form onSubmit={handleSubmit}>
+          <fieldset className="fieldset text-sm leading-[1.4]">
+            <label className="text-kilotextlight font-semibold ">Name</label>
+            <input 
+              type="text"
+              required
+              placeholder="Your Name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value)
+                setStatus("idle")
+              }}
+              className=" 
+                h-[40px]
+                p-2 
+                mb-2
+                rounded-lg border border-[#3a3a41] 
+                bg-kiloblack"
+            />
 
-          <label>Type of Request / Apparel</label>
-          <input 
-            type="text"
-            required
-            placeholder="e.g. T-Shirt, Shoes, Portrait"
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value)
-              setStatus("idle")
-            }}
-            className="border p-2 bg-black"
-          />
+            <label className="text-kilotextlight font-semibold">
+              Email
+            </label>
+            <input 
+              type="email"
+              required
+              placeholder="Your E-mail"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                setStatus("idle")
+              }}
+              className=" 
+                h-[40px]
+                p-2 
+                mb-2
+                rounded-lg border border-[#3a3a41] 
+                bg-kiloblack"
+            />
 
-          <label>Details </label>
-          <textarea
-            required
-            placeholder="Describe your vision in detail. Include size, colors, style preferences, inspirations, or specific elements you want included."
-            value={details}
-            onChange={(e) => {
-              setDetails(e.target.value)
-              setStatus("idle")
-            }}
-            className="border p-2 bg-black"
-          />
+            <label className="text-kilotextlight font-semibold">
+              Type of Request / Apparel
+            </label>
+            <input 
+              type="text"
+              required
+              placeholder="e.g. T-Shirt, Shoes, Portrait"
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value)
+                setStatus("idle")
+              }}
+              className=" 
+                h-[40px]
+                p-2 
+                mb-2
+                rounded-lg border border-[#3a3a41] 
+                bg-kiloblack"
+            />
 
-          <button 
-            type="submit"
-            disabled={isSending}
-            className=" text-white btn btn-outline m-5 rounded-sm border-white"
+            <label className="text-kilotextlight font-semibold">
+              Details 
+            </label>
+            <textarea
+              required
+              placeholder="Describe your vision in detail. Include size, colors, style preferences, inspirations, or specific elements you want included."
+              value={details}
+              onChange={(e) => {
+                setDetails(e.target.value)
+                setStatus("idle")
+              }}
+              className=" 
+                h-[120px]
+                p-2 
+                mb-2
+                rounded-lg border border-[#3a3a41] 
+                bg-kiloblack"
+            />
 
-            >
-            {isSending ? "Sending..." : "Submit request"}
-          </button>
-          
-        </fieldset>
-      </form>
-      <div>
-        {status === "success" && <p>Your message was sent!</p>}
-        {status === "error" && <p>{errorMsg}</p>}
+            <button 
+              type="submit"
+              disabled={isSending}
+              className=" text-white btn btn-outline m-5 rounded-sm border-white"
+
+              >
+              {isSending ? "Sending..." : "Submit request"}
+            </button>
+            
+          </fieldset>
+        </form>
+        <div>
+          {status === "success" && <p>Your message was sent!</p>}
+          {status === "error" && <p>{errorMsg}</p>}
+        </div>
+
+        <br/>
+        
+        <p className="text-sm ">We'll review your request and get back to you within 2-3 business days with a quote and timeline.</p>
+        
       </div>
 
-      <br/>
-      
-      <p className="text-sm ">We'll review your request and get back to you within 2-3 business days with a quote and timeline.</p>
-      
-    </div>
+    </section>
+    
   )
 };
 
