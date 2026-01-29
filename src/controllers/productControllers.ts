@@ -1,4 +1,5 @@
 import { supabasePublic } from "@/utils/supabase/supabasePublic";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 // GET all Products
 export async function getAllProducts() {
@@ -22,7 +23,7 @@ export async function getProductById(id: string) {
 
 // POST
 export async function createProduct(userItem: any) {
-  const supabase = supabasePublic;
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("products")
     .insert([userItem])
@@ -34,7 +35,7 @@ export async function createProduct(userItem: any) {
 
 // PUT
 export async function updateProduct(id: string, updatedProductItem: any) {
-  const supabase = supabasePublic;
+  const supabase = supabaseAdmin;
   const updates = Object.fromEntries(
     Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined),
   );
@@ -50,7 +51,7 @@ export async function updateProduct(id: string, updatedProductItem: any) {
 
 // DELETE Product
 export async function deleteProduct(id: string) {
-  const supabase = supabasePublic;
+  const supabase = supabaseAdmin;
 
   // 1. Check if product is associated with any order
   const { data: orderRefs, error: refError } = await supabase

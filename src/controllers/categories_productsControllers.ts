@@ -1,5 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
 import { supabasePublic } from "@/utils/supabase/supabasePublic";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 // GET all Categories products
 export async function getAllCategoriesProducts() {
@@ -25,7 +25,7 @@ export async function getCategorieProductById(id: string) {
 
 // POST Categories products
 export async function createCategoriesProducts(categoriesProductsItem: any) {
-  const supabase = supabasePublic;
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("categories_products")
     .insert([categoriesProductsItem])
@@ -40,7 +40,7 @@ export async function updateCategoriesProducts(
   id: string,
   updatedCategoriesProductsItem: any,
 ) {
-  const supabase = supabasePublic;
+  const supabase = supabaseAdmin;
   const updates = Object.fromEntries(
     Object.entries(updatedCategoriesProductsItem).filter(
       ([_, v]) => v !== undefined,
@@ -58,7 +58,7 @@ export async function updateCategoriesProducts(
 
 // DELETE Categories products
 export async function deleteCategoriesProducts(id: string) {
-  const supabase = supabasePublic;
+  const supabase = supabaseAdmin;
 
   // 1. Check if there are products associated with this category
   const { count, error: countError } = await supabase
