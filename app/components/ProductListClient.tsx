@@ -28,12 +28,16 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
    * Fetch products from the API using page-based pagination.
    * Page 1 replaces products, next pages append to the list.
    */
-  const fetchProducts = async (pageToLoad: number) => {
+  const fetchProducts = async (
+    pageToLoad: number,
+    searchTerm = debouncedSearch
+
+  ) => {
     try {
       setIsLoading(true);
 
       const res = await fetch(
-        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}`
+        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}&search=${encodeURIComponent(searchTerm)}`
       );
 
       const data = await res.json();
@@ -73,21 +77,12 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
   // True while debounce delay is still running
   const isSearching = searchInput !== debouncedSearch;
 
-  const filteredProducts = products.filter((product) => {
-    // only show available products
-    if (!product.is_available) return false;
-
-    //lower case
-    const title = product.title.toLowerCase(); 
-    const term = debouncedSearch.toLowerCase(); 
-
-    // get the category name from the map (if exists)
-    const categoryName = categoryMap[product.category_id || 0]; 
-    const category = categoryName ? categoryName.toLowerCase() : ""; 
-
-    return title.includes(term) || category.includes(term);
-  })
-
+  //reset pagination when search changes
+  useEffect(() => {
+    setPage(1);
+    setProducts([]);
+    fetchProducts(1, debouncedSearch);
+  }, [debouncedSearch]);
   
 
 
@@ -126,7 +121,7 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
         p-10
         
       ">
-        {filteredProducts.map((product) => {
+        {products.map((product) => {
           const categoryName = product.category_id !== null
           ? categoryMap[product.category_id]
           : undefined;

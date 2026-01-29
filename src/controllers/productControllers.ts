@@ -11,6 +11,7 @@ import { createClient } from "@/utils/supabase/server";
 type GetAllProductsOptions = {
   limit: number;
   offset: number;
+  search?: string;
 };
 
 
@@ -18,18 +19,28 @@ type GetAllProductsOptions = {
 export async function getAllProducts({
   limit,
   offset,
+  search = "",
 }: GetAllProductsOptions) {
   const supabase = await createClient();
 
-
-  const { data, error } = await supabase
+  let query = supabase
     .from("products")
     .select("*")
-
     // Stable ordering is required for pagination / infinite scroll
     .order("created_at", { ascending: false })
-    // Supabase range is inclusive, so we subtract 1 from the end
-    .range(offset, offset + limit - 1);
+
+  // Apply search if provided
+  if (search) {
+    query = query.or(
+      `title.ilike.%${search}%,description.ilike.%${search}%`
+    );
+  }
+
+  const { data, error } = await query.range(
+    offset,
+    offset + limit - 1
+  )
+    
 
 
   if (error) throw new Error(error.message);
