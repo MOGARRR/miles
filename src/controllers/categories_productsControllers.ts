@@ -1,17 +1,19 @@
 import { createClient } from "@/utils/supabase/server";
+import { supabasePublic } from "@/utils/supabase/supabasePublic";
 
 // GET all Categories products
 export async function getAllCategoriesProducts() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("categories_products").select("*");
+  const supabase = supabasePublic;
+  const { data, error } = await supabase
+    .from("categories_products")
+    .select("*");
   if (error) throw new Error(error.message);
   return data;
 }
 
-
 // GET Categories products by id
 export async function getCategorieProductById(id: string) {
-  const supabase = await createClient();
+  const supabase = supabasePublic;
   const { data, error } = await supabase
     .from("categories_products")
     .select("*")
@@ -23,7 +25,7 @@ export async function getCategorieProductById(id: string) {
 
 // POST Categories products
 export async function createCategoriesProducts(categoriesProductsItem: any) {
-  const supabase = await createClient();
+  const supabase = supabasePublic;
   const { data, error } = await supabase
     .from("categories_products")
     .insert([categoriesProductsItem])
@@ -34,10 +36,15 @@ export async function createCategoriesProducts(categoriesProductsItem: any) {
 }
 
 // PUT Categories products
-export async function updateCategoriesProducts(id: string, updatedCategoriesProductsItem: any) {
-  const supabase = await createClient();
+export async function updateCategoriesProducts(
+  id: string,
+  updatedCategoriesProductsItem: any,
+) {
+  const supabase = supabasePublic;
   const updates = Object.fromEntries(
-    Object.entries(updatedCategoriesProductsItem).filter(([_, v]) => v !== undefined)
+    Object.entries(updatedCategoriesProductsItem).filter(
+      ([_, v]) => v !== undefined,
+    ),
   );
   const { data, error } = await supabase
     .from("categories_products")
@@ -51,7 +58,7 @@ export async function updateCategoriesProducts(id: string, updatedCategoriesProd
 
 // DELETE Categories products
 export async function deleteCategoriesProducts(id: string) {
-  const supabase = await createClient();
+  const supabase = supabasePublic;
 
   // 1. Check if there are products associated with this category
   const { count, error: countError } = await supabase
@@ -66,7 +73,7 @@ export async function deleteCategoriesProducts(id: string) {
   // 2. Block deletion if products exist
   if (count && count > 0) {
     throw new Error(
-      "This category cannot be deleted because it is associated with one or more products."
+      "This category cannot be deleted because it is associated with one or more products.",
     );
   }
 
