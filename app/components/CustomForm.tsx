@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import SubmitButton from "./ui/SubmitButton";
 
 const CustomForm = () => {
   const [name, setName] = useState(""); 
@@ -146,26 +147,23 @@ const CustomForm = () => {
                 rounded-lg border border-[#3a3a41] 
                 bg-kiloblack"
             />
+            
+            <SubmitButton variant="primary" isLoading={isSending} loadingText="SENDING...">
+              {isSending ? "SENDING..." : "SUBMIT REQUEST"}
 
-            <button 
-              type="submit"
-              disabled={isSending}
-              className=" text-white btn btn-outline m-5 rounded-sm border-white"
-
-              >
-              {isSending ? "Sending..." : "Submit request"}
-            </button>
+            </SubmitButton>
+ 
             
           </fieldset>
         </form>
-        <div>
+        <div className="mt-4">
           {status === "success" && <p>Your message was sent!</p>}
           {status === "error" && <p>{errorMsg}</p>}
         </div>
 
         <br/>
         
-        <p className="text-sm ">We'll review your request and get back to you within 2-3 business days with a quote and timeline.</p>
+        <p className="text-sm text-kilotextgrey">We'll review your request and get back to you within 2-3 business days with a quote and timeline.</p>
         
       </div>
 
