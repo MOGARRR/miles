@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { error } from "console";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
@@ -25,7 +26,7 @@ export async function middleware(req: NextRequest) {
   // checks for user in db and if not present, will send them to login page
  const user = await supabase.auth.getUser();
 
-  if (!user) {
+  if (user.error) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
