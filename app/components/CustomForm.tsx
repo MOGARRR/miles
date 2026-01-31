@@ -65,8 +65,11 @@ const CustomForm = () => {
           rounded-lg border border-[#3a3a41]
           bg-kilodarkgrey"
       >
-        <h2 className="text-3xl mb-4 text-kilored">Request your custom piece</h2>
-        <p className="text-base text-kilotextgrey ">Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>
+        <h3 className="text-3xl mb-4 text-kilored">
+          Request your custom piece
+        </h3>
+        <p className="text-base text-kilotextgrey ">
+          Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>
         <br />
 
         <form onSubmit={handleSubmit}>
@@ -95,7 +98,7 @@ const CustomForm = () => {
             <input 
               type="email"
               required
-              placeholder="Your E-mail"
+              placeholder="email@email.com"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -108,6 +111,7 @@ const CustomForm = () => {
                 rounded-lg border border-[#3a3a41] 
                 bg-kiloblack"
             />
+           
 
             <label className="text-kilotextlight font-semibold">
               Type of Request / Apparel
@@ -156,9 +160,33 @@ const CustomForm = () => {
             
           </fieldset>
         </form>
-        <div className="mt-4">
-          {status === "success" && <p>Your message was sent!</p>}
-          {status === "error" && <p>{errorMsg}</p>}
+        
+
+        <div className="mt-4 text-center">
+          {status === "success" && (
+            <div className="
+              rounded-lg
+              border border-[#3a3a41]
+              bg-kiloblack
+              px-4 py-3
+              text-sm text-kilotextlight
+            ">
+              Your message was sent!
+            </div>
+          )}
+
+
+          {status === "error" && (
+            <div className="
+              rounded-lg
+              border border-kilored/40
+              bg-kiloblack
+              px-4 py-3
+              text-sm text-kilored
+            ">
+              {errorMsg}
+            </div>
+          )}
         </div>
 
         <br/>
