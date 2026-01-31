@@ -150,6 +150,7 @@ const CartPage = () => {
     <section className="
     "
     >
+      {/* HERO */}
       <div className="bg-kilodarkgrey py-12">
         <div className="
           max-w-7xl mx-auto
@@ -159,147 +160,155 @@ const CartPage = () => {
           <p className="text-base md:text-lg text-kilotextgrey mt-6">
             Review your selected items and complete your purchase
           </p>
-
         </div>
-
       </div>
     
-
-      <div className="max-w-7xl mx-auto
-      px-6 md:px-16 py-24 ">
-
-        <div className="">
+      {/* SHIPPING + SUMMARY + ITEMS CONTAINER */}
+      
+      <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16 py-24 
+        flex gap-8">
+        
+        {/* LEFT SIDE — occupies remaining space */}
+        <div className="flex-1">
+          {/* SHIPPING FORM */}
+          <ShippingForm
+            shippingForm={shippingForm}
+            onChange={handleShippingChange}
+            onEstimate={handleShippingEstimate}
+            shippingEstimate={shippingEstimate}
+          />
           
 
+         
+          {/* LIST OF ITEMS  */}
+          <ul className="space-y-4 mt-4">
+            {groupedItems.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-center gap-4 border-b border-gray-700 pb-4"
+              >
+                <img
+                  src={item.image_URL}
+                  alt={item.title}
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+                <div className="flex flex-col flex-1">
+                  <span className="font-semibold">{item.title}</span>
+                  <span className="text-gray-300 text-sm">
+                    ${(item.price_cents / 100).toFixed(2)}
+                  </span>
+                </div>
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="
+                  px-2 py-1 border rounded
+                  hover:bg-gray-700"
+                >
+                  -
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  onClick={() => addToCart(item)}
+                  className="
+                  px-2 py-1 border rounded
+                  hover:bg-gray-700"
+                >
+                  +
+                </button>
+                ${((item.price_cents * item.quantity) / 100).toFixed(2)}
+              </li>
+            ))}
+          </ul>
+          <p>Total Items: {items.length}</p>
+
+          {items.length === 0 && <p>Your cart is empty! </p>}
+
         </div>
-      
 
 
-      <p>Total Items: {items.length}</p>
+       
 
-      {items.length === 0 && <p>Your cart is empty! </p>}
 
-      {/* LIST OF ITEMS  */}
-      <ul className="space-y-4 mt-4">
-        {groupedItems.map((item) => (
-          <li
-            key={item.id}
-            className="flex items-center gap-4 border-b border-gray-700 pb-4"
-          >
-            <img
-              src={item.image_URL}
-              alt={item.title}
-              className="w-20 h-20 object-cover rounded-md"
-            />
-            <div className="flex flex-col flex-1">
-              <span className="font-semibold">{item.title}</span>
-              <span className="text-gray-300 text-sm">
-                ${(item.price_cents / 100).toFixed(2)}
-              </span>
+      {/* ORDER SUMMARY */}
+      <div className="max-w-[355px]">
+        <h1>ORDER SUMMARY</h1>
+
+        {/* SUBTOTAL */}
+        {items.length > 0 && (
+          <div>
+            <div>Subtotal: ${(subtotalCents / 100).toFixed(2)}</div>
+
+            <div>HST (13%): ${hst.toFixed(2)}</div>
+
+            {shippingEstimate !== null && (
+              <div>Shipping: ${shippingAmount.toFixed(2)}</div>
+            )}
+
+            <div className="font-semibold text-xl">
+              Total: ${total.toFixed(2)}
             </div>
-            <button
-              onClick={() => removeFromCart(item.id)}
-              className="
-              px-2 py-1 border rounded
-              hover:bg-gray-700"
-            >
-              -
-            </button>
-            <span>{item.quantity}</span>
-            <button
-              onClick={() => addToCart(item)}
-              className="
-              px-2 py-1 border rounded
-              hover:bg-gray-700"
-            >
-              +
-            </button>
-            ${((item.price_cents * item.quantity) / 100).toFixed(2)}
-          </li>
-        ))}
-      </ul>
-      
-      <ShippingForm
-        shippingForm={shippingForm}
-        onChange={handleShippingChange}
-        onEstimate={handleShippingEstimate}
-        shippingEstimate={shippingEstimate}
-      />
-      
-
-      <br />
-      <br />
-
-      {/* SUBTOTAL */}
-      {items.length > 0 && (
-        <div>
-          <div>Subtotal: ${(subtotalCents / 100).toFixed(2)}</div>
-
-          <div>HST (13%): ${hst.toFixed(2)}</div>
-
-          {shippingEstimate !== null && (
-            <div>Shipping: ${shippingAmount.toFixed(2)}</div>
-          )}
-
-          <div className="font-semibold text-xl">
-            Total: ${total.toFixed(2)}
           </div>
+        )}
+        <br />
+        <br />
+
+        <Link
+          href="/store"
+          aria-label="Back to Gallery"
+          className=" rounded border p-2 cursor-pointer"
+        >
+          {" "}
+          Continue Shopping{" "}
+        </Link>
+
+        <br />
+        <br />
+
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={agreedToPrivacy}
+              onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+            />
+            <span>
+              I agree to the{" "}
+              <Link href="/privacy" className="underline">
+                Privacy Policy
+              </Link>
+            </span>
+          </label>
         </div>
-      )}
-      <br />
-      <br />
+        <br />
 
-      <Link
-        href="/store"
-        aria-label="Back to Gallery"
-        className=" rounded border p-2 cursor-pointer"
-      >
-        {" "}
-        Continue Shopping{" "}
-      </Link>
+        {shippingEstimate === null && (
+          <p className="text-sm">
+            Please calculate shipping before proceeding to checkout.
+          </p>
+        )}
 
-      <br />
-      <br />
+        {/* TODO: redirect to stripe    */}
 
-      <div>
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={agreedToPrivacy}
-            onChange={(e) => setAgreedToPrivacy(e.target.checked)}
-          />
-          <span>
-            I agree to the{" "}
-            <Link href="/privacy" className="underline">
-              Privacy Policy
-            </Link>
-          </span>
-        </label>
-      </div>
-      <br />
+        <button
+          className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!canProceedToCheckout}
+          onClick={handleCheckout}
+        >
+          Proceed To Checkout
+        </button>
 
-      {shippingEstimate === null && (
-        <p className="text-sm">
-          Please calculate shipping before proceeding to checkout.
-        </p>
-      )}
+        <br />
+        <br />
+        <br />
+        <br />
 
-      {/* TODO: redirect to stripe    */}
+        </div>
 
-      <button
-        className="rounded border p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={!canProceedToCheckout}
-        onClick={handleCheckout}
-      >
-        Proceed To Checkout
-      </button>
+        </div>
 
-      <br />
-      <br />
-      <br />
-      <br />
-
-      </div>
+        
       
     </section>
   );
