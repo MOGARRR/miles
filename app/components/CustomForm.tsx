@@ -60,7 +60,7 @@ const CustomForm = () => {
 
       <div className="
           max-w-[768px] mx-auto
-          px-6 md:px-16 md:py-16
+          px-6 md:px-16 py-16
           my-16
           rounded-lg border border-[#3a3a41]
           bg-kilodarkgrey"

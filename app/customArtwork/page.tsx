@@ -37,23 +37,45 @@ const CustomArtworkPage = () => {
       <CustomForm />
 
       {/* CUSTOM WORK INSPIRATION */}
-      <div className="" >
-        <h1 className="text-4xl"> Custom work inspiration</h1>
-        <br />
-        <p> Check out some of our previous custom pieces to see what's possible. From NBA legends to comic book heroes, we bring your favorite icons to life.</p>
+      <div className="bg-kilodarkgrey" >
+        <div className="
+          max-w-7xl mx-auto
+          px-6 md:px-16 py-16
+          "
+        >
+          {/* TEXT */}
+          <div className="
+            max-w-3xl mx-auto
+            text-center 
+            flex flex-col 
+            mb-16
+            "
+          >
+            
+            <h2 className="text-3xl mb-10 text-kilored"> 
+              Custom work inspiration
+            </h2>
+            <p className=" text-base text-kilotextgrey"> 
+              Check out some custom pieces ideas to see what's possible. From NBA legends to comic book heroes, we bring your favorite icons to life.
+            </p>
 
-        <div className="grid grid-cols-3 gap-4 mt-6">
-          {images.map((src, index) => (
-            <div key={index} className="relative w-full aspect-square"> 
-              <Image
-                src={src}
-                alt={`Custom artwork inspiration ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
-
+          </div>
+          
+          {/* IMAGES */}
+          <div className="
+            grid grid-cols-1 md:grid-cols-3
+            gap-4 mt-6">
+            {images.map((src, index) => (
+              <div key={index} className="relative w-full aspect-square"> 
+                <Image
+                  src={src}
+                  alt={`Custom artwork inspiration ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
