@@ -148,14 +148,30 @@ const CartPage = () => {
 
   return (
     <section className="
-      max-w-7xl mx-auto
-      px-6 md:px-16 py-24"
+    "
     >
-      <div>
-        <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
-        <p>Review your selected items and complete your purchase</p>
+      <div className="bg-kilodarkgrey py-12">
+        <div className="
+          max-w-7xl mx-auto
+          px-6 md:px-16 
+          ">
+          <h3 className="text-4xl font-semibold text-kilored">Your Cart</h3>
+          <p className="text-base md:text-lg text-kilotextgrey mt-6">
+            Review your selected items and complete your purchase
+          </p>
+
+        </div>
 
       </div>
+    
+
+      <div className="max-w-7xl mx-auto
+      px-6 md:px-16 py-24 ">
+
+        <div className="">
+          
+
+        </div>
       
 
 
@@ -282,6 +298,9 @@ const CartPage = () => {
       <br />
       <br />
       <br />
+
+      </div>
+      
     </section>
   );
 };
