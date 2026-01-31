@@ -1,6 +1,4 @@
-
 import ContactForm from "../components/ContactForm";
-import Faq from "../components/Faq";
 
 const ContactPage = () => {
 
@@ -26,7 +24,6 @@ const ContactPage = () => {
   
         <ContactForm />
               
-      
     </div>
   );
 };

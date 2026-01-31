@@ -28,6 +28,7 @@ const SubmitButton = ({
         "text-sm md:text-base font-semibold",
         "px-4 py-[9px] md:px-4 md:py-2",
         "mt-8",
+        "cursor-pointer",
         "border border-[#3a3a41] rounded-lg",
         "transition-colors duration-200",
         "disabled:opacity-40 disabled:cursor-not-allowed",

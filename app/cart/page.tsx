@@ -4,6 +4,7 @@ import { CartProduct } from "../components/CartContext";
 import { useState } from "react";
 import Link from "next/link";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
+import ShippingForm from "../components/ShippingForm";
 
 import {
   normalizePhone,
@@ -150,7 +151,14 @@ const CartPage = () => {
       max-w-7xl mx-auto
       px-6 md:px-16 py-24"
     >
-      <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
+      <div>
+        <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
+        <p>Review your selected items and complete your purchase</p>
+
+      </div>
+      
+
+
       <p>Total Items: {items.length}</p>
 
       {items.length === 0 && <p>Your cart is empty! </p>}
@@ -194,92 +202,14 @@ const CartPage = () => {
           </li>
         ))}
       </ul>
-
-      {/* SHIPPING INPUT */}
-      {/* REFACTOR IF NECESSARY WHEN EVERYTHING IS WORKING */}
-      <h1 className="text-xl">Shipping (Within Canada) </h1>
-      {items.length > 0 && (
-        <div>
-          <label>Full Name</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={shippingForm.name}
-            onChange={handleShippingChange}
-            placeholder="Your name"
-            className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-          />
-          <br />
-          <label>Phone Number</label>
-          <input
-            id="phoneNumber"
-            name="phoneNumber"
-            type="tel"
-            value={shippingForm.phoneNumber}
-            onChange={handleShippingChange}
-            placeholder="Format: 123-456-7890"
-            className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-          />
-          <br />
-          <label>Postal Code</label>
-          <input
-            id="zip"
-            name="zip"
-            type="text"
-            value={shippingForm.zip}
-            maxLength={7}
-            onChange={handleShippingChange}
-            placeholder="e.g. M5V 2T6"
-            className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-          />
-          <br />
-          <label>City</label>
-          <input
-            id="city"
-            name="city"
-            type="text"
-            value={shippingForm.city}
-            onChange={handleShippingChange}
-            placeholder="e.g. Toronto"
-            className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-          />
-          <br />
-          <label>Street Address</label>
-          <input
-            id="street1"
-            name="street1"
-            type="text"
-            value={shippingForm.street1}
-            onChange={handleShippingChange}
-            placeholder="123 Queen St W"
-            className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600"
-          />
-          <br />
-          <label>State / Province</label>
-          <input
-            id="state"
-            name="state"
-            type="text"
-            value={shippingForm.state}
-            onChange={handleShippingChange}
-            placeholder="e.g. ON"
-            className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-          />
-          <br />
-          <button
-            className=" rounded border p-2 cursor-pointer"
-            onClick={handleShippingEstimate}
-          >
-            Estimate Shipping
-          </button>
-          <br /> <br />
-          {/* render shipping cost on UI  */}
-          {shippingEstimate !== null && (
-            <p>Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
-          )}
-        </div>
-      )}
+      
+      <ShippingForm
+        shippingForm={shippingForm}
+        onChange={handleShippingChange}
+        onEstimate={handleShippingEstimate}
+        shippingEstimate={shippingEstimate}
+      />
+      
 
       <br />
       <br />

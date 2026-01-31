@@ -158,42 +158,36 @@ const ContactForm = () => {
             </fieldset>
           </form>
 
-        <div className="mt-4 text-center">
-          {status === "success" && (
-            <div className="
-              rounded-lg
-              border border-[#3a3a41]
-              bg-kiloblack
-              px-4 py-3
-              text-sm text-kilotextlight
-            ">
-              Your message was sent!
-            </div>
-          )}
+          <div className="mt-4 text-center">
+            {status === "success" && (
+              <div className="
+                rounded-lg
+                border border-[#3a3a41]
+                bg-kiloblack
+                px-4 py-3
+                text-sm text-kilotextlight
+              ">
+                Your message was sent!
+              </div>
+            )}
 
 
-          {status === "error" && (
-            <div className="
-              rounded-lg
-              border border-kilored/40
-              bg-kiloblack
-              px-4 py-3
-              text-sm text-kilored
-            ">
-              {errorMsg}
-            </div>
-          )}
+            {status === "error" && (
+              <div className="
+                rounded-lg
+                border border-kilored/40
+                bg-kiloblack
+                px-4 py-3
+                text-sm text-kilored
+              ">
+                {errorMsg}
+              </div>
+            )}
+          </div>
+
         </div>
-
-        </div>
-
-
       </div>
-      
         
-        
-        
-
     </section>
   );
 };
