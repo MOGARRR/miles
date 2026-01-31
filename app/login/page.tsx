@@ -1,19 +1,27 @@
-
+import { loginUser } from "../actions/loginUsers";
 
 const LoginPage = () => {
   return (
-    <div>
-      <h1>I am the login page</h1>
-      <h1>I am the login page</h1>
-      <h1>I am the login page</h1>
-      <h1>I am the login page</h1>
-      <h1>I am the login page</h1>
-      <h1>I am the login page</h1>
-      <h1>I am the login page</h1>
-      
-      
+    <div >
+      <form className="flec flex-col" action={loginUser}>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+
+        <button type="submit">Login</button>
+      </form>
     </div>
-  )
+  );
 };
 
 export default LoginPage;

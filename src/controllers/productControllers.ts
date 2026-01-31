@@ -1,4 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
+import { supabasePublic } from "@/utils/supabase/supabasePublic";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 /**
  * Fetch products with pagination support.
@@ -21,7 +22,7 @@ export async function getAllProducts({
   offset,
   search = "",
 }: GetAllProductsOptions) {
-  const supabase = await createClient();
+  const supabase = supabasePublic;
 
   let query = supabase
     .from("products")
@@ -41,16 +42,13 @@ export async function getAllProducts({
     offset + limit - 1
   )
     
-
-
   if (error) throw new Error(error.message);
   return data;
 }
 
-
 // GET Product by id
 export async function getProductById(id: string) {
-  const supabase = await createClient();
+  const supabase = supabasePublic;
   const { data, error } = await supabase
     .from("products")
     .select("*")
@@ -62,7 +60,7 @@ export async function getProductById(id: string) {
 
 // POST
 export async function createProduct(userItem: any) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("products")
     .insert([userItem])
@@ -72,11 +70,11 @@ export async function createProduct(userItem: any) {
   return data;
 }
 
-// PUT 
+// PUT
 export async function updateProduct(id: string, updatedProductItem: any) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const updates = Object.fromEntries(
-    Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined)
+    Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined),
   );
   const { data, error } = await supabase
     .from("products")
@@ -90,7 +88,7 @@ export async function updateProduct(id: string, updatedProductItem: any) {
 
 // DELETE Product
 export async function deleteProduct(id: string) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
 
   // 1. Check if product is associated with any order
   const { data: orderRefs, error: refError } = await supabase
@@ -102,7 +100,9 @@ export async function deleteProduct(id: string) {
   if (refError) throw new Error(refError.message);
 
   if (orderRefs && orderRefs.length > 0) {
-    throw new Error("Product cannot be deleted because it is associated with an order.");
+    throw new Error(
+      "Product cannot be deleted because it is associated with an order.",
+    );
   }
 
   // 2. Safe to delete
@@ -116,4 +116,3 @@ export async function deleteProduct(id: string) {
 
   return data;
 }
-

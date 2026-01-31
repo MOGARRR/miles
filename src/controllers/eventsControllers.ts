@@ -1,8 +1,8 @@
-import { createClient } from "@/utils/supabase/server";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 // GET ALL EVENTS
 export async function getAllEvents() {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase.from("events").select("*");
   if (error) throw new Error(error.message);
   return data;
@@ -10,7 +10,7 @@ export async function getAllEvents() {
 
 // POST EVENTS
 export async function createEvent(eventItem: any) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("events")
     .insert([eventItem])
@@ -22,9 +22,9 @@ export async function createEvent(eventItem: any) {
 
 // PUT EVENTS
 export async function updateEvent(id: string, updatedEventItem: any) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const updates = Object.fromEntries(
-    Object.entries(updatedEventItem).filter(([_, v]) => v !== undefined)
+    Object.entries(updatedEventItem).filter(([_, v]) => v !== undefined),
   );
   const { data, error } = await supabase
     .from("events")
@@ -39,7 +39,7 @@ export async function updateEvent(id: string, updatedEventItem: any) {
 // DELETE EVENTS
 
 export async function deleteEvent(id: string) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("events")
     .delete()

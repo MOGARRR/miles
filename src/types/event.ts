@@ -7,4 +7,5 @@ export interface Event {
   start_date: string; // "YYYY-MM-DD"
   end_date: string;
   hours: string;
+  is_active: boolean;
 };

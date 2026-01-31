@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,7 @@ type Props = {
   onSuccess?: () => void;
 };
 
-
 const EventsForm = ({ event, onSuccess }: Props) => {
-
-
   // state for form fields
   const [title, setTitle] = useState(event?.title ?? "");
   const [description, setDescription] = useState(event?.description ?? "");
@@ -22,12 +19,21 @@ const EventsForm = ({ event, onSuccess }: Props) => {
   const [endDate, setEndDate] = useState(event?.end_date ?? "");
   const [location, setLocation] = useState(event?.location ?? "");
   const [hours, setHours] = useState(event?.hours ?? "");
-
   const [imageUrl, setImageUrl] = useState(event?.image_url ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isActive, setIsActive] = useState(event?.is_active ?? false);
 
+  // Check and set event Date validation 
+  const eventDateValidation = (eventDate: string) =>
+    new Date() < new Date(eventDate);
 
-  const [isLoading, setIsLoading] = useState(false); 
+  const handleDateValidation = (endDate: string) => {
+    const isValidDate = eventDateValidation(endDate)
+    setIsActive(isValidDate);
+    setEndDate(endDate);
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // prevent the form from starting with errors later
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -38,7 +44,6 @@ const EventsForm = ({ event, onSuccess }: Props) => {
 
   // Detect edit vs create
   const isEditMode = Boolean(event);
-
 
   const router = useRouter();
 
@@ -59,11 +64,11 @@ const EventsForm = ({ event, onSuccess }: Props) => {
     setHours(event.hours);
     setImageUrl(event.image_url ?? "");
     setImageFile(null);
+    setIsActive(event.is_active ?? false);
   }, [event]);
 
-  
-  const handleSubmit = async(e: React.FormEvent) => {
-    e.preventDefault(); 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     setHasSubmitted(true);
 
@@ -76,7 +81,6 @@ const EventsForm = ({ event, onSuccess }: Props) => {
     setSuccessMessage(null);
 
     try {
-
       //RESOLVE FINAL IMAGE UPLOAD VS URL
       let finalImageUrl = imageUrl;
 
@@ -97,9 +101,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
         finalImageUrl = data.publicUrl;
       }
 
-      const endpoint = isEditMode
-        ? `/api/events/${event!.id}`
-        : "/api/events";
+      const endpoint = isEditMode ? `/api/events/${event!.id}` : "/api/events";
 
       const method = isEditMode ? "PUT" : "POST";
 
@@ -117,6 +119,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
           hours,
           location,
           image_url: finalImageUrl,
+          is_active: isActive,
         }),
       });
 
@@ -124,17 +127,17 @@ const EventsForm = ({ event, onSuccess }: Props) => {
         throw new Error("Failed to create event");
       }
 
-      // Trigger a re-render of the Server Component 
+      // Trigger a re-render of the Server Component
       router.refresh();
 
       setSuccessMessage(
         isEditMode
           ? "Event updated successfully!"
-          : "New event created successfully!"
+          : "New event created successfully!",
       );
       setTimeout(() => {
         onSuccess?.();
-      }, 1500);     
+      }, 1500);
 
       // Reset form if NOT in edit mode
       if (!isEditMode) {
@@ -148,7 +151,6 @@ const EventsForm = ({ event, onSuccess }: Props) => {
         setImageFile(null);
         setHasSubmitted(false);
       }
-
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -156,10 +158,8 @@ const EventsForm = ({ event, onSuccess }: Props) => {
     }
   };
 
-  
   return (
     <div>
-
       <h2 className="text-lg font-medium">
         {isEditMode ? "Edit Event" : "Add New Event"}
       </h2>
@@ -237,7 +237,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
             type="date"
             required
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={(e) => handleDateValidation(e.target.value)}
             className="rounded border w-full mt-1 p-2 text-sm"
           />
         </div>
@@ -264,19 +264,17 @@ const EventsForm = ({ event, onSuccess }: Props) => {
           />
         </div>
 
-        {error && (
-          <FormAlert type="error" message={error} />
-        )}
+        {error && <FormAlert type="error" message={error} />}
 
         {successMessage && (
           <FormAlert type="success" message={successMessage} />
         )}
 
-        
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded border p-3 my-6 text-sm ">
+          className="rounded border p-3 my-6 text-sm "
+        >
           {isLoading ? (
             <LoadingAnimation />
           ) : isEditMode ? (
@@ -284,16 +282,10 @@ const EventsForm = ({ event, onSuccess }: Props) => {
           ) : (
             "Create Event"
           )}
-          
         </button>
-
       </form>
-
     </div>
-  )
+  );
 };
 
 export default EventsForm;
-
-
-

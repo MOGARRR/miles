@@ -1,8 +1,8 @@
-import { createClient } from "@/utils/supabase/server";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 // GET all Orders
 export async function getAllOrders() {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .select("*")
@@ -13,7 +13,7 @@ export async function getAllOrders() {
 
 // GET Order by id
 export async function getOrderById(id: string) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .select("*")
@@ -25,7 +25,7 @@ export async function getOrderById(id: string) {
 
 //Get Orders and its Products
 export async function getOrderWithProducts(orderId: string) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .select(
@@ -46,7 +46,7 @@ export async function getOrderWithProducts(orderId: string) {
 
 // GET Order by Stripe Session id
 export async function getOrderByStripeSessionId(sessionId: string) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .select("*")
@@ -59,7 +59,7 @@ export async function getOrderByStripeSessionId(sessionId: string) {
 
 // POST Orders
 export async function createOrder(orderItem: any) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .insert([orderItem])
@@ -71,7 +71,7 @@ export async function createOrder(orderItem: any) {
 
 // PUT Orders
 export async function updateOrder(id: string, updatedProductItem: any) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const updates = Object.fromEntries(
     Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined)
   );
@@ -87,7 +87,7 @@ export async function updateOrder(id: string, updatedProductItem: any) {
 
 // DELETE Orders
 export async function deleteOrder(id: string) {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .delete()
