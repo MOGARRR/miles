@@ -8,13 +8,12 @@ const questions = [
 
   {q: "SAMPLE QUESTION", answer:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rutrum neque vel luctus."},
 
-
 ]
 
 const Faq = () => {
   return (
     <section className="">
-      
+
       <div className="
         max-w-[768px] mx-auto 
         px-6 md:px-16 py-16

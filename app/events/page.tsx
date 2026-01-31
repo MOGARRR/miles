@@ -37,39 +37,61 @@ const EventsPage = () => {
   if (loading) {
     return (
       <div>
-        
         <LoadingAnimation />
       </div>
     );
   }
 
-
   return (
     <section className="
-      max-w-7xl mx-auto
-      px-6 md:px-16 py-24"
+      bg-gradient-to-l from-kilodarkgrey to-kiloblack 
+      py-24"
     >
-      <h1 className="text-2xl font-semibold">Upcoming Events</h1>
-      <p>Catch KiloBoy live at these exclusive pop-ups and exhibitions.</p>
-      
 
-      <div className="flex ">
-        {upcomingEvents.length === 0 ? (
-          <p className="mt-6 text-gray-300">No upcoming events right now.</p>
-        ) : (
-          <ul className="">
-            {upcomingEvents.map((event) => (
+      <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16 
+        "
+      >
+
+        <div className="mb-24">
+          <h1 className="
+            text-4xl md:text-6xl font-bold text-kilored text-center"
+          >
+          Upcoming Events
+        </h1>
+        <p className="
+          max-w-[800px] mx-auto mt-8
+          text-base md:text-lg text-gray-200  text-center">
+          Catch KiloBoy live at these exclusive pop-ups and exhibitions.
+        </p>
+
+        </div>
+        
+
+        <div className="
+          grid
+          grid-cols-1
+          sm:grid-cols-2
+          gap-8
+          px-8
+        ">
+          {upcomingEvents.length === 0 ? (
+            <p className="
+              max-w-[800px] mx-auto mt-8
+              text-base md:text-lg text-gray-200  text-center"
+            >
+              No upcoming events right now.
+            </p>
+            ) : (
+            upcomingEvents.map((event) => (
               <EventCard key={event.id} event={event} />
-            ))}
-          </ul>
-        )}
+            ))
+          )}
+
+        </div>
 
       </div>
-
-      
-
-      
-  
       
     </section>
   )
