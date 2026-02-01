@@ -28,7 +28,7 @@ const CartPage = () => {
 
   for (const item of items) {
     const existing = groupedItems.find(
-      (groupedItem) => groupedItem.id === item.id
+      (groupedItem) => groupedItem.id === item.id,
     );
 
     if (existing) {
@@ -67,22 +67,55 @@ const CartPage = () => {
     }));
   };
 
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [addressValid, setAddressValid] = useState(false);
   // TODO: replace parcel information when available
   const handleShippingEstimate = async () => {
+    const addressTo = {
+      name: shippingForm.name,
+      phone: normalizePhone(shippingForm.phoneNumber),
+      street1: shippingForm.street1,
+      city: shippingForm.city,
+      state: shippingForm.state,
+      zip: normalizePostal(shippingForm.zip),
+      country: shippingForm.country,
+    };
     try {
-      const response = await fetch("/api/shipping/rates", {
+      const validateRes = await fetch("/api/shipping/validateAddress", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          addressTo: {
-            name: shippingForm.name,
-            phone: normalizePhone(shippingForm.phoneNumber),
-            street1: shippingForm.street1,
-            city: shippingForm.city,
-            state: shippingForm.state,
-            zip: normalizePostal(shippingForm.zip),
-            country: shippingForm.country,
-          },
+          addressTo,
+        }),
+      });
+
+      const validateData = await validateRes.json();
+
+      // if validateRes errors or is invalid create error message for shipping form
+      if (
+        !validateRes.ok ||
+        !validateData.isValid
+      ) {
+        const msg =
+          validateData.messages?.[0]?.text ??
+          "Please enter a valid shipping address.";
+
+        setAddressError(msg);
+        return;
+      }
+
+      setAddressValid(true);
+      setAddressError(null);
+      
+    } catch (err: any) {
+      console.error("Shipping validation error:", err);
+    }
+    try {
+      const rateRes = await fetch("/api/shipping/rates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          addressTo,
           parcel: {
             length: "10",
             width: "8",
@@ -94,11 +127,11 @@ const CartPage = () => {
         }),
       });
 
-      if (!response.ok) {
+      if (!rateRes.ok) {
         throw new Error("Failed to fetch shipping rates");
       }
 
-      const data = await response.json();
+      const data = await rateRes.json();
       setShippingEstimate(parseFloat(data.rate.amount));
     } catch (err) {
       console.error("Shipping estimate error:", err);
@@ -152,28 +185,32 @@ const CartPage = () => {
   // console.log(groupedItems);
 
   return (
-    <section className="
+    <section
+      className="
     "
     >
       {/* HERO */}
       <div className="bg-kilodarkgrey py-12">
-        <div className="
+        <div
+          className="
           max-w-7xl mx-auto
           px-6 md:px-16 
-          ">
+          "
+        >
           <h3 className="text-4xl font-semibold text-kilored">Your Cart</h3>
           <p className="text-base md:text-lg text-kilotextgrey mt-6">
             Review your selected items and complete your purchase
           </p>
         </div>
       </div>
-    
+
       {/* SHIPPING + SUMMARY + ITEMS CONTAINER */}
-      <div className="
+      <div
+        className="
         max-w-7xl mx-auto
         px-6 md:px-16 py-20 
-        flex gap-8 items-start">
-        
+        flex gap-8 items-start"
+      >
         {/* LEFT SIDE — occupies remaining space */}
         <div className="flex-1">
           {/* SHIPPING FORM */}
@@ -182,10 +219,12 @@ const CartPage = () => {
             onChange={handleShippingChange}
             onEstimate={handleShippingEstimate}
             shippingEstimate={shippingEstimate}
+            addressError={addressError}
           />
-           
+
           {/* LIST OF ITEMS  */}
-          <div className="
+          <div
+            className="
             flex flex-col
             rounded-lg border border-[#3a3a41]
             bg-kilodarkgrey
@@ -254,106 +293,98 @@ const CartPage = () => {
                 </li>
               ))}
             </ul>
-            
-            {items.length === 0 && 
+
+            {items.length === 0 && (
               <p className="text-base md:text-lg text-kilotextgrey text-center ">
-                YOUR CART IS EMPTY! 
+                YOUR CART IS EMPTY!
               </p>
-            }
+            )}
 
             <LinkButton href="/store" variant="secondary" className="mt-10">
-             {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING" }
+              {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING"}
             </LinkButton>
           </div>
         </div>
 
-
-      {/* ORDER SUMMARY */}
-      <div className="
+        {/* ORDER SUMMARY */}
+        <div
+          className="
         w-[400px]
         bg-kilodarkgrey
         rounded-lg border border-[#3a3a41]
-        p-8">
-
-        <h3 className="text-xl mb-4">ORDER SUMMARY</h3>
-        
-
-        {/* SUBTOTAL */}
-        {items.length > 0 && (
-
-          <div className="">
-            <div className="flex justify-between my-4">
-              <p className="text-base ">Total Items: </p>
-              <p>{items.length}</p>
-            </div>
-            
-            <div className="flex justify-between my-4">
-              <p>Subtotal: </p>
-              <p>${(subtotalCents / 100).toFixed(2)}</p>
-              
-            </div>
-            
-            <div className="flex justify-between my-4">
-              <p>HST (13%): </p>
-              <p>${hst.toFixed(2)}</p>
-            </div>
-
-            <div className="flex justify-between my-4 border-b border-gray-700 pb-6">
-              <p>Shipping</p>
-              {shippingEstimate !== null && (
-                <p>${shippingAmount.toFixed(2)}</p>
-              )}
-
-            </div>      
-            
-            <div className=" flex justify-between my-4">
-              <h3 className="text-xl mb-4">Total:</h3> 
-              <h3 className="text-xl mb-4 text-kilored">${total.toFixed(2)}</h3>
-              
-            </div>
-          
-          </div>
-        )}
-
-        <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={agreedToPrivacy}
-              onChange={(e) => setAgreedToPrivacy(e.target.checked)}
-            />
-            <span className="text-base text-kilotextgrey">
-              I agree to the{" "}
-              <Link href="/privacy" className="underline">
-                Privacy Policy
-              </Link>
-            </span>
-          </label>
-        </div>
-        <br />
-
-        {shippingEstimate === null && (
-          <p className="text-sm">
-            Please calculate shipping before proceeding to checkout.
-          </p>
-        )}
-
-        {/* TODO: redirect to stripe    */}
-        <SubmitButton
-          type="button"
-          variant="primary"
-          disabled={!canProceedToCheckout}
-          onClick={handleCheckout}
-          className="w-full"
+        p-8"
         >
-          PROCEED TO CHECKOUT
-        </SubmitButton>
+          <h3 className="text-xl mb-4">ORDER SUMMARY</h3>
 
+          {/* SUBTOTAL */}
+          {items.length > 0 && (
+            <div className="">
+              <div className="flex justify-between my-4">
+                <p className="text-base ">Total Items: </p>
+                <p>{items.length}</p>
+              </div>
 
+              <div className="flex justify-between my-4">
+                <p>Subtotal: </p>
+                <p>${(subtotalCents / 100).toFixed(2)}</p>
+              </div>
+
+              <div className="flex justify-between my-4">
+                <p>HST (13%): </p>
+                <p>${hst.toFixed(2)}</p>
+              </div>
+
+              <div className="flex justify-between my-4 border-b border-gray-700 pb-6">
+                <p>Shipping</p>
+                {shippingEstimate !== null && (
+                  <p>${shippingAmount.toFixed(2)}</p>
+                )}
+              </div>
+
+              <div className=" flex justify-between my-4">
+                <h3 className="text-xl mb-4">Total:</h3>
+                <h3 className="text-xl mb-4 text-kilored">
+                  ${total.toFixed(2)}
+                </h3>
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={agreedToPrivacy}
+                onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+              />
+              <span className="text-base text-kilotextgrey">
+                I agree to the{" "}
+                <Link href="/privacy" className="underline">
+                  Privacy Policy
+                </Link>
+              </span>
+            </label>
+          </div>
+          <br />
+
+          {shippingEstimate === null && (
+            <p className="text-sm">
+              Please calculate shipping before proceeding to checkout.
+            </p>
+          )}
+
+          {/* TODO: redirect to stripe    */}
+          <SubmitButton
+            type="button"
+            variant="primary"
+            disabled={!canProceedToCheckout || !addressValid}
+            onClick={handleCheckout}
+            className="w-full"
+          >
+            PROCEED TO CHECKOUT
+          </SubmitButton>
         </div>
-
-        </div>
-      
+      </div>
     </section>
   );
 };

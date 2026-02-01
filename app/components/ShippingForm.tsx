@@ -6,18 +6,19 @@ type ShippingFormProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onEstimate: () => void;
   shippingEstimate: number | null;
+  addressError: string | null;
 };
-
 
 const ShippingForm = ({
   shippingForm,
   onChange,
   onEstimate,
   shippingEstimate,
+  addressError,
 }: ShippingFormProps) => {
-
   return (
-    <div className="
+    <div
+      className="
       bg-kilodarkgrey
       rounded-lg border border-[#3a3a41]
       p-8"
@@ -25,14 +26,13 @@ const ShippingForm = ({
       {/* SHIPPING INPUT */}
       {/* REFACTOR IF NECESSARY WHEN EVERYTHING IS WORKING */}
       <div className="mb-6">
-        <h3 className="text-xl mb-4">
-          Shipping Information (Within Canada) 
-        </h3>
-        <p className="text-base text-kilotextgrey "> 
-            Add your address to calculate shipping and make sure your order arrives smoothly.
+        <h3 className="text-xl mb-4">Shipping Information (Within Canada)</h3>
+        <p className="text-base text-kilotextgrey ">
+          Add your address to calculate shipping and make sure your order
+          arrives smoothly.
         </p>
       </div>
-      
+
       {/* FORM */}
       <div>
         <div>
@@ -54,7 +54,7 @@ const ShippingForm = ({
                   rounded-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
-              />
+            />
 
             <label className=" label text-kilotextlight font-semibold ">
               Phone Number
@@ -73,7 +73,7 @@ const ShippingForm = ({
                   rounded-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
-              />
+            />
 
             <label className=" label text-kilotextlight font-semibold ">
               Postal Code
@@ -93,7 +93,7 @@ const ShippingForm = ({
                   rounded-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
-              />
+            />
 
             <label className=" label text-kilotextlight font-semibold ">
               City
@@ -112,7 +112,7 @@ const ShippingForm = ({
                   rounded-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
-              />
+            />
 
             <label className=" label text-kilotextlight font-semibold ">
               Street Address
@@ -131,8 +131,8 @@ const ShippingForm = ({
                   rounded-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
-              />
-    
+            />
+
             <label className=" label text-kilotextlight font-semibold ">
               Province
             </label>
@@ -150,28 +150,24 @@ const ShippingForm = ({
                   rounded-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
-              /> 
+            />
+            {addressError && (
+              <p className="text-sm text-red-500 mt-2">{addressError}</p>
+            )}
 
-            <SubmitButton
-              type="button"
-              variant="primary"
-              onClick={onEstimate}
-            >
+            <SubmitButton type="button" variant="primary" onClick={onEstimate}>
               ESTIMATE SHIPPING
             </SubmitButton>
           </fieldset>
-
 
           {/* render shipping cost on UI  */}
           {/* {shippingEstimate !== null && (
             <p className="text-base text-kilotextgrey text-center mt-6">Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
           )} */}
         </div>
-
       </div>
-             
     </div>
-  )
+  );
 };
 
 export default ShippingForm;
