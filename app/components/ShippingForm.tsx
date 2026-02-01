@@ -55,7 +55,6 @@ const ShippingForm = ({
                   bg-kiloblack
                   "
             />
-
             <label className=" label text-kilotextlight font-semibold ">
               Phone Number
             </label>
@@ -74,7 +73,6 @@ const ShippingForm = ({
                   bg-kiloblack
                   "
             />
-
             <label className=" label text-kilotextlight font-semibold ">
               Postal Code
             </label>
@@ -94,7 +92,6 @@ const ShippingForm = ({
                   bg-kiloblack
                   "
             />
-
             <label className=" label text-kilotextlight font-semibold ">
               City
             </label>
@@ -113,9 +110,8 @@ const ShippingForm = ({
                   bg-kiloblack
                   "
             />
-
             <label className=" label text-kilotextlight font-semibold ">
-              Street Address
+              Address
             </label>
             <input
               id="street1"
@@ -123,16 +119,29 @@ const ShippingForm = ({
               type="text"
               value={shippingForm.street1}
               onChange={onChange}
-              placeholder="123 Queen St W"
+              placeholder="Street address or P.O Box"
+              className=" 
+                  h-[40px]
+                  p-2 
+                  rounded-t-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+            />
+            <input
+              id="address2"
+              name="address2"
+              type="text"
+              value={shippingForm.address2}
+              onChange={onChange}
+              placeholder="Apt, Suite, Unit, Building "
               className=" 
                   h-[40px]
                   p-2 
                   mb-2
-                  rounded-lg border border-[#3a3a41] 
+                  rounded-b-lg border border-[#3a3a41] 
                   bg-kiloblack
                   "
             />
-
             <label className=" label text-kilotextlight font-semibold ">
               Province
             </label>
@@ -154,7 +163,6 @@ const ShippingForm = ({
             {addressError && (
               <p className="text-sm text-red-500 mt-2">{addressError}</p>
             )}
-
             <SubmitButton type="button" variant="primary" onClick={onEstimate}>
               ESTIMATE SHIPPING
             </SubmitButton>
