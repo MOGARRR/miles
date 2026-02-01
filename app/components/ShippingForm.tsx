@@ -20,7 +20,7 @@ const ShippingForm = ({
     <div className="
       bg-kilodarkgrey
       rounded-lg border border-[#3a3a41]
-      px-6 md:px-16 py-12"
+      p-8"
     >
       {/* SHIPPING INPUT */}
       {/* REFACTOR IF NECESSARY WHEN EVERYTHING IS WORKING */}
@@ -157,15 +157,15 @@ const ShippingForm = ({
               variant="primary"
               onClick={onEstimate}
             >
-              Estimate Shipping
+              ESTIMATE SHIPPING
             </SubmitButton>
           </fieldset>
 
 
           {/* render shipping cost on UI  */}
-          {shippingEstimate !== null && (
-            <p>Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
-          )}
+          {/* {shippingEstimate !== null && (
+            <p className="text-base text-kilotextgrey text-center mt-6">Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
+          )} */}
         </div>
 
       </div>
