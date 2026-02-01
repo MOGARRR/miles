@@ -7,6 +7,8 @@ type SubmitButtonProps = {
   loadingText?: string;
   disabled?: boolean;
   className?: string;
+  type?: "button" | "submit";
+  onClick?: () => void;
   
 };
 
@@ -17,10 +19,14 @@ const SubmitButton = ({
   loadingText,
   disabled = false,
   className,
+  type = "submit",
+  onClick,
+  
 }: SubmitButtonProps) => {
   return (
     <button
-      type="submit"
+      type={type}
+      onClick={onClick}
       disabled={disabled || isLoading}
       className={clsx(
         // base styles (match LinkButton)
@@ -37,9 +43,9 @@ const SubmitButton = ({
 
         // variants
         variant === "primary" &&
-          "bg-kilored text-white hover:bg-[#B53535]",
+          "bg-kilored text-white hover:bg-[#B53535]", //red button
         variant === "secondary" &&
-          "bg-kiloblack text-white hover:bg-[#0f0f11]"
+          "bg-kiloblack text-white hover:bg-[#0f0f11]" //black button 
       )}
     >
       {isLoading ? loadingText ?? "Submitting…" : children}

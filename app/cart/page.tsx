@@ -167,7 +167,7 @@ const CartPage = () => {
       
       <div className="
         max-w-7xl mx-auto
-        px-6 md:px-16 py-24 
+        px-6 md:px-16 py-20 
         flex gap-8">
         
         {/* LEFT SIDE — occupies remaining space */}

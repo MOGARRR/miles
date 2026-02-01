@@ -1,4 +1,5 @@
 import React from "react";
+import SubmitButton from "./ui/SubmitButton";
 
 type ShippingFormProps = {
   shippingForm: any;
@@ -16,14 +17,29 @@ const ShippingForm = ({
 }: ShippingFormProps) => {
 
   return (
-    <div className="border border-kilored">
+    <div className="
+      bg-kilodarkgrey
+      rounded-lg border border-[#3a3a41]
+      px-6 md:px-16 py-12"
+    >
       {/* SHIPPING INPUT */}
       {/* REFACTOR IF NECESSARY WHEN EVERYTHING IS WORKING */}
-      <h1 className="text-xl">Shipping (Within Canada) </h1>
-
+      <div className="mb-6">
+        <h3 className="text-xl mb-4">
+          Shipping Information (Within Canada) 
+        </h3>
+        <p className="text-base text-kilotextgrey "> 
+            Add your address to calculate shipping and make sure your order arrives smoothly.
+        </p>
+      </div>
+      
+      {/* FORM */}
+      <div>
         <div>
-          <div>
-            <label>Full Name</label>
+          <fieldset className="fieldset text-sm leading-[1.4]">
+            <label className=" label text-kilotextlight font-semibold ">
+              Full Name
+            </label>
             <input
               id="name"
               name="name"
@@ -31,21 +47,37 @@ const ShippingForm = ({
               value={shippingForm.name}
               onChange={onChange}
               placeholder="Your name"
-              className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-            />
-            <br />
-            <label>Phone Number</label>
+              className=" 
+                  h-[40px]
+                  p-2 
+                  mb-2
+                  rounded-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+              />
+
+            <label className=" label text-kilotextlight font-semibold ">
+              Phone Number
+            </label>
             <input
               id="phoneNumber"
               name="phoneNumber"
               type="tel"
               value={shippingForm.phoneNumber}
               onChange={onChange}
-              placeholder="Format: 123-456-7890"
-              className="m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-            />
-            <br />
-            <label>Postal Code</label>
+              placeholder="123-456-7890"
+              className=" 
+                  h-[40px]
+                  p-2 
+                  mb-2
+                  rounded-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+              />
+
+            <label className=" label text-kilotextlight font-semibold ">
+              Postal Code
+            </label>
             <input
               id="zip"
               name="zip"
@@ -54,10 +86,18 @@ const ShippingForm = ({
               maxLength={7}
               onChange={onChange}
               placeholder="e.g. M5V 2T6"
-              className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-            />
-            <br />
-            <label>City</label>
+              className=" 
+                  h-[40px]
+                  p-2 
+                  mb-2
+                  rounded-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+              />
+
+            <label className=" label text-kilotextlight font-semibold ">
+              City
+            </label>
             <input
               id="city"
               name="city"
@@ -65,10 +105,18 @@ const ShippingForm = ({
               value={shippingForm.city}
               onChange={onChange}
               placeholder="e.g. Toronto"
-              className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-            />
-            <br />
-            <label>Street Address</label>
+              className=" 
+                  h-[40px]
+                  p-2 
+                  mb-2
+                  rounded-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+              />
+
+            <label className=" label text-kilotextlight font-semibold ">
+              Street Address
+            </label>
             <input
               id="street1"
               name="street1"
@@ -76,10 +124,18 @@ const ShippingForm = ({
               value={shippingForm.street1}
               onChange={onChange}
               placeholder="123 Queen St W"
-              className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600"
-            />
-            <br />
-            <label>State / Province</label>
+              className=" 
+                  h-[40px]
+                  p-2 
+                  mb-2
+                  rounded-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+              />
+    
+            <label className=" label text-kilotextlight font-semibold ">
+              Province
+            </label>
             <input
               id="state"
               name="state"
@@ -87,24 +143,32 @@ const ShippingForm = ({
               value={shippingForm.state}
               onChange={onChange}
               placeholder="e.g. ON"
-              className=" m-4 px-2 py-1 rounded bg-gray-900 border border-gray-600 "
-            />
-            <br />
-            <button
-              className=" rounded border p-2 cursor-pointer"
+              className=" 
+                  h-[40px]
+                  p-2 
+                  mb-2
+                  rounded-lg border border-[#3a3a41] 
+                  bg-kiloblack
+                  "
+              /> 
+
+            <SubmitButton
+              type="button"
+              variant="primary"
               onClick={onEstimate}
             >
               Estimate Shipping
-            </button>
-            <br /> <br />
+            </SubmitButton>
+          </fieldset>
 
-            {/* render shipping cost on UI  */}
-            {shippingEstimate !== null && (
-              <p>Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
-            )}
-          </div>
 
+          {/* render shipping cost on UI  */}
+          {shippingEstimate !== null && (
+            <p>Estimated Shipping Cost: ${shippingEstimate.toFixed(2)}</p>
+          )}
         </div>
+
+      </div>
              
     </div>
   )
