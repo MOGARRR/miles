@@ -1,12 +1,12 @@
 
 const questions = [
-  {q: "How long does a custom piece take?", answer:"Timelines vary depending on complexity, but most custom pieces are completed within 2-4 weeks after approval."},
+  { id: 1, q: "How long does a custom piece take?", answer:"Timelines vary depending on complexity, but most custom pieces are completed within 2-4 weeks after approval."},
 
-  {q: "What's the pricing for custom work?", answer:"Pricing depends on the size, medium, and complexity of the artwork. We'll provide a detailed quote after reviewing your request."},
+  { id: 2, q: "What's the pricing for custom work?", answer:"Pricing depends on the size, medium, and complexity of the artwork. We'll provide a detailed quote after reviewing your request."},
 
-  {q: "Can I request revisions?", answer:"Pricing depends on the size, medium, and complexity of the artwork. We'll provide a detailed quote after reviewing your request."},
+  { id: 3, q: "Can I request revisions?", answer:"Pricing depends on the size, medium, and complexity of the artwork. We'll provide a detailed quote after reviewing your request."},
 
-  {q: "SAMPLE QUESTION", answer:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rutrum neque vel luctus."},
+  { id: 4, q: "SAMPLE QUESTION", answer:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rutrum neque vel luctus."},
 
 ]
 
@@ -25,7 +25,9 @@ const Faq = () => {
     
     
         {questions.map((question) => (
-          <div className="
+          <div 
+          key={question.id}
+          className="
           bg-kilodarkgrey 
           rounded-lg border border-[#3a3a41]
           my-8 p-6">

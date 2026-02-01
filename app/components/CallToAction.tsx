@@ -43,7 +43,7 @@ const CallToAction = () => {
           </LinkButton>
 
           <LinkButton 
-            href="/store" 
+            href="/customArtwork" 
             variant="secondary" 
             className="border-white"
           >
