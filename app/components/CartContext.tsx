@@ -1,7 +1,6 @@
-"use client"
+"use client";
 
-import { createContext, useState, useContext, useEffect } from "react";
-
+import { createContext, useState, useContext, useEffect, useCallback } from "react";
 
 // Defining the type of a smaller version of Product that we store in the cart
 export type CartProduct = {
@@ -17,52 +16,47 @@ type CartContextType = {
   items: CartProduct[];
   addToCart: (product: CartProduct) => void;
   removeFromCart: (id: number) => void;
-}
+  clearCart: () => void;
+};
 
 const STORAGE_KEY = "kiloboy_cart";
 
 export const CartContext = createContext<CartContextType | null>(null);
 
-export const CartProvider = ({children}: { children: React.ReactNode }) => {
-
-  // cart state 
-  const [items, setItems] = useState<CartProduct[]>([]); 
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  // cart state
+  const [items, setItems] = useState<CartProduct[]>([]);
 
   // runs once when the app loads
   useEffect(() => {
-
     // If window doesn’t exist → stop the function
     if (typeof window === "undefined") return;
 
     try {
-      const stored = window.localStorage.getItem(STORAGE_KEY); 
+      const stored = window.localStorage.getItem(STORAGE_KEY);
 
-      // if cart exists, load it 
+      // if cart exists, load it
       if (stored) {
         // localStorage only stores strings
         // convert string back into an array of objects
         const parsed: CartProduct[] = JSON.parse(stored);
         setItems(parsed);
-      }  
+      }
     } catch (error) {
-      console.error("Error reading cart from localStorage")
+      console.error("Error reading cart from localStorage");
     }
-    
-  },[]);
+  }, []);
 
   // when items change, save update localStorage
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     } catch (error) {
       console.error("Error saving cart to localStorage:", error);
     }
-
   }, [items]);
-
-
 
   const addToCart = (product: CartProduct) => {
     // push the product into the array
@@ -73,9 +67,8 @@ export const CartProvider = ({children}: { children: React.ReactNode }) => {
 
   const removeFromCart = (id: number) => {
     setItems((prevItems) => {
-
       // Make a copy of the items array so we don't modify state directly
-      const itemsCopy = [... prevItems]; 
+      const itemsCopy = [...prevItems];
 
       // Find index of the first item with this id
       const indexToRemove = itemsCopy.findIndex((item) => item.id === id);
@@ -93,25 +86,32 @@ export const CartProvider = ({children}: { children: React.ReactNode }) => {
     });
   };
 
+ // Set items to empty 
+ const clearCart = useCallback(() => {
+  setItems([]);
+  // clear localstorage to so cart stay empty
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
+}, []);
 
   return (
     //anything inside <CartProvider> ... </CartProvider> can now read items and addToCart using useContext(CartContext)
-    <CartContext.Provider value={{ items, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ items, addToCart, removeFromCart, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );
 };
 
-
-
 // helper hook so other components can easily use the cart context
 export const useCart = () => {
-  const context = useContext(CartContext); 
+  const context = useContext(CartContext);
 
   if (context === null) {
-    throw new Error("useCart must be used inside a cart provider")
+    throw new Error("useCart must be used inside a cart provider");
   }
 
   return context;
-
 };
