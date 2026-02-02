@@ -10,14 +10,21 @@ interface OrderDetailsProps {
   };
 }
 
+const shortenUrl = (url: string) => {
+  const splitUrl = url.split("");
+  return splitUrl.slice(0, 61);
+};
+
 export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
   const orderData = await getOrderWithProducts(params.id);
 
   return (
     <div>
-      <Link href={'/admin/orders'}>
-      <button className="bg-gray-400 p-2 rounded-lg">Back</button>
-      </Link> <br /><br />
+      <Link href={"/admin/orders"}>
+        <button className="bg-gray-400 p-2 rounded-lg">Back</button>
+      </Link>{" "}
+      <br />
+      <br />
       <section>
         <h1>Order Info: </h1>
         <div>
@@ -55,7 +62,7 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
         <div>
           <p>Customer Name: {orderData.full_name}</p>
           <p>Address Line 1: {orderData.address_line_1}</p>
-          <p>Address Line 2: {orderData.address_line_2 || 'N/A'}</p>
+          <p>Address Line 2: {orderData.address_line_2 || "N/A"}</p>
           <p>Postal : {orderData.postal}</p>
           <p>City : {orderData.city}</p>
           <p>email : {orderData.email}</p>
@@ -65,16 +72,33 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
         <br />
         <h1>Shipping Info:</h1>
         <div>
-          <p>Shipping Status : {orderData.shipping_status}</p>
+          <p>
+            Shipping Status:
+            <select name="shipping_status" id="shipping-status">
+              <option className="bg-gray-800" value="pending">
+                Pending
+              </option>
+              <option className="bg-gray-800" value="shipped">
+                Shipped
+              </option>
+              <option className="bg-gray-800" value="delivered">
+                Delivered
+              </option>
+            </select>
+          </p>
           <p>Shipping Fee : ${orderData.shipping_fee_cents / 100} </p>
         </div>
         <p>Tracking Number : {orderData.tracking_number}</p>
-        <p className="max-w-full break-all overflow-hidden">
-          Label URL: {orderData.label_url}
-        </p> 
+        <p>
+          Label URL:
+          <a className='text-blue-400 underline' href={orderData.label_url}> {shortenUrl(orderData.label_url)}</a>
+        </p>
         {/* Add formatDate function if real labels need it */}
         <p>Estimated Delivery Time: {orderData.estimated_delivery || "N/A"}</p>
       </section>
+      <br />
+      <br />
+      <br />
     </div>
   );
 }
