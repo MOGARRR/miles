@@ -1,3 +1,5 @@
+import { Product } from "./product";
+
 export interface orderData {
   id: number,
   total_cents: number,
@@ -6,7 +8,7 @@ export interface orderData {
   created_at: string,
   updated_at: string,
   payment_status: string,
-shopping_fee_cents: number,
+shipping_fee_cents: number,
 tracking_number: string,
 label_url: string,
 estimated_delivery: any,
@@ -19,4 +21,15 @@ city: string,
 province:string,
 email: string,
 phone_number: string
+ order_products: OrderProduct[];
 }
+
+export type OrderProduct = {
+  id: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
+  unit_price_cents: number;
+  created_at: string;
+  products: Product;
+};

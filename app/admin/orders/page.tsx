@@ -24,7 +24,7 @@ const AdminOrders = async () => {
           <p>Order Number / ID: {order.id} </p>
           <p>Status: {order.status}</p>
           <p>Customer Name: {order.full_name}</p>
-          <p>Total Amount: {order.total_cents}</p>
+          <p>Total Amount: ${order.total_cents / 100}</p>
           <p>Shipping Status: {order.shipping_status}</p>
           <p>Order Date: {formatDate(order.created_at)}</p>
           <p>Last Updated: {formatDate(order.updated_at) || 'N/A'}</p>
