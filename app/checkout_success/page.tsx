@@ -22,7 +22,7 @@ export default async function Success({
   const totalAmount =
   (session.amount_total ?? 0) / 100;
 
-  //console.log(lineItems);
+  console.log("LINE ITEMS" , lineItems);
 
   if (session.status === "open") {
     return redirect("/");
