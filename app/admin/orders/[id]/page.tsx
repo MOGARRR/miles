@@ -1,8 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { getOrderWithProducts } from "@/src/controllers/orderControllers";
 import Link from "next/link";
-import { formatDate } from "@/src/helpers/formatDate";
 import AdminOrdersClient from "../AdminOrdersClient";
 
 interface OrderDetailsProps {
@@ -10,11 +8,6 @@ interface OrderDetailsProps {
     id: string;
   };
 }
-
-const shortenUrl = (url: string) => {
-  const splitUrl = url.split("");
-  return splitUrl.slice(0, 61);
-};
 
 export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
   const orderData = await getOrderWithProducts(params.id);
@@ -26,7 +19,7 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
       </Link>{" "}
       <br />
       <br />
-      <AdminOrdersClient orderInfo={orderData} />
+      <AdminOrdersClient orderId={params.id}orderInfo={orderData} />
     </div>
   );
 }

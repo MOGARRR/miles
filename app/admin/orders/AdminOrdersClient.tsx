@@ -3,9 +3,10 @@ import React, { FC } from "react";
 import { orderData } from "@/src/types/orderData";
 import { formatDate } from "@/src/helpers/formatDate";
 import Image from "next/image";
-
+import OrderForm from "./OrderForm";
 interface AdminOrderProps {
   orderInfo: orderData;
+  orderId: string
 }
 
 const shortenUrl = (url: string) => {
@@ -13,9 +14,27 @@ const shortenUrl = (url: string) => {
   return splitUrl.slice(0, 61);
 };
 
-const AdminOrdersClient: FC<AdminOrderProps> = ({ orderInfo }) => {
+const AdminOrdersClient: FC<AdminOrderProps> = ({orderId, orderInfo }) => {
+  const orderFormInfo = {
+    customerName: orderInfo.full_name,
+    address1: orderInfo.address_line_1,
+    address2: orderInfo.address_line_2,
+    postal: orderInfo.postal,
+    city: orderInfo.city,
+    province: orderInfo.province,
+    email: orderInfo.email,
+    phone: orderInfo.phone_number,
+    shippingStatus: orderInfo.shipping_status,
+    trackingNumber: orderInfo.tracking_number,
+    labelUrl: orderInfo.label_url,
+    estimatedDelivery: orderInfo.estimated_delivery,
+  };
+
   return (
     <div>
+      <OrderForm id={orderId} updateFormInfo={orderFormInfo} />
+      <br />
+      <br />
       <section>
         <h1>Order Info: </h1>
         <div>
