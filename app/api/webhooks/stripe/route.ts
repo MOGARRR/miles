@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
           shipping_fee_cents: Math.round(Number(label.shippingFeeCents) * 100),
           tracking_number: label.trackingNumber,
           estimated_delivery: label.estimatedDelivery,
-          shipping_status: label.shippingStatus,
+          shipping_status: 'Pending',
           label_url: label.labelUrl,
         });
       } catch (err) {

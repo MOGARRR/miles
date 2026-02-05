@@ -72,11 +72,14 @@ export async function createOrder(orderItem: any) {
 // PUT Orders
 export async function updateOrder(id: string, updatedProductItem: any) {
   const supabase = supabaseAdmin;
-  const updates = Object.fromEntries(
-    Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined)
-  );
+   const updates = {
+    ...Object.fromEntries(
+      Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined)
+    ),
+    updated_at: new Date(),
+  };
   const { data, error } = await supabase
-    .from("orders")
+    .from("orders")  
     .update(updates)
     .eq("id", id)
     .select()
