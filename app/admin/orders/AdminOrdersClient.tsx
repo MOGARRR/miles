@@ -1,12 +1,12 @@
 "use client";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { orderData } from "@/src/types/orderData";
 import { formatDate } from "@/src/helpers/formatDate";
 import Image from "next/image";
 import OrderForm from "./OrderForm";
 interface AdminOrderProps {
   orderInfo: orderData;
-  orderId: string
+  orderId: string;
 }
 
 const shortenUrl = (url: string) => {
@@ -14,7 +14,9 @@ const shortenUrl = (url: string) => {
   return splitUrl.slice(0, 61);
 };
 
-const AdminOrdersClient: FC<AdminOrderProps> = ({orderId, orderInfo }) => {
+const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
+  const [updateForm, setUpdateForm] = useState(false);
+
   const orderFormInfo = {
     customerName: orderInfo.full_name,
     address1: orderInfo.address_line_1,
@@ -30,9 +32,18 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({orderId, orderInfo }) => {
     estimatedDelivery: orderInfo.estimated_delivery,
   };
 
+  const handleUpdateForm = () => setUpdateForm(!updateForm);
+
   return (
     <div>
-      <OrderForm id={orderId} updateFormInfo={orderFormInfo} />
+      <button
+        className="bg-gray-400 p-2 rounded-lg w-1/4 self-center mt-5"
+        onClick={handleUpdateForm}
+      >
+        Update Info
+      </button>
+      {updateForm && <OrderForm id={orderId} updateFormInfo={orderFormInfo} />}
+
       <br />
       <br />
       <section>
