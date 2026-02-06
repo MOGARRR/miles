@@ -92,10 +92,7 @@ const CartPage = () => {
       const validateData = await validateRes.json();
 
       // if validateRes errors or is invalid create error message for shipping form
-      if (
-        !validateRes.ok ||
-        !validateData.isValid
-      ) {
+      if (!validateRes.ok || !validateData.isValid) {
         const msg =
           validateData.messages?.[0]?.text ??
           "Please enter a valid shipping address.";
@@ -106,7 +103,6 @@ const CartPage = () => {
 
       setAddressValid(true);
       setAddressError(null);
-      
     } catch (err: any) {
       console.error("Shipping validation error:", err);
     }
@@ -221,62 +217,144 @@ const CartPage = () => {
             shippingEstimate={shippingEstimate}
             addressError={addressError}
           />
-
-          {/* LIST OF ITEMS  */}
+          {/* ORDER SUMMARY */}
           <div
             className="
-            flex flex-col
+        bg-kilodarkgrey
+        rounded-lg border border-[#3a3a41]
+        p-8
+        my-4
+        "
+          >
+            <h3 className="text-xl mb-4">ORDER SUMMARY</h3>
+
+            {/* SUBTOTAL */}
+            {items.length > 0 && (
+              <div className="">
+                <div className="flex justify-between my-4">
+                  <p className="text-base ">Total Items: </p>
+                  <p>{items.length}</p>
+                </div>
+
+                <div className="flex justify-between my-4">
+                  <p>Subtotal: </p>
+                  <p>${(subtotalCents / 100).toFixed(2)}</p>
+                </div>
+
+                <div className="flex justify-between my-4">
+                  <p>HST (13%): </p>
+                  <p>${hst.toFixed(2)}</p>
+                </div>
+
+                <div className="flex justify-between my-4 border-b border-gray-700 pb-6">
+                  <p>Shipping</p>
+                  {shippingEstimate !== null && (
+                    <p>${shippingAmount.toFixed(2)}</p>
+                  )}
+                </div>
+
+                <div className=" flex justify-between my-4">
+                  <h3 className="text-xl mb-4">Total:</h3>
+                  <h3 className="text-xl mb-4 text-kilored">
+                    ${total.toFixed(2)}
+                  </h3>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={agreedToPrivacy}
+                  onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+                />
+                <span className="text-base text-kilotextgrey">
+                  I agree to the{" "}
+                  <Link href="/privacy" className="underline">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+            </div>
+            <br />
+
+            {shippingEstimate === null && (
+              <p className="text-sm">
+                Please calculate shipping before proceeding to checkout.
+              </p>
+            )}
+
+            {/* TODO: redirect to stripe    */}
+            <SubmitButton
+              type="button"
+              variant="primary"
+              disabled={!canProceedToCheckout || !addressValid}
+              onClick={handleCheckout}
+              className="w-full"
+            >
+              PROCEED TO CHECKOUT
+            </SubmitButton>
+          </div>
+        </div>
+
+        {/* LIST OF ITEMS  */}
+        <div
+          className="
+            flex flex-col flex-1
             rounded-lg border border-[#3a3a41]
             bg-kilodarkgrey
-            my-12 p-8"
-          >
-            <ul className="space-y-4 mt-4">
-              {groupedItems.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center gap-4 border-b border-gray-700 pb-4"
+            p-8
+            "
+        >
+           <h3 className="text-xl self-center">Cart Items</h3>
+          <ul className="space-y-4 mt-2">
+            {groupedItems.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-center gap-4 border-b border-gray-700 pb-4"
+              >
+                <img
+                  src={item.image_URL}
+                  alt={item.title}
+                  className="w-30 h-30 object-cover rounded-md"
+                />
+
+                <div className="flex flex-col flex-1">
+                  <span className="font-semibold">{item.title}</span>
+                  <span className="text-gray-300 text-sm">
+                    ${(item.price_cents / 100).toFixed(2)}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="
+                    cursor-pointer
+                    px-2 py-1 border rounded
+                    hover:bg-gray-700"
                 >
-                  <img
-                    src={item.image_URL}
-                    alt={item.title}
-                    className="w-30 h-30 object-cover rounded-md"
-                  />
-
-                  <div className="flex flex-col flex-1">
-                    <span className="font-semibold">{item.title}</span>
-                    <span className="text-gray-300 text-sm">
-                      ${(item.price_cents / 100).toFixed(2)}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="
+                  -
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  onClick={() => addToCart(item)}
+                  className="
                     cursor-pointer
                     px-2 py-1 border rounded
                     hover:bg-gray-700"
-                  >
-                    -
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
-                    onClick={() => addToCart(item)}
-                    className="
-                    cursor-pointer
-                    px-2 py-1 border rounded
-                    hover:bg-gray-700"
-                  >
-                    +
-                  </button>
+                >
+                  +
+                </button>
 
-                  <p className="text-lg font-semibold w-[80px] text-right">
-                    ${((item.price_cents * item.quantity) / 100).toFixed(2)}
-                  </p>
+                <p className="text-lg font-semibold w-[80px] text-right">
+                  ${((item.price_cents * item.quantity) / 100).toFixed(2)}
+                </p>
 
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    aria-label={`Remove ${item.title} from cart`}
-                    className="
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  aria-label={`Remove ${item.title} from cart`}
+                  className="
                       ml-2
                       p-2
                       rounded-lg
@@ -287,102 +365,22 @@ const CartPage = () => {
                       transition-colors
                       cursor-pointer
                     "
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </li>
-              ))}
-            </ul>
+                >
+                  <Trash2 size={18} />
+                </button>
+              </li>
+            ))}
+          </ul>
 
-            {items.length === 0 && (
-              <p className="text-base md:text-lg text-kilotextgrey text-center ">
-                YOUR CART IS EMPTY!
-              </p>
-            )}
-
-            <LinkButton href="/store" variant="secondary" className="mt-10">
-              {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING"}
-            </LinkButton>
-          </div>
-        </div>
-
-        {/* ORDER SUMMARY */}
-        <div
-          className="
-        w-[400px]
-        bg-kilodarkgrey
-        rounded-lg border border-[#3a3a41]
-        p-8"
-        >
-          <h3 className="text-xl mb-4">ORDER SUMMARY</h3>
-
-          {/* SUBTOTAL */}
-          {items.length > 0 && (
-            <div className="">
-              <div className="flex justify-between my-4">
-                <p className="text-base ">Total Items: </p>
-                <p>{items.length}</p>
-              </div>
-
-              <div className="flex justify-between my-4">
-                <p>Subtotal: </p>
-                <p>${(subtotalCents / 100).toFixed(2)}</p>
-              </div>
-
-              <div className="flex justify-between my-4">
-                <p>HST (13%): </p>
-                <p>${hst.toFixed(2)}</p>
-              </div>
-
-              <div className="flex justify-between my-4 border-b border-gray-700 pb-6">
-                <p>Shipping</p>
-                {shippingEstimate !== null && (
-                  <p>${shippingAmount.toFixed(2)}</p>
-                )}
-              </div>
-
-              <div className=" flex justify-between my-4">
-                <h3 className="text-xl mb-4">Total:</h3>
-                <h3 className="text-xl mb-4 text-kilored">
-                  ${total.toFixed(2)}
-                </h3>
-              </div>
-            </div>
-          )}
-
-          <div>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={agreedToPrivacy}
-                onChange={(e) => setAgreedToPrivacy(e.target.checked)}
-              />
-              <span className="text-base text-kilotextgrey">
-                I agree to the{" "}
-                <Link href="/privacy" className="underline">
-                  Privacy Policy
-                </Link>
-              </span>
-            </label>
-          </div>
-          <br />
-
-          {shippingEstimate === null && (
-            <p className="text-sm">
-              Please calculate shipping before proceeding to checkout.
+          {items.length === 0 && (
+            <p className="text-base md:text-lg text-kilotextgrey text-center ">
+              YOUR CART IS EMPTY!
             </p>
           )}
 
-          {/* TODO: redirect to stripe    */}
-          <SubmitButton
-            type="button"
-            variant="primary"
-            disabled={!canProceedToCheckout || !addressValid}
-            onClick={handleCheckout}
-            className="w-full"
-          >
-            PROCEED TO CHECKOUT
-          </SubmitButton>
+          <LinkButton href="/store" variant="secondary" className="mt-10">
+            {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING"}
+          </LinkButton>
         </div>
       </div>
     </section>
