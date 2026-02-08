@@ -51,12 +51,21 @@ export async function getProductById(id: string) {
   const supabase = supabasePublic;
   const { data, error } = await supabase
     .from("products")
-    .select("*")
+    .select(`
+      *,
+      product_sizes (
+        id,
+        label,
+        price_cents
+      )
+    `)
     .eq("id", id)
     .single();
+
   if (error) throw new Error(error.message);
   return data;
 }
+
 
 // POST
 export async function createProduct(userItem: any) {
