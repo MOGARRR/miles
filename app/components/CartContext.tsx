@@ -7,15 +7,27 @@ export type CartProduct = {
   id: number;
   title: string;
   description: string;
-  price_cents: number;
-  category_id: number | null;
   image_URL: string;
+  category_id: number | null;
+
+
+  price_cents: number; // price of the selected size
+
+  product_size: {
+    id: number;
+    label: string;
+    price_cents: number;
+  };
+
+  quantity: number;
+  
+  
 };
 
 type CartContextType = {
   items: CartProduct[];
   addToCart: (product: CartProduct) => void;
-  removeFromCart: (id: number) => void;
+  removeFromCart: (productId: number, sizeId: number) => void;
   clearCart: () => void;
 };
 
@@ -59,32 +71,42 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [items]);
 
   const addToCart = (product: CartProduct) => {
-    // push the product into the array
-    // console.log("ADDING TO CART:", product);
-    setItems((prevItems) => [...prevItems, product]);
-  };
-  // console.log("items", items);
-
-  const removeFromCart = (id: number) => {
     setItems((prevItems) => {
-      // Make a copy of the items array so we don't modify state directly
-      const itemsCopy = [...prevItems];
+      const existingIndex = prevItems.findIndex(
+        (item) =>
+          item.id === product.id &&
+          item.product_size.id === product.product_size.id
+      );
 
-      // Find index of the first item with this id
-      const indexToRemove = itemsCopy.findIndex((item) => item.id === id);
-
-      // If no item was found, return the original array
-      if (indexToRemove === -1) {
-        return prevItems;
+      // If same product + same size already exists → increment quantity
+      if (existingIndex !== -1) {
+        const updatedItems = [...prevItems];
+        updatedItems[existingIndex] = {
+          ...updatedItems[existingIndex],
+          quantity: updatedItems[existingIndex].quantity + 1,
+        };
+        return updatedItems;
       }
 
-      // Remove ONE item at that position
-      itemsCopy.splice(indexToRemove, 1);
-
-      //Return the updated array (React will update the cart)
-      return itemsCopy;
+      // Otherwise add as new cart item
+      return [...prevItems, { ...product, quantity: 1 }];
     });
   };
+
+  // console.log("items", items);
+
+  const removeFromCart = (productId: number, sizeId: number) => {
+    setItems((prevItems) =>
+      prevItems.filter(
+        (item) =>
+          !(
+            item.id === productId &&
+            item.product_size.id === sizeId
+          )
+      )
+    );
+  };
+
 
  // Set items to empty 
  const clearCart = useCallback(() => {

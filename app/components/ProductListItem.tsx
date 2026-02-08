@@ -3,10 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
-import { useCart } from "./CartContext";
-import { CartProduct } from "./CartContext";
-
 
 // the interface defines what props the component must receive
 interface ProductListItemProps {
@@ -23,9 +19,8 @@ interface ProductListItemProps {
   updated_at: string | null;
 }
 
-
-// React.FC means Functional Component
-// ProductListItem is a functional component and its props must follow the ProductListItemProps interface.
+// ProductListItem is a presentation-only component
+// It no longer adds items to the cart directly
 const ProductListItem: React.FC<ProductListItemProps> = ({
   id,
   title,
@@ -34,128 +29,95 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   category_id,
   category_name,
   image_URL,
-  sold_out, 
+  sold_out,
   is_available,
   created_at,
-  updated_at
+  updated_at,
 }) => {
-
-  const { addToCart } = useCart();
-
-  // Build the product object to send to the cart
-  const productToAdd: CartProduct = {
-    id,
-    title,
-    description, 
-    price_cents,
-    category_id,
-    image_URL,
-  }
-
-  
   return (
-
-    <div className="
-      flex flex-col
-      rounded-lg border border-[#3a3a41]
-      bg-kilodarkgrey
+    <div
+      className="
+        flex flex-col
+        rounded-lg border border-[#3a3a41]
+        bg-kilodarkgrey
       "
     >
-
       {/* Clickable area: image + main content */}
-      {/* <Link href={`/storeItem/${id}`}> */}
-      
+      <Link href={`/store/${id}`}>
         {/* IMAGE */}
         <div className="pt-3 pb-3 bg-[#3F3F46] rounded-t-lg">
-          <div className="
-            relative w-full aspect-[1/1] overflow-hidden"
-          >
+          <div className="relative w-full aspect-[1/1] overflow-hidden">
             <Image
-            src={image_URL}
-            alt={title}
-            fill
-            className="object-cover"
+              src={image_URL}
+              alt={title}
+              fill
+              className="object-cover"
             />
           </div>
         </div>
-      
 
         {/* CONTENT */}
         <div className="flex flex-col py-4 px-6 gap-2">
+          {/* Category badge */}
+          {category_name && (
+            <span
+              className="
+                w-fit
+                px-3 py-0.5
+                text-sm font-semibold
+                bg-kilored
+                rounded-full
+              "
+            >
+              {category_name}
+            </span>
+          )}
 
-          {/* reference to categories table later to fetch title */}
-          {/* w-fit ensures the badge sizes to its content
-            (prevents stretching when parent uses flex/grid) */}
-          <span className=" 
-            w-fit
-            px-3 py-0.5
-            text-sm font-semibold
-            bg-kilored 
-            rounded-full
-            " 
-          >
-            {category_name}
-          </span>
-
-          <h1 className="
-            mt-2 mb-2 text-lg md:text-xl font-bold">
+          <h1 className="mt-2 mb-2 text-lg md:text-xl font-bold">
             {title}
           </h1>
 
-          <p className="
-            text-xs md:text-sm text-kilotextgrey"
-          >
+          <p className="text-xs md:text-sm text-kilotextgrey">
             {description}
           </p>
         </div>
-      {/* </Link> */}
-      
-      {/* PRICE AND BUY NOW BUTTON ROW*/}
-      <div className="
-        mt-auto
-        flex items-center justify-between
-        px-6 pb-6 pt-2
-        
-      ">
-    
-        {sold_out ? ( 
-          <>
+      </Link>
+
+      {/* PRICE + CTA */}
+      <div
+        className="
+          mt-auto
+          flex items-center justify-between
+          px-6 pb-6 pt-2
+        "
+      >
+        {/* {sold_out ? (
           <p className="text-kilored text-base font-semibold">
             Sold Out
-            </p>
-          </>
-          
+          </p>
         ) : (
           <p className="text-kilored text-lg font-semibold">
-          ${ (price_cents / 100).toFixed(2) }
-          </p>)}
+            ${(price_cents / 100).toFixed(2)}
+          </p>
+        )} */}
 
-        <button
-          type="button"
-          disabled={sold_out}
-          onClick={() => {
-            addToCart(productToAdd);
-          }}
-          className={`
-          bg-kilored
-          px-4 py-2
-          border border-[#3a3a41] rounded-lg
-          font-semibold
-          flex items-center gap-2
-          transition-colors duration-200
-          hover:bg-[#B53535]
-          cursor-pointer
-                
-          ${sold_out ? "opacity-40 cursor-not-allowed" : ""}`}
-
-        > 
-          Add < ShoppingCart size={20} />
-        </button>
-
-      </div> 
-
+        <Link
+          href={`/store/${id}`}
+          className="
+            bg-kilored
+            px-4 py-2
+            border border-[#3a3a41]
+            rounded-lg
+            font-semibold
+            transition-colors duration-200
+            hover:bg-[#B53535]
+            text-white
+          "
+        >
+          View
+        </Link>
+      </div>
     </div>
-    
   );
 };
 
