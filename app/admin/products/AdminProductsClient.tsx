@@ -138,9 +138,19 @@ const AdminProductsClient = ({
                 <p className="mt-2 text-sm">{product.description}</p>
               )}
 
-              <p className="mt-2 text-sm">
-                ${(product.price_cents / 100).toFixed(2)}
-              </p>
+              {/* PRICES */}
+              {product.product_sizes && (
+                <div className="mt-2 text-sm">
+                  <p className="font-medium">Prices</p>
+                  <ul className="ml-4 list-disc space-y-1">
+                    {product.product_sizes.map((size) => (
+                      <li key={size.id}>
+                        {size.label}: ${(size.price_cents / 100).toFixed(2)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <p className="mt-2 text-sm">
                 Status:{" "}

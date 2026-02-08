@@ -8,6 +8,12 @@
  * and keep our product data consistent across the project.
  */
 
+export type ProductSize = {
+  id: number;
+  label: "Small" | "Large";
+  price_cents: number;
+};
+
 export interface Product {
   id: number;
   title: string;
@@ -19,4 +25,6 @@ export interface Product {
   is_available: boolean;
   created_at: string;
   updated_at: string | null;
+
+  product_sizes?: ProductSize[];
 }

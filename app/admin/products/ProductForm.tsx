@@ -1,5 +1,14 @@
 "use client"
 
+// Product
+// ├─ id
+// ├─ title
+// ├─ description
+// ├─ image_URL
+// ├─ category_id
+// ├─ is_available
+// ├─ product_sizes[]  ← source of truth for prices
+
 import { useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
@@ -21,7 +30,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   const [title, setTitle] = useState(""); 
   const [categoryId, setCategoryId] = useState<number | "">(""); 
   const [description, setDescription] = useState(""); 
-  const [price, setPrice] = useState("");
+
   const [isAvailable, setIsAvailable] = useState(true); 
   const [imageUrl, setImageUrl] = useState(""); 
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -32,16 +41,19 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   // prevent the form from starting with errors later
   // “The user has attempted to submit the form at least once.”
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  
+
+  const [smallPrice, setSmallPrice] = useState("");
+  const [largePrice, setLargePrice] = useState("");
 
   // state for errors 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // guards for empty price, title, image or category
-  const isPriceInvalid = Number(price) <= 0;
   const isCategoryInvalid = categoryId === "";
   const hasImage = imageUrl !== "" || imageFile !== null;
+  const smallPriceInvalid = Number(smallPrice) <= 0;
+  const largePriceInvalid = Number(largePrice) <= 0;
 
   // guard to prevent invalid image URL (would crash next image)
   const isImageValid =
@@ -60,10 +72,15 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     setTitle(product.title);
     setCategoryId(product.category_id ?? "");
     setDescription(product.description ?? "");
-    setPrice((product.price_cents / 100).toString());
     setImageUrl(product.image_URL ?? "");
     setImageFile(null);
     setIsAvailable(product.is_available);
+
+    const small = product.product_sizes?.find(s => s.label === "Small");
+    const large = product.product_sizes?.find(s => s.label === "Large");
+
+    setSmallPrice(small ? (small.price_cents / 100).toString() : "");
+    setLargePrice(large ? (large.price_cents / 100).toString() : "");
   }, [product]);
 
 
@@ -73,10 +90,12 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     setHasSubmitted(true);
 
     if (
-      isPriceInvalid ||
+
       !isImageValid || 
       isCategoryInvalid ||
-      !hasImage
+      !hasImage ||
+      smallPriceInvalid ||
+      largePriceInvalid
     ) {
       return;
     } 
@@ -123,9 +142,18 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           title,
           category_id: categoryId,
           description,
-          price_cents: Math.round(Number(price) * 100),
           image_URL: finalImageUrl, 
-          is_available: isAvailable
+          is_available: isAvailable,
+          product_sizes: [
+            {
+              label: "Small",
+              price_cents: Math.round(Number(smallPrice) * 100),
+            },
+            {
+              label: "Large",
+              price_cents: Math.round(Number(largePrice) * 100),
+            },
+          ],
         }),
       });
 
@@ -152,11 +180,12 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         setTitle("");
         setCategoryId("");
         setDescription("");
-        setPrice("");
         setImageUrl("");
         setImageFile(null);
         setIsAvailable(true);
         setHasSubmitted(false);
+        setSmallPrice("");
+        setLargePrice("");
       }
       
 
@@ -223,17 +252,36 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           />
         </div>
 
-        <div>
-          <label>Price</label>
-          <input 
-            type="number"
-            required
-            step="0.01"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className=" rounded border w-full  mt-1 p-2 text-sm"
-          />
+        <div className="mt-4">
+          <label className="block mb-2 font-medium">Prices</label>
+
+          <div className="flex gap-4">
+            <div className="flex flex-col">
+              <label className="text-sm">Small</label>
+              <input
+                type="number"
+                step="0.01"
+                value={smallPrice}
+                onChange={(e) => setSmallPrice(e.target.value)}
+                className="border p-2 text-sm"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm">Large</label>
+              <input
+                type="number"
+                step="0.01"
+                value={largePrice}
+                onChange={(e) => setLargePrice(e.target.value)}
+                className="border p-2 text-sm"
+                required
+              />
+            </div>
+          </div>
         </div>
+
 
         <div>
           <label>Image URL </label>
@@ -298,11 +346,12 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         <button
           type="submit"
           disabled={
-            isLoading || 
-            isPriceInvalid || 
+            isLoading ||
             !isImageValid ||
             isCategoryInvalid ||
-            !hasImage
+            !hasImage ||
+            smallPriceInvalid ||
+            largePriceInvalid
           }
           className="rounded border p-3 my-6 text-sm disabled:opacity-50"
         >

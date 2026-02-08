@@ -26,7 +26,14 @@ export async function getAllProducts({
 
   let query = supabase
     .from("products")
-    .select("*")
+    .select(`
+      *,
+      product_sizes (
+        id,
+        label,
+        price_cents
+      )
+    `)
     // Stable ordering is required for pagination / infinite scroll
     .order("created_at", { ascending: false })
 
