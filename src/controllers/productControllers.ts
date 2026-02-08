@@ -24,16 +24,30 @@ export async function getAllProducts({
 }: GetAllProductsOptions) {
   const supabase = supabasePublic;
 
-  let query = supabase
-    .from("products")
-    .select(`
-      *,
-      product_sizes (
+    let query = supabase
+      .from("products")
+      .select(`
         id,
-        label,
-        price_cents
-      )
-    `)
+        title,
+        description,
+        image_URL,
+        is_available,
+        created_at,
+        updated_at,
+
+        product_sizes (
+          id,
+          label,
+          price_cents
+        ),
+
+        products_categories (
+          categories (
+            id,
+            title
+          )
+        )
+      `)
     // Stable ordering is required for pagination / infinite scroll
     .order("created_at", { ascending: false })
 
@@ -50,7 +64,16 @@ export async function getAllProducts({
   )
 
   if (error) throw new Error(error.message);
-  return data;
+
+  //Normalize categories into a flat array
+  const normalized = data.map((product: any) => ({
+    ...product,
+    categories: product.products_categories?.map(
+      (pc: any) => pc.categories
+    ) ?? [],
+  }));
+
+  return normalized;
 }
 
 // GET Product by id
@@ -59,18 +82,38 @@ export async function getProductById(id: string) {
   const { data, error } = await supabase
     .from("products")
     .select(`
-      *,
+      id,
+      title,
+      description,
+      image_URL,
+      is_available,
+      created_at,
+      updated_at,
+
       product_sizes (
         id,
         label,
         price_cents
+      ),
+
+      products_categories (
+        categories (
+          id,
+          title
+        )
       )
     `)
     .eq("id", id)
     .single();
 
   if (error) throw new Error(error.message);
-  return data;
+  return {
+    ...data,
+    categories:
+      data.products_categories?.map(
+        (pc: any) => pc.categories
+      ) ?? [],
+  };
 }
 
 
@@ -182,4 +225,68 @@ export async function createProductWithCategories(payload: {
   if (sizeError) throw sizeError;
 
   return product;
+}
+
+
+export async function updateProductWithCategories(
+  productId: number,
+  payload: {
+    title: string;
+    description?: string;
+    image_URL: string;
+    is_available: boolean;
+    category_ids: number[];
+    product_sizes: {
+      label: string;
+      price_cents: number;
+    }[];
+  }
+) {
+  const { category_ids, product_sizes, ...productData } = payload;
+
+  // 1. Update product core fields
+  const { error: productError } = await supabaseAdmin
+    .from("products")
+    .update(productData)
+    .eq("id", productId);
+
+  if (productError) throw productError;
+
+  // 2. Reset categories
+  await supabaseAdmin
+    .from("products_categories")
+    .delete()
+    .eq("product_id", productId);
+
+  const categoryRows = category_ids.map((category_id) => ({
+    product_id: productId,
+    category_id,
+  }));
+
+  if (categoryRows.length > 0) {
+    const { error: catError } = await supabaseAdmin
+      .from("products_categories")
+      .insert(categoryRows);
+
+    if (catError) throw catError;
+  }
+
+  // 3. Reset sizes (same pattern)
+  await supabaseAdmin
+    .from("product_sizes")
+    .delete()
+    .eq("product_id", productId);
+
+  const sizeRows = product_sizes.map((size) => ({
+    product_id: productId,
+    ...size,
+  }));
+
+  const { error: sizeError } = await supabaseAdmin
+    .from("product_sizes")
+    .insert(sizeRows);
+
+  if (sizeError) throw sizeError;
+
+  return { success: true };
 }

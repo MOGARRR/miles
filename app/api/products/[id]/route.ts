@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import {
   getProductById,
   updateProduct,
+  updateProductWithCategories,
   deleteProduct,
 } from "@/src/controllers/productControllers";
 
@@ -33,7 +34,7 @@ export async function PUT(
     const { id } = await params;
     const updatedProductItem = await req.json();
 
-    const result = await updateProduct(id, updatedProductItem);
+    const result = await updateProductWithCategories(Number(id), updatedProductItem)
 
     return NextResponse.json({ product: result });
   } catch (error: any) {

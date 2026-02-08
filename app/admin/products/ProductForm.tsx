@@ -71,7 +71,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
     setTitle(product.title);
     setCategoryIds(
-      product.category_id ? [product.category_id] : []
+      product.categories?.map((c) => c.id) ?? []
     );
     setDescription(product.description ?? "");
     setImageUrl(product.image_URL ?? "");

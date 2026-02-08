@@ -126,13 +126,24 @@ const AdminProductsClient = ({
                   className="w-48 h-32 object-cover rounded border mt-3 mb-3"
                 />
               )}
+              
+              {/* CATEGORIES */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {product.categories?.map((cat) => (
+                  <span
+                    key={cat.id}
+                    className="px-2 py-0.5 text-xs rounded border"
+                  >
+                    {cat.title}
+                  </span>
+                ))}
 
-              <p>
-                Category:{" "}
-                {product.category_id
-                  ? categoryMap[product.category_id]
-                  : "Uncategorized"}
-              </p>
+                {(!product.categories || product.categories.length === 0) && (
+                  <span className="text-xs italic text-gray-500">
+                    Uncategorized
+                  </span>
+                )}
+              </div>
 
               {product.description && (
                 <p className="mt-2 text-sm">{product.description}</p>
