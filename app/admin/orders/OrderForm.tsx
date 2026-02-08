@@ -2,13 +2,16 @@
 import { FC, useState } from "react";
 import React from "react";
 import { orderFormData } from "@/src/types/orderFormData";
-import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/navigation";
 
 interface OrderFormProps {
   id: string;
   updateFormInfo: orderFormData;
+  onClose: () => void;
 }
-const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
+const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     full_name: updateFormInfo.customerName || "",
     address_line_1: updateFormInfo.address1 || "",
@@ -26,6 +29,23 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
       : "",
   });
 
+  const emailHtml = `
+      <h1>Order ID / Number: ${id} Updated</h1>
+      <p><strong>New Order Information:</strong>
+      <p>Customer Name: ${formData.full_name} </p>
+      <p>Address Line 1 : ${formData.address_line_1}</p>
+      <p>Address Line 2: ${formData.address_line_2}</p>
+      <p>City: ${formData.city}</p>
+      <p>Postal: ${formData.postal}</p>
+      <p>Province: ${formData.province}</p>
+      <p>Email: ${formData.email}</p>
+      <p>Phone Number: ${formData.phone_number}</p>
+      <p>Shipping Status: ${formData.shipping_status}</p>
+      <p>Tracking Number: ${formData.tracking_number}</p>
+      <p>Label URL: <a href='${formData.label_url}'>${formData.label_url}<a/></p>
+      <p>Estimated Delivery: ${formData.estimated_delivery}</p>
+      </p>`;
+
   const handleChange = (event: any) => {
     const { name, value } = event.target;
     setFormData((prev) => ({
@@ -37,7 +57,7 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     try {
-      const res = await fetch(`/api/orders/${id}`, {
+      const updateRes = await fetch(`/api/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,10 +66,30 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
         }),
       });
 
-      if (!res.ok) {
+      if (!updateRes.ok) {
         throw new Error("Failed to update Order");
       }
 
+      try {
+        const emailRes = await fetch("/api/emails", {
+          method: "Post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: formData.email,
+            subject: "Kiloboy Artwork Order Update",
+            html: emailHtml,
+          }),
+        });
+
+        if (!emailRes.ok) {
+          throw new Error("Failed to send email");
+        }
+
+        onClose();
+
+      } catch (err: any) {
+        console.error("Update Email Error:", err);
+      }
       console.log("Order Updated:", formData);
     } catch (err: any) {
       console.error("Update Orders Error:", err);
