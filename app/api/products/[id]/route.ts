@@ -8,10 +8,10 @@ import {
 // GET
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await params;
     const product = await getProductById(id);
 
     return NextResponse.json({ product }, { status: 200 });
@@ -27,10 +27,10 @@ export async function GET(
 // PUT
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await params;
     const updatedProductItem = await req.json();
 
     const result = await updateProduct(id, updatedProductItem);
@@ -48,10 +48,10 @@ export async function PUT(
 // DELETE
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await params;
 
     const result = await deleteProduct(id);
 

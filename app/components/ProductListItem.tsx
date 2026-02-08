@@ -9,7 +9,7 @@ interface ProductListItemProps {
   id: number;
   title: string;
   description: string;
-  price_cents: number;
+  starting_price_cents?: number;
   category_id: number | null;
   category_name?: string;
   image_URL: string;
@@ -25,7 +25,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   id,
   title,
   description,
-  price_cents,
+  starting_price_cents,
   category_id,
   category_name,
   image_URL,
@@ -91,15 +91,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           px-6 pb-6 pt-2
         "
       >
-        {/* {sold_out ? (
-          <p className="text-kilored text-base font-semibold">
-            Sold Out
+        {starting_price_cents !== undefined && (
+          <p className="text-kilored text-sm font-semibold">
+            Starting at ${(starting_price_cents / 100).toFixed(2)}
           </p>
-        ) : (
-          <p className="text-kilored text-lg font-semibold">
-            ${(price_cents / 100).toFixed(2)}
-          </p>
-        )} */}
+        )}
 
         <Link
           href={`/store/${id}`}

@@ -134,7 +134,7 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
               description={product.description}
               category_id={product.category_id}
               image_URL={product.image_URL}
-              price_cents={product.price_cents}
+              starting_price_cents={product.price_cents}
               sold_out={product.sold_out}
               is_available={product.is_available}
               created_at={product.created_at}
