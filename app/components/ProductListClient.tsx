@@ -9,12 +9,9 @@ import ProductSkeletonCard from "./ProductSkeletonCard";
 
 
 // defines the type of props 
-type ProductListClientProps = {
+type ProductListClientProps = {}; 
 
-  categoryMap: Record<number, string>;
-}; 
-
-const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) => {
+const ProductListClient: React.FC = () => {
 
   //LAZY LOADING 
   const PAGE_SIZE = 6;
@@ -122,9 +119,7 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
         
       ">
         {products.map((product) => {
-          const categoryName = product.category_id !== null
-          ? categoryMap[product.category_id]
-          : undefined;
+          const categories = product.categories ?? [];
 
           const startingPriceCents =
             product.product_sizes && product.product_sizes.length > 0
@@ -137,14 +132,14 @@ const ProductListClient: React.FC<ProductListClientProps> = ({ categoryMap }) =>
               id={product.id}
               title={product.title}
               description={product.description}
-              category_id={product.category_id}
               image_URL={product.image_URL}
               starting_price_cents={startingPriceCents}
               sold_out={product.sold_out}
               is_available={product.is_available}
               created_at={product.created_at}
               updated_at={product.updated_at}
-              category_name={categoryName}
+              categories={categories}
+
             />
 
           )

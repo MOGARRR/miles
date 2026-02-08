@@ -3,6 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ProductCategory } from "@/src/types/product";
+
 
 // the interface defines what props the component must receive
 interface ProductListItemProps {
@@ -10,8 +12,8 @@ interface ProductListItemProps {
   title: string;
   description: string;
   starting_price_cents?: number;
-  category_id: number | null;
-  category_name?: string;
+  categories?: ProductCategory[];
+
   image_URL: string;
   sold_out: boolean;
   is_available: boolean;
@@ -26,8 +28,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   title,
   description,
   starting_price_cents,
-  category_id,
-  category_name,
+  categories,
   image_URL,
   sold_out,
   is_available,
@@ -59,18 +60,23 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
         {/* CONTENT */}
         <div className="flex flex-col py-4 px-6 gap-2">
           {/* Category badge */}
-          {category_name && (
-            <span
-              className="
-                w-fit
-                px-3 py-0.5
-                text-sm font-semibold
-                bg-kilored
-                rounded-full
-              "
-            >
-              {category_name}
-            </span>
+          {categories && categories.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <span
+                  key={category.id}
+                  className="
+                    w-fit
+                    px-3 py-0.5
+                    text-sm font-semibold
+                    bg-kilored
+                    rounded-full
+                  "
+                >
+                  {category.title}
+                </span>
+              ))}
+            </div>
           )}
 
           <h1 className="mt-2 mb-2 text-lg md:text-xl font-bold">
