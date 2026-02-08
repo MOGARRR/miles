@@ -11,7 +11,14 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 const CartPopup = () => {
   const pathname = usePathname();
-  const { items, addToCart, removeFromCart, clearCart } = useCart();
+
+  const {
+    items,
+    addToCart,
+    decrementQuantity,
+    clearCart,
+  } = useCart();
+
   const [isOpen, setIsOpen] = useState(true);
 
   // Clear cart after successful checkout
@@ -98,19 +105,33 @@ const CartPopup = () => {
                 </div>
 
                 <div className="flex items-center gap-1">
+                  {/* DECREMENT */}
                   <button
                     onClick={() =>
-                      removeFromCart(item.id, item.product_size.id)
+                      decrementQuantity(item.id, item.product_size.id)
                     }
                     className="w-7 h-7 border rounded"
                   >
                     −
                   </button>
+
                   <span className="w-6 text-center">
                     {item.quantity}
                   </span>
+
+                  {/* INCREMENT */}
                   <button
-                    onClick={() => addToCart(item)}
+                    onClick={() =>
+                      addToCart({
+                        id: item.id,
+                        title: item.title,
+                        description: item.description,
+                        image_URL: item.image_URL,
+                        category_id: item.category_id,
+                        price_cents: item.price_cents,
+                        product_size: item.product_size,
+                      })
+                    }
                     className="w-7 h-7 border rounded"
                   >
                     +

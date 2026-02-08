@@ -17,7 +17,7 @@ import {
 
 const CartPage = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const { items, removeFromCart, addToCart } = useCart();
+  const { items, addToCart, decrementQuantity, removeFromCart } = useCart();
 
   // ------ SHIPPING --------
   const [shippingForm, setShippingForm] = useState({
@@ -182,16 +182,32 @@ const CartPage = () => {
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(item.id, item.product_size.id)}
-                    className="px-2 border rounded"
+                    onClick={() =>
+                      decrementQuantity(item.id, item.product_size.id)
+                    }
+                    className="
+                      cursor-pointer
+                      px-2 py-1 border rounded
+                      hover:bg-gray-700
+                    "
                   >
-                    -
+                    −
                   </button>
 
                   <span>{item.quantity}</span>
 
                   <button
-                    onClick={() => addToCart(item)}
+                    onClick={() =>
+                      addToCart({
+                        id: item.id,
+                        title: item.title,
+                        description: item.description,
+                        image_URL: item.image_URL,
+                        category_id: item.category_id,
+                        price_cents: item.price_cents,
+                        product_size: item.product_size,
+                      })
+                    }
                     className="px-2 border rounded"
                   >
                     +

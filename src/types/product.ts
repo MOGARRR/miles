@@ -18,7 +18,7 @@ export interface Product {
   id: number;
   title: string;
   description: string;
-  price_cents: number;
+
   category_id: number | null;
   image_URL: string;
   sold_out: boolean;

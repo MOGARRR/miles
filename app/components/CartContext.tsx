@@ -10,7 +10,6 @@ export type CartProduct = {
   image_URL: string;
   category_id: number | null;
 
-
   price_cents: number; // price of the selected size
 
   product_size: {
@@ -20,14 +19,21 @@ export type CartProduct = {
   };
 
   quantity: number;
-  
-  
 };
 
 type CartContextType = {
   items: CartProduct[];
-  addToCart: (product: CartProduct) => void;
+
+  // Add 1 unit (or create item if it doesn’t exist)
+  addToCart: (product: Omit<CartProduct, "quantity">) => void;
+
+  // Remove 1 unit (removes item entirely if quantity hits 0)
+  decrementQuantity: (productId: number, sizeId: number) => void;
+
+  // Remove item completely regardless of quantity
   removeFromCart: (productId: number, sizeId: number) => void;
+
+  // Clear entire cart
   clearCart: () => void;
 };
 
@@ -70,7 +76,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [items]);
 
-  const addToCart = (product: CartProduct) => {
+  // ADD (or increment)
+  const addToCart = (product: Omit<CartProduct, "quantity">) => {
     setItems((prevItems) => {
       const existingIndex = prevItems.findIndex(
         (item) =>
@@ -93,8 +100,21 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  // console.log("items", items);
+  // DECREMENT (never goes below 0)
+  const decrementQuantity = (productId: number, sizeId: number) => {
+    setItems((prevItems) =>
+      prevItems
+        .map((item) => {
+          if (item.id === productId && item.product_size.id === sizeId) {
+            return { ...item, quantity: item.quantity - 1 };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0)
+    );
+  };
 
+  // REMOVE completely (trash icon)
   const removeFromCart = (productId: number, sizeId: number) => {
     setItems((prevItems) =>
       prevItems.filter(
@@ -107,20 +127,25 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
-
- // Set items to empty 
- const clearCart = useCallback(() => {
-  setItems([]);
-  // clear localstorage to so cart stay empty
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem(STORAGE_KEY);
-  }
-}, []);
+  // Set items to empty 
+  const clearCart = useCallback(() => {
+    setItems([]);
+    // clear localstorage to so cart stay empty
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
 
   return (
-    //anything inside <CartProvider> ... </CartProvider> can now read items and addToCart using useContext(CartContext)
+    // anything inside <CartProvider> ... </CartProvider> can now read items and cart actions
     <CartContext.Provider
-      value={{ items, addToCart, removeFromCart, clearCart }}
+      value={{
+        items,
+        addToCart,
+        decrementQuantity,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>
