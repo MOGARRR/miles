@@ -14,7 +14,7 @@ type Props = {
 const CategoryForm = ({ category, onSuccess }: Props) => {
 
   // state for form fields [no image upload yet]
-  const [title, setTitle] =  useState(category?.title ?? ""); 
+  const [title, setTitle] = useState(category?.title ?? "");
   const [description, setDescription] = useState(category?.description ?? "");
 
   // state for loading page
@@ -32,21 +32,21 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
     setDescription(category?.description ?? "");
   }, [category]);
 
-  const router = useRouter(); 
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent)=> {
-    e.preventDefault(); 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
 
     setIsLoading(true);
     setError(null); //clear previous errors
-    setSuccessMessage(null); 
+    setSuccessMessage(null);
 
     // Create a new category 
     try {
-      const endpoint = isEditMode 
-      ? `/api/categories_products/${category!.id}`
-      : "/api/categories_products";
+      const endpoint = isEditMode
+        ? `/api/categories/${category!.id}`
+        : "/api/categories";
 
       const method = isEditMode ? "PUT" : "POST";
 
@@ -70,7 +70,7 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
       router.refresh();
 
       // Notify parent (page/client wrapper) that creation succeeded
-           
+
       setSuccessMessage(
         isEditMode
           ? "Category updated successfully!"
@@ -103,7 +103,7 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
           {isEditMode ? "Edit Category" : "Add New Category"}
         </h2>
       </div>
-    
+
       <form onSubmit={handleSubmit}>
         <div>
           <label className="text-sm">Title</label>
@@ -115,7 +115,7 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
             className=" rounded border w-full  mt-1 p-2 text-sm"
           />
         </div>
-          
+
         <div>
           <label className="text-sm">Description</label>
           <textarea

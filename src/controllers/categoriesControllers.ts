@@ -5,7 +5,7 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 export async function getAllCategoriesProducts() {
   const supabase = supabasePublic;
   const { data, error } = await supabase
-    .from("categories_products")
+    .from("categories")
     .select("*");
   if (error) throw new Error(error.message);
   return data;
@@ -15,7 +15,7 @@ export async function getAllCategoriesProducts() {
 export async function getCategorieProductById(id: string) {
   const supabase = supabasePublic;
   const { data, error } = await supabase
-    .from("categories_products")
+    .from("categories")
     .select("*")
     .eq("id", id)
     .single();
@@ -27,7 +27,7 @@ export async function getCategorieProductById(id: string) {
 export async function createCategoriesProducts(categoriesProductsItem: any) {
   const supabase = supabaseAdmin;
   const { data, error } = await supabase
-    .from("categories_products")
+    .from("categories")
     .insert([categoriesProductsItem])
     .select()
     .single();
@@ -47,7 +47,7 @@ export async function updateCategoriesProducts(
     ),
   );
   const { data, error } = await supabase
-    .from("categories_products")
+    .from("categories")
     .update(updates)
     .eq("id", id)
     .select()
@@ -79,7 +79,7 @@ export async function deleteCategoriesProducts(id: string) {
 
   // 3. Safe to delete
   const { data, error } = await supabase
-    .from("categories_products")
+    .from("categories")
     .delete()
     .eq("id", id)
     .single();

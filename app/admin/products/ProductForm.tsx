@@ -28,7 +28,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState(""); 
-  const [categoryId, setCategoryId] = useState<number | "">(""); 
+  const [categoryIds, setCategoryIds] = useState<number[]>([]); 
   const [description, setDescription] = useState(""); 
 
   const [isAvailable, setIsAvailable] = useState(true); 
@@ -50,7 +50,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // guards for empty price, title, image or category
-  const isCategoryInvalid = categoryId === "";
+  const isCategoryInvalid = categoryIds.length === 0;
   const hasImage = imageUrl !== "" || imageFile !== null;
   const smallPriceInvalid = Number(smallPrice) <= 0;
   const largePriceInvalid = Number(largePrice) <= 0;
@@ -70,7 +70,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     if (!product) return;
 
     setTitle(product.title);
-    setCategoryId(product.category_id ?? "");
+    setCategoryIds(
+      product.category_id ? [product.category_id] : []
+    );
     setDescription(product.description ?? "");
     setImageUrl(product.image_URL ?? "");
     setImageFile(null);
@@ -140,7 +142,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         },
         body: JSON.stringify({
           title,
-          category_id: categoryId,
+          category_ids: categoryIds,
           description,
           image_URL: finalImageUrl, 
           is_available: isAvailable,
@@ -178,7 +180,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       // reset form only when creating 
       if (!isEditMode) {
         setTitle("");
-        setCategoryId("");
+        setCategoryIds([]);
         setDescription("");
         setImageUrl("");
         setImageFile(null);
@@ -220,28 +222,34 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
 
         <div>
-          <label>Category</label>
-          <select 
-            value={categoryId}
-            onChange={(e) => setCategoryId(Number(e.target.value))}
-            className="rounded border w-full mt-1 p-2 text-sm bg-black text-white"         
-          >
-            <option value="">Select a category</option>
+          <label className="block mb-2">Categories</label>
 
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.title}
-              </option>
-            ))}
+          <div className="space-y-2 border rounded p-3 bg-black text-white">
+            {categories.map((category) => {
+              const checked = categoryIds.includes(category.id);
 
-          </select>
+              return (
+                <label
+                  key={category.id}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setCategoryIds((prev) =>
+                        checked
+                          ? prev.filter((id) => id !== category.id)
+                          : [...prev, category.id]
+                      );
+                    }}
+                  />
+                  <span>{category.title}</span>
+                </label>
+              );
+            })}
+          </div>
         </div>
-
-        {/* {isCategoryInvalid && (
-          <p className="text-sm text-red-600 mt-1">
-            Please select a category
-          </p>
-        )} */}
 
         <div>
           <label>Description</label>

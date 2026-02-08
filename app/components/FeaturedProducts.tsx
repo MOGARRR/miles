@@ -12,11 +12,11 @@ const FeaturedProducts = async () => {
   const baseUrl = await getBaseUrl();
 
   //fetch CATEGORIES from the api route
-  const categoriesRes = await fetch(`${baseUrl}/api/categories_products` , { cache: "no-store" });
-  const categoriesData = await categoriesRes.json(); 
+  const categoriesRes = await fetch(`${baseUrl}/api/categories`, { cache: "no-store" });
+  const categoriesData = await categoriesRes.json();
 
   //extract categories array (fallback to empty array)
-  const categories: Category[] = categoriesData.categories_products ?? []; 
+  const categories: Category[] = categoriesData.categories ?? [];
 
   // build category map - create a lookup object 
   // categoryId -> categoryTitle 
@@ -24,12 +24,12 @@ const FeaturedProducts = async () => {
   const categoryMap: Record<number, string> = {};
   categories.forEach((c) => {
     categoryMap[c.id] = c.title
-  }); 
+  });
 
 
   //fetch PRODUCTS from the api route
   // "no-store" ensures we always get fresh data (no caching)
-  const res = await fetch(`${baseUrl}/api/products` , { cache: "no-store" });
+  const res = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
   const data: { products: Product[] } = await res.json();
 
   // SELECT FEATURED PRODUCTS
@@ -37,7 +37,7 @@ const FeaturedProducts = async () => {
   const featuredProducts: Product[] = (data.products ?? [])
     .filter((p) => p.is_available && !p.sold_out)
     .slice(0, 3);
-   
+
   return (
 
     <section>
@@ -60,7 +60,7 @@ const FeaturedProducts = async () => {
             text-base md:text-xl
             text-kilotextgrey
             pt-6"
-          > 
+          >
             Limited edition artworks and exclusive pieces straight from the studio.
           </p>
         </div>
@@ -70,7 +70,7 @@ const FeaturedProducts = async () => {
           <FeaturedProductsClient
             products={featuredProducts}
             categoryMap={categoryMap}
-          />      
+          />
         </div>
 
         {/* SEE ALL BUTTON - REDIRECTS TO STORE PAGE */}
@@ -86,14 +86,14 @@ const FeaturedProducts = async () => {
             "
           >
             SEE ALL DROPS
-            <MoveRight 
+            <MoveRight
               size={20}
               className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
       </div>
-      
+
     </section>
   )
 };

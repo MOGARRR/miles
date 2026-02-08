@@ -1,5 +1,5 @@
 import { NextResponse} from "next/server";
-import { getAllProducts, createProduct } from "@/src/controllers/productControllers";
+import { getAllProducts, createProduct, createProductWithCategories } from "@/src/controllers/productControllers";
 
 
 /**
@@ -41,7 +41,9 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const productItem = await req.json();
-    const product = await createProduct(productItem);
+
+    const product = await createProductWithCategories(productItem);
+    
     return NextResponse.json({ product }, { status: 201 });
   } catch (error: any) {
     console.error("POST /api/product error:", error.message);

@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { deleteCategoriesProducts, getCategorieProductById, updateCategoriesProducts } from "@/src/controllers/categories_productsControllers";
+import { deleteCategoriesProducts, getCategorieProductById, updateCategoriesProducts } from "@/src/controllers/categoriesControllers";
 
 //GET
 export async function GET(
@@ -7,10 +7,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const categories_products = await getCategorieProductById(params.id);
-    return NextResponse.json({ categories_products }, { status: 200 });
+    const categories = await getCategorieProductById(params.id);
+    return NextResponse.json({ categories }, { status: 200 });
   } catch (error: any) {
-    console.error("GET /api/categories_products error:", error.message);
+    console.error("GET /api/categories error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -26,7 +26,7 @@ export async function PUT(
 
     const result = await updateCategoriesProducts(categoriesProductsId, updatedCategoriesProductsItem);
 
-    return NextResponse.json({ categories_products: result });
+    return NextResponse.json({ categories: result });
   } catch (error: any) {
     console.error("Update error:", error);
     return NextResponse.json(
@@ -45,7 +45,7 @@ export async function DELETE(
 
     const result = await deleteCategoriesProducts(categoriesProductsId);
 
-    return NextResponse.json({ categories_products: result });
+    return NextResponse.json({ categories: result });
   } catch (error: any) {
     console.error("Delete error:", error);
     return NextResponse.json(

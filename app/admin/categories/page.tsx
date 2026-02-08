@@ -9,7 +9,7 @@ const AdminCategoriesPage = async () => {
   // Get the current host so fetch works in all environments
   const baseUrl = await getBaseUrl();
 
-  const res = await fetch(`${baseUrl}/api/categories_products`, {
+  const res = await fetch(`${baseUrl}/api/categories`, {
     cache: "no-store", // always show fresh data in admin
   });
 
@@ -19,7 +19,7 @@ const AdminCategoriesPage = async () => {
 
   const data = await res.json();
 
-  const categories: Category[] = data.categories_products ?? [];
+  const categories: Category[] = data.categories ?? [];
 
   return (
     <div >
@@ -29,7 +29,7 @@ const AdminCategoriesPage = async () => {
           Manage Product Categories
         </p>
       </div>
-      
+
 
       <br /> <br /> <br />
 

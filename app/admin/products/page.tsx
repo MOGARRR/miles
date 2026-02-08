@@ -6,39 +6,39 @@ import AdminProductsClient from "./AdminProductsClient";
 
 const AdminProductsPage = async () => {
 
-  const baseUrl = await getBaseUrl(); 
+  const baseUrl = await getBaseUrl();
 
   // fetch products 
   const productsRes = await fetch(`${baseUrl}/api/products`, {
     cache: "no-store"
-  }); 
+  });
 
   if (!productsRes.ok) {
     throw new Error("Failed to fetch products");
   }
 
-  const productsData = await productsRes.json(); 
-  const products: Product[] = productsData.products ?? []; 
+  const productsData = await productsRes.json();
+  const products: Product[] = productsData.products ?? [];
 
 
   //fetch categories
-  const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, {
+  const categoriesRes = await fetch(`${baseUrl}/api/categories`, {
     cache: "no-store",
-  }); 
+  });
 
   if (!categoriesRes.ok) {
     throw new Error("Failed to fetch categories");
   }
 
-  const categoriesData = await categoriesRes.json(); 
-  const categories: Category[] = categoriesData.categories_products ?? [];
+  const categoriesData = await categoriesRes.json();
+  const categories: Category[] = categoriesData.categories ?? [];
 
   // cretate category map to look at the title 
-  const categoryMap: Record<number, string> = {}; 
+  const categoryMap: Record<number, string> = {};
 
   categories.forEach((category) => {
     categoryMap[category.id] = category.title
-  }); 
+  });
   // console.log(categoryMap);
 
 
@@ -47,7 +47,7 @@ const AdminProductsPage = async () => {
   return (
     <div>
       <h1 className=" text-3xl">PRODUCTS ADMIN </h1>
-      <p> 
+      <p>
         Manage Products
       </p>
 
@@ -57,7 +57,7 @@ const AdminProductsPage = async () => {
         categories={categories}
         categoryMap={categoryMap}
       />
-      
+
     </div>
   )
 };

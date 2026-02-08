@@ -13,10 +13,10 @@ const ProductList = async () => {
 
 
   //fetch CATEGORIES from the api route
-  const categoriesRes = await fetch(`${baseUrl}/api/categories_products`, { cache: "no-store" });
+  const categoriesRes = await fetch(`${baseUrl}/api/categories`, { cache: "no-store" });
 
-  const categoriesData: { categories_products: Category[] } = await categoriesRes.json();
-  const categories = categoriesData.categories_products;
+  const categoriesData: { categories: Category[] } = await categoriesRes.json();
+  const categories = categoriesData.categories;
   // console.log("categories", categories);
 
   //initiates categoryMap Object to store categoryId -> categoryName

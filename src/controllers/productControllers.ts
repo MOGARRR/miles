@@ -48,7 +48,7 @@ export async function getAllProducts({
     offset,
     offset + limit - 1
   )
-    
+
   if (error) throw new Error(error.message);
   return data;
 }
@@ -131,4 +131,55 @@ export async function deleteProduct(id: string) {
   if (error) throw new Error(error.message);
 
   return data;
+}
+
+
+
+export async function createProductWithCategories(payload: {
+  title: string;
+  description?: string;
+  image_URL: string;
+  is_available: boolean;
+  category_ids: number[];
+  product_sizes: {
+    label: string;
+    price_cents: number;
+  }[];
+}) {
+  const { category_ids, product_sizes, ...productData } = payload;
+
+  // Create product
+  const { data: product, error: productError } = await supabaseAdmin
+    .from("products")
+    .insert(productData)
+    .select()
+    .single();
+
+  if (productError) throw productError;
+
+  // Insert categories (join table)
+  const categoryRows = category_ids.map((category_id) => ({
+    product_id: product.id,
+    category_id,
+  }));
+
+  const { error: catError } = await supabaseAdmin
+    .from("products_categories")
+    .insert(categoryRows);
+
+  if (catError) throw catError;
+
+  // Insert product sizes
+  const sizeRows = product_sizes.map((size) => ({
+    product_id: product.id,
+    ...size,
+  }));
+
+  const { error: sizeError } = await supabaseAdmin
+    .from("product_sizes")
+    .insert(sizeRows);
+
+  if (sizeError) throw sizeError;
+
+  return product;
 }

@@ -35,7 +35,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
 
 
   const handleDelete = async (categoryId: number) => {
-    
+
     const confirmed = confirm(
       "Are you sure you want to delete this category? This action cannot be undone."
     );
@@ -47,7 +47,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
       setDeletingId(categoryId);
 
       const res = await fetch(
-        `/api/categories_products/${categoryId}`,
+        `/api/categories/${categoryId}`,
         { method: "DELETE" }
       );
 
@@ -82,7 +82,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
       </div>
 
       {isFormOpen && (
-        <CreateCategoryForm 
+        <CreateCategoryForm
           category={editingCategory ?? undefined}
           onSuccess={() => {
             setIsFormOpen(false);
@@ -137,7 +137,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
         </ul>
       )}
 
-      
+
     </div>
   );
 };
