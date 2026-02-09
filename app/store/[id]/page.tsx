@@ -13,11 +13,18 @@ export default function StoreItemPage() {
   const [selectedSize, setSelectedSize] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+
+
   useEffect(() => {
     async function fetchProduct() {
       const res = await fetch(`/api/products/${id}`);
       const data = await res.json();
+
+      console.log("PRODUCT FROM API:", data.product);
+      
       setProduct(data.product);
+      setActiveImage(data.product.image_URL);  // main image first 
       setLoading(false);
     }
 
@@ -32,14 +39,43 @@ export default function StoreItemPage() {
 
   return (
     <section className="max-w-5xl mx-auto p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-      {/* IMAGE */}
-      <div className="relative aspect-square">
-        <Image
-          src={product.image_URL}
-          alt={product.title}
-          fill
-          className="object-cover rounded-lg"
-        />
+      <div className="flex flex-col gap-4">
+        {/* HERO IMAGE */}
+        <div className="relative aspect-square">
+          <Image
+            src={activeImage || product.image_URL}
+            alt={product.title}
+            fill
+            className="object-cover rounded-lg"
+          />
+        </div>
+
+        {/* THUMBNAILS */}
+        {product.product_images?.length > 0 && (
+          <div className="flex gap-2">
+            {[product.image_URL, ...product.product_images.map((img: any) => img.image_url)].map(
+              (img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImage(img)}
+                  className={`relative h-20 w-20 rounded overflow-hidden border
+                    ${
+                      activeImage === img
+                        ? "border-kilored"
+                        : "border-gray-300"
+                    }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`${product.title} thumbnail`}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              )
+            )}
+          </div>
+        )}
       </div>
 
       {/* INFO */}
@@ -88,7 +124,6 @@ export default function StoreItemPage() {
               category_id: product.category_id,
               price_cents: selectedSize.price_cents,
               product_size: selectedSize,
-              quantity: 1,
             })
           }
           className={`mt-6 px-6 py-3 rounded-md font-semibold

@@ -96,6 +96,12 @@ export async function getProductById(id: string) {
         price_cents
       ),
 
+      product_images (
+        id,
+        image_url,
+        sort_order
+      ),
+
       products_categories (
         categories (
           id,
@@ -107,8 +113,17 @@ export async function getProductById(id: string) {
     .single();
 
   if (error) throw new Error(error.message);
+
+  // IMPORTANT: sort gallery images
+  const sortedImages =
+    data.product_images?.sort(
+      (a: any, b: any) => a.sort_order - b.sort_order
+    ) ?? [];
+
+
   return {
     ...data,
+    product_images: sortedImages,
     categories:
       data.products_categories?.map(
         (pc: any) => pc.categories

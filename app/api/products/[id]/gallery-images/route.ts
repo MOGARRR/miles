@@ -3,13 +3,21 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 export async function POST(
   req: Request,
-  { params }: { params: { productId: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const productId = Number(params.productId);
+    console.log("📸 Gallery upload route hit");
+
+    const productId = Number(context.params.id);
+
+    if (Number.isNaN(productId)) {
+      throw new Error("Invalid product id");
+    }
 
     const formData = await req.formData();
     const files = formData.getAll("files") as File[];
+
+    console.log("Files received:", files.length);
 
     if (!files.length) {
       return NextResponse.json(
@@ -18,28 +26,24 @@ export async function POST(
       );
     }
 
-    const insertedRows = [];
-
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
+      const arrayBuffer = await file.arrayBuffer();
       const filePath = `${productId}/gallery/${Date.now()}-${file.name}`;
 
-      // upload to existing bucket
       const { error: uploadError } = await supabaseAdmin.storage
         .from("product-images")
-        .upload(filePath, file, {
+        .upload(filePath, arrayBuffer, {
           contentType: file.type,
         });
 
       if (uploadError) throw uploadError;
 
-      // get public URL
       const { data } = supabaseAdmin.storage
         .from("product-images")
         .getPublicUrl(filePath);
 
-      // insert DB row
       const { error: dbError } = await supabaseAdmin
         .from("product_images")
         .insert({
@@ -50,13 +54,10 @@ export async function POST(
 
       if (dbError) throw dbError;
 
-      insertedRows.push(data.publicUrl);
+      console.log("Inserted gallery image:", data.publicUrl);
     }
 
-    return NextResponse.json(
-      { images: insertedRows },
-      { status: 201 }
-    );
+    return NextResponse.json({ success: true }, { status: 201 });
   } catch (error: any) {
     console.error("Gallery upload error:", error.message);
     return NextResponse.json(
