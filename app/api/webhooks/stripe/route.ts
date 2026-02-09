@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       sig!,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err: any) {
     console.error("Webhook error:", err.message);
@@ -54,25 +54,50 @@ export async function POST(req: NextRequest) {
 
     // /// Email Formatting
     const html = `
-      <h1>Test</h1>
-      <p><strong>Order Items:</strong>
-      <ul>
-        ${lineItems.data
-          .map(
-            (item) => `
-              <li>
-                ${item.description} × ${item.quantity ?? 1}  -
-                $${(item.amount_total! / 100).toFixed(2)}
-              </li>
-            `
-          )
-          .join("")}
-      </ul>
-
-      <p><strong>Total paid:</strong> $${(session.amount_total! / 100).toFixed(
-        2
-      )}</p>
-    `;
+      <div style="max-width:600px;font-family:Arial,Helvetica,sans-serif;color:#333;">
+      <h1 style="border-bottom:2px solid #eee;padding-bottom:8px;">
+      Kiloboy Artwork Order Receipt
+      </h1>
+      <p style="margin:16px 0 8px;">
+      <strong>Order Items</strong>
+      </p>
+      <table width="100%" cellpadding="6" cellspacing="0" style="border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f7f7f7;">
+          <th align="left" style="border-bottom:1px solid #ddd;">Item</th>
+          <th align="center" style="border-bottom:1px solid #ddd;">Qty</th>
+          <th align="right" style="border-bottom:1px solid #ddd;">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+      ${lineItems.data
+        .map(
+          (item) =>
+            `<tr>
+        <td style="border-bottom:1px solid #eee;">
+        ${item.description}
+        </td>
+        <td align="center" style="border-bottom:1px solid #eee;">
+        ${item.quantity ?? 1}
+        </td>
+        <td align="right" style="border-bottom:1px solid #eee;">
+        $${(item.amount_total! / 100).toFixed(2)}
+        </td>
+        </tr>`,
+        )
+        .join("")}
+      </tbody>
+      </table>
+      <p style="margin-top:16px;font-size:16px;">
+      <strong>Total Paid:</strong>
+      <span style="float:right;">
+      $${(session.amount_total! / 100).toFixed(2)}
+      </span>
+      </p>
+      <p style="margin-top:32px;font-size:12px;color:#777;">
+      Thank you for your purchase! This email was sent automatically. Please do not reply.
+      </p>
+      </div>`;
 
     const shipping = {
       name: session.metadata?.shipping_name,
@@ -100,7 +125,7 @@ export async function POST(req: NextRequest) {
     ) {
       console.warn(
         "Incomplete shipping address from Stripe metadata",
-        session.id
+        session.id,
       );
       return NextResponse.json({ received: true });
     }
@@ -137,7 +162,7 @@ export async function POST(req: NextRequest) {
           quantity: item.quantity,
           unit_price_cents: item.amount_total,
         });
-      })
+      }),
     );
 
     try {
@@ -183,7 +208,7 @@ export async function POST(req: NextRequest) {
           shipping_fee_cents: Math.round(Number(label.shippingFeeCents) * 100),
           tracking_number: label.trackingNumber,
           estimated_delivery: label.estimatedDelivery,
-          shipping_status: 'Pending',
+          shipping_status: "Pending",
           label_url: label.labelUrl,
         });
       } catch (err) {
