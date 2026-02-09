@@ -42,7 +42,7 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
       >
         Update Info
       </button>
-      {updateForm && <OrderForm id={orderId} updateFormInfo={orderFormInfo} />}
+      {updateForm && <OrderForm id={orderId} updateFormInfo={orderFormInfo}  onClose={() => setUpdateForm(false)}/>}
 
       <br />
       <br />
@@ -112,13 +112,16 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
         <p>Tracking Number : {orderInfo.tracking_number}</p>
         <p>
           Label URL:
-          <a className="text-blue-400 underline" href={orderInfo.label_url}>
+          {!orderInfo.label_url && (' N/A')}
+          <a className="text-blue-400 underline" target="blank" href={orderInfo.label_url}>
             {" "}
-            {shortenUrl(orderInfo.label_url)}
+            {orderInfo.label_url && shortenUrl(orderInfo.label_url)}
           </a>
         </p>
         {/* Add formatDate function if real labels need it */}
-        <p>Estimated Delivery Time: {orderInfo.estimated_delivery || "N/A"}</p>
+        <p>Estimated Delivery Time: 
+          {!orderInfo.estimated_delivery && (' N/A')}
+          {orderInfo.estimated_delivery}</p>
       </section>
     </div>
   );

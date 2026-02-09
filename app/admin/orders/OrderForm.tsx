@@ -2,13 +2,14 @@
 import { FC, useState } from "react";
 import React from "react";
 import { orderFormData } from "@/src/types/orderFormData";
-import { redirect } from "next/dist/server/api-utils";
+import { formatUpdateEmail } from "@/src/emails/formatUpdateEmails";
 
 interface OrderFormProps {
   id: string;
   updateFormInfo: orderFormData;
+  onClose: () => void;
 }
-const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
+const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
   const [formData, setFormData] = useState({
     full_name: updateFormInfo.customerName || "",
     address_line_1: updateFormInfo.address1 || "",
@@ -26,6 +27,8 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
       : "",
   });
 
+  const emailHtml = formatUpdateEmail(id, formData);
+
   const handleChange = (event: any) => {
     const { name, value } = event.target;
     setFormData((prev) => ({
@@ -37,7 +40,7 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     try {
-      const res = await fetch(`/api/orders/${id}`, {
+      const updateRes = await fetch(`/api/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,10 +49,29 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo }) => {
         }),
       });
 
-      if (!res.ok) {
+      if (!updateRes.ok) {
         throw new Error("Failed to update Order");
       }
 
+      try {
+        const emailRes = await fetch("/api/emails", {
+          method: "Post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: formData.email,
+            subject: "Kiloboy Artwork Order Update",
+            html: emailHtml,
+          }),
+        });
+
+        if (!emailRes.ok) {
+          throw new Error("Failed to send email");
+        }
+
+        onClose();
+      } catch (err: any) {
+        console.error("Update Email Error:", err);
+      }
       console.log("Order Updated:", formData);
     } catch (err: any) {
       console.error("Update Orders Error:", err);
