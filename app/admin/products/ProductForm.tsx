@@ -35,6 +35,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   const [imageUrl, setImageUrl] = useState(""); 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,6 +92,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     e.preventDefault();
 
     setHasSubmitted(true);
+
+    
 
     if (
 
@@ -162,6 +166,26 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       if (!res.ok) {
         throw new Error("Failed to create product");
       }
+
+      // Capture product ID
+      const { product: createdProduct } = await res.json();
+
+      // Upload gallery images
+      if (galleryFiles.length > 0) {
+        const galleryFormData = new FormData();
+        galleryFiles.forEach((file) => {
+          galleryFormData.append("files", file);
+        });
+
+        await fetch(
+          `/api/products/${createdProduct.id}/gallery-images`,
+          {
+            method: "POST",
+            body: galleryFormData,
+          }
+        );
+      }
+
     
       // Trigger a re-render of the Server Component 
       router.refresh();
@@ -188,6 +212,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         setHasSubmitted(false);
         setSmallPrice("");
         setLargePrice("");
+        setGalleryFiles([]);
       }
       
 
@@ -217,14 +242,15 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className=" rounded border w-full  mt-1 p-2 text-sm"
+            className=" rounded border w-full mt-1 p-2 text-sm"
           />
         </div>
+        <br/>
 
         <div>
           <label className="block mb-2">Categories</label>
 
-          <div className="space-y-2 border rounded p-3 bg-black text-white">
+          <div className="flex  gap-8 space-y-2 border rounded p-3 bg-black text-white">
             {categories.map((category) => {
               const checked = categoryIds.includes(category.id);
 
@@ -290,6 +316,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           </div>
         </div>
 
+        <br/><br/><br/>
+
 
         <div>
           <label>Image URL </label>
@@ -318,6 +346,22 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             className="rounded border w-full mt-1 p-2 text-sm"
           />
 
+        </div>
+        <br/><br/><br/>
+
+        <div>
+          <label>Gallery images (optional)</label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files) {
+                setGalleryFiles(Array.from(e.target.files));
+              }
+            }}
+            className="rounded border w-full mt-1 p-2 text-sm"
+          />
         </div>
 
         {/* {!isImageValid && (

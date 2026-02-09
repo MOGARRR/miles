@@ -22,7 +22,9 @@ export interface Product {
   id: number;
   title: string;
   description: string;
-  image_URL: string;
+
+  // -- primary / cover image
+  image_URL: string; 
 
   // legacy — keep for now so nothing breaks
   category_id?: number | null; 
