@@ -2,7 +2,7 @@
 import { FC, useState } from "react";
 import React from "react";
 import { orderFormData } from "@/src/types/orderFormData";
-import { useRouter } from "next/navigation";
+import { formatUpdateEmail } from "@/src/emails/formatUpdateEmails";
 
 interface OrderFormProps {
   id: string;
@@ -10,8 +10,6 @@ interface OrderFormProps {
   onClose: () => void;
 }
 const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
-  const router = useRouter();
-
   const [formData, setFormData] = useState({
     full_name: updateFormInfo.customerName || "",
     address_line_1: updateFormInfo.address1 || "",
@@ -29,22 +27,7 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
       : "",
   });
 
-  const emailHtml = `
-      <h1>Order ID / Number: ${id} Updated</h1>
-      <p><strong>New Order Information:</strong>
-      <p>Customer Name: ${formData.full_name} </p>
-      <p>Address Line 1 : ${formData.address_line_1}</p>
-      <p>Address Line 2: ${formData.address_line_2}</p>
-      <p>City: ${formData.city}</p>
-      <p>Postal: ${formData.postal}</p>
-      <p>Province: ${formData.province}</p>
-      <p>Email: ${formData.email}</p>
-      <p>Phone Number: ${formData.phone_number}</p>
-      <p>Shipping Status: ${formData.shipping_status}</p>
-      <p>Tracking Number: ${formData.tracking_number}</p>
-      <p>Label URL: <a href='${formData.label_url}'>${formData.label_url}<a/></p>
-      <p>Estimated Delivery: ${formData.estimated_delivery}</p>
-      </p>`;
+  const emailHtml = formatUpdateEmail(id, formData);
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
@@ -86,7 +69,6 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
         }
 
         onClose();
-
       } catch (err: any) {
         console.error("Update Email Error:", err);
       }

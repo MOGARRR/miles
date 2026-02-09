@@ -113,7 +113,7 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
         <p>
           Label URL:
           {!orderInfo.label_url && (' N/A')}
-          <a className="text-blue-400 underline" href={orderInfo.label_url}>
+          <a className="text-blue-400 underline" target="blank" href={orderInfo.label_url}>
             {" "}
             {orderInfo.label_url && shortenUrl(orderInfo.label_url)}
           </a>
