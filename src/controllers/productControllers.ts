@@ -132,33 +132,33 @@ export async function getProductById(id: string) {
 }
 
 
-// POST
-export async function createProduct(userItem: any) {
-  const supabase = supabaseAdmin;
-  const { data, error } = await supabase
-    .from("products")
-    .insert([userItem])
-    .select()
-    .single();
-  if (error) throw new Error(error.message);
-  return data;
-}
+// // POST
+// export async function createProduct(userItem: any) {
+//   const supabase = supabaseAdmin;
+//   const { data, error } = await supabase
+//     .from("products")
+//     .insert([userItem])
+//     .select()
+//     .single();
+//   if (error) throw new Error(error.message);
+//   return data;
+// }
 
-// PUT
-export async function updateProduct(id: string, updatedProductItem: any) {
-  const supabase = supabaseAdmin;
-  const updates = Object.fromEntries(
-    Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined),
-  );
-  const { data, error } = await supabase
-    .from("products")
-    .update(updates)
-    .eq("id", id)
-    .select()
-    .single();
-  if (error) throw new Error(error.message);
-  return data;
-}
+// // PUT
+// export async function updateProduct(id: string, updatedProductItem: any) {
+//   const supabase = supabaseAdmin;
+//   const updates = Object.fromEntries(
+//     Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined),
+//   );
+//   const { data, error } = await supabase
+//     .from("products")
+//     .update(updates)
+//     .eq("id", id)
+//     .select()
+//     .single();
+//   if (error) throw new Error(error.message);
+//   return data;
+// }
 
 // DELETE Product
 export async function deleteProduct(id: string) {

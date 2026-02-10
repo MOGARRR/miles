@@ -18,6 +18,12 @@ export type ProductSize = {
   price_cents: number;
 };
 
+export type ProductImages = {
+  id: number;
+  image_url: string;
+  sort_order: number;
+};
+
 export interface Product {
   id: number;
   title: string;
@@ -37,4 +43,7 @@ export interface Product {
   categories?: ProductCategory[];
 
   product_sizes?: ProductSize[];
+
+   // -- gallery images (optional)
+  product_images?: ProductImages[];
 }

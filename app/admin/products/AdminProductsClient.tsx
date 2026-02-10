@@ -27,13 +27,42 @@ const AdminProductsClient = ({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  const [isLoadingEdit, setIsLoadingEdit] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
 
-  
+
 
   const router = useRouter();
 
+  // HANDLE EDIT PRODUCT 
+  const handleEdit = async (productId: number) => {
+    try {
+      setEditError(null);
+      setIsLoadingEdit(true);
+
+      const res = await fetch(`/api/products/${productId}`);
+
+      if (!res.ok) {
+        throw new Error("Failed to load product");
+      }
+
+      const data = await res.json();
+
+      // This is the FULL product (includes product_images)
+      setEditingProduct(data.product);
+      setIsFormOpen(true);
+    } catch (err: any) {
+      setEditError(err.message || "Could not load product");
+    } finally {
+      setIsLoadingEdit(false);
+    }
+  };
+
+
+  // HANDLE DELETE PRODUCT
   const handleDelete = async (productId: number) => {
     const confirmed = confirm(
       "Are you sure you want to delete this product? This action cannot be undone."
@@ -170,13 +199,11 @@ const AdminProductsClient = ({
 
               <div className="flex gap-4 mt-3">
                 <button
-                  onClick={() => {
-                    setEditingProduct(product);
-                    setIsFormOpen(true);
-                  }}
+                  onClick={() => handleEdit(product.id)}
+                  disabled={isLoadingEdit}
                   className="text-sm underline"
                 >
-                  Edit
+                  {isLoadingEdit ? "Loading…" : "Edit"}
                 </button>
 
                 <button
@@ -185,7 +212,6 @@ const AdminProductsClient = ({
                 >
                   Delete
                 </button>
-
 
               </div>
 

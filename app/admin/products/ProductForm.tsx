@@ -36,6 +36,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<any[]>([]);
 
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +48,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   const [smallPrice, setSmallPrice] = useState("");
   const [largePrice, setLargePrice] = useState("");
 
+  
   // state for errors 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -71,6 +73,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   useEffect(() => {
     if (!product) return;
 
+    console.log("ADMIN PRODUCT PROP:", product);
+
     setTitle(product.title);
     setCategoryIds(
       product.categories?.map((c) => c.id) ?? []
@@ -80,6 +84,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     setImageFile(null);
     setIsAvailable(product.is_available);
 
+    setExistingImages(product.product_images ?? []);
+
     const small = product.product_sizes?.find(s => s.label === "Small");
     const large = product.product_sizes?.find(s => s.label === "Large");
 
@@ -88,15 +94,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   }, [product]);
 
 
+  //HANDLE SUBMIT FORM 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setHasSubmitted(true);
 
-    
-
     if (
-
       !isImageValid || 
       isCategoryInvalid ||
       !hasImage ||
@@ -167,8 +171,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         throw new Error("Failed to create product");
       }
 
-      // Capture product ID
-      const { product: createdProduct } = await res.json();
+      // Determine product id (create vs edit)
+      const productId =
+        isEditMode ? product!.id : (await res.json()).product.id;
 
       // Upload gallery images
       if (galleryFiles.length > 0) {
@@ -178,14 +183,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         });
 
         await fetch(
-          `/api/products/${createdProduct.id}/gallery-images`,
+          `/api/products/${productId}/gallery-images`,
           {
             method: "POST",
             body: galleryFormData,
           }
         );
       }
-
     
       // Trigger a re-render of the Server Component 
       router.refresh();
@@ -215,7 +219,6 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         setGalleryFiles([]);
       }
       
-
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
 
@@ -223,6 +226,33 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       setIsLoading(false);
     }
   }
+
+  // DELETE GALLERY IMAGE
+  const handleDeleteGalleryImage = async (imageId: number) => {
+    if (!product) return;
+
+    const confirmed = confirm("Delete this image?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(
+        `/api/products/${product.id}/gallery-images/${imageId}`,
+        { method: "DELETE" }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to delete image");
+      }
+
+      // update UI immediately
+      setExistingImages((prev) =>
+        prev.filter((img) => img.id !== imageId)
+      );
+    } catch (err) {
+      alert("Could not delete image");
+    }
+  };
+
 
 
   return (
@@ -320,7 +350,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
 
         <div>
-          <label>Image URL </label>
+          <label>Main Image URL </label>
           <input 
             type="text"
             value={imageUrl}
@@ -333,7 +363,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
 
         <div>
-          <label>OR upload image</label>
+          <label>OR upload Main image</label>
           <input 
             type="file"
             accept="image/*"
@@ -347,6 +377,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           />
 
         </div>
+        {imageFile && (
+          <p className="text-sm text-gray-600 mt-1">
+            Selected image: {imageFile.name}
+          </p>
+        )}
+
+
         <br/><br/><br/>
 
         <div>
@@ -364,17 +401,60 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           />
         </div>
 
-        {/* {!isImageValid && (
-          <p className="text-sm text-red-600 mt-1">
-            Image URL must start with "/" or "http"
-          </p>
-        )} */}
+        {isEditMode && (
+          <div className="mt-8 border-t pt-6">
+            {/* MAIN IMAGE PREVIEW */}
+            {product?.image_URL && (
+              <div className="mb-6">
+                <p className="text-sm font-medium mb-2">Main image</p>
 
-        {imageFile && (
-          <p className="text-sm text-gray-600 mt-1">
-            Selected image: {imageFile.name}
-          </p>
+                <div className="relative w-24 h-24 border rounded overflow-hidden">
+                  <img
+                    src={product.image_URL}
+                    alt="Main product image"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* GALLERY IMAGES */}
+            {existingImages.length > 0 && (
+              <div>
+                <p className="text-sm font-medium mb-2">Gallery images</p>
+
+                <div className="flex flex-wrap gap-4">
+                  {existingImages.map((img) => (
+                    <div
+                      key={img.id}
+                      className="relative w-24 h-24 border rounded overflow-hidden"
+                    >
+                      <img
+                        src={img.image_url}
+                        alt="Gallery image"
+                        className="w-full h-full object-cover"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteGalleryImage(img.id)}
+                        className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         )}
+
+
+      
+        
+
+        <br/> <br/> <br/>
 
         <div>
           <input 

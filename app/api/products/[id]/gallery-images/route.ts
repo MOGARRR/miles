@@ -1,23 +1,32 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
+// UPLOAD GALLERY IMAGES
+type Params = {
+  id: string;
+};
+
 export async function POST(
   req: Request,
-  context: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
-    console.log("📸 Gallery upload route hit");
+    //console.log(" Gallery upload route hit");
 
-    const productId = Number(context.params.id);
+    const { id } = await params;
+    const productId = Number(id);
 
     if (Number.isNaN(productId)) {
-      throw new Error("Invalid product id");
+      return NextResponse.json(
+        { error: "Invalid product id" },
+        { status: 400 }
+      );
     }
 
     const formData = await req.formData();
     const files = formData.getAll("files") as File[];
 
-    console.log("Files received:", files.length);
+    //console.log("Files received:", files.length);
 
     if (!files.length) {
       return NextResponse.json(
@@ -54,7 +63,7 @@ export async function POST(
 
       if (dbError) throw dbError;
 
-      console.log("Inserted gallery image:", data.publicUrl);
+      //console.log("Inserted gallery image:", data.publicUrl);
     }
 
     return NextResponse.json({ success: true }, { status: 201 });
