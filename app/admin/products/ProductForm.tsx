@@ -192,7 +192,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     w-2/4 
     bg-gray-800 
     p-4 mb-6
-    rounded-md border"
+    rounded-md border
+    "
     >
       <div>
         <h2 className="text-xl font-medium text-center border-b-1 mb-4 ">
@@ -398,7 +399,6 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           disabled:bg-gray-600 
           disabled:cursor-not-allowed
           "
-          
         >
           {isLoading ? (
             <LoadingAnimation />

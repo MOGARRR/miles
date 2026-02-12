@@ -10,6 +10,7 @@ import type { Product } from "@/src/types/product";
 import type { Category } from "@/src/types/category";
 import CreateProductForm from "./ProductForm";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Props = {
   products: Product[];
@@ -68,6 +69,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
     <div>
       <div className="flex justify-between mb-6">
         <button
+          id="edit-form"
           type="button"
           onClick={() => setIsFormOpen((prev) => !prev)}
           className="
@@ -180,6 +182,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
               </p>
 
               <div className="flex gap-4 mt-3">
+                <Link href="#edit-form"  >
                 <button
                   onClick={() => {
                     setEditingProduct(product);
@@ -192,10 +195,12 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
                   p-2 
                   rounded-full border
                   cursor-pointer
-                  hover:bg-gray-600 "
+                  hover:bg-gray-600
+                  "
                 >
                   Edit
                 </button>
+                </Link>
 
                 <button
                   onClick={() => handleDelete(product.id)}
@@ -207,7 +212,8 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
                   p-2 
                   rounded-full border
                   cursor-pointer
-                  hover:bg-red-700"
+                  hover:bg-red-700
+                  "
                 >
                   Delete
                 </button>

@@ -58,6 +58,8 @@ const AdminCategoriesClient = ({ categories }: Props) => {
     }
   };
 
+  
+
   return (
     <div className="flex flex-col">
       <div className="mb-6 ">
@@ -67,6 +69,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
             setIsFormOpen((prev) => !prev);
             setEditingCategory(null);
           }}
+          id="edit-form"
           className="
           bg-gray-500 
           rounded border 
@@ -78,6 +81,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
         >
           {isFormOpen ? "Close" : "Add New Category"}
         </button>
+      
       </div>
 
       {isFormOpen && (
@@ -134,13 +138,14 @@ const AdminCategoriesClient = ({ categories }: Props) => {
                 {category.title}
               </p>
 
-              <p className="mt-2 text-sm">
-                <h2 className="text-lg">Description: </h2>
+              <p className="mt-2 text-lg">
+                Description: <br />
                 {!category.description && "Empty"}
                 {category.description}
               </p>
 
               <div>
+                <a href="#edit-form">
                 <button
                   type="button"
                   onClick={() => {
@@ -159,7 +164,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
                 >
                   Edit
                 </button>
-
+                </a>
                 <button
                   type="button"
                   onClick={() => handleDelete(category.id)}

@@ -23,12 +23,12 @@ const EventsForm = ({ event, onSuccess }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isActive, setIsActive] = useState(event?.is_active ?? false);
 
-  // Check and set event Date validation 
+  // Check and set event Date validation
   const eventDateValidation = (eventDate: string) =>
     new Date() < new Date(eventDate);
 
   const handleDateValidation = (endDate: string) => {
-    const isValidDate = eventDateValidation(endDate)
+    const isValidDate = eventDateValidation(endDate);
     setIsActive(isValidDate);
     setEndDate(endDate);
   };
@@ -159,12 +159,19 @@ const EventsForm = ({ event, onSuccess }: Props) => {
   };
 
   return (
-    <div>
-      <h2 className="text-lg font-medium">
+    <div
+      className=" 
+    w-2/4 
+    bg-gray-800 
+    p-4 mb-6
+    rounded-md border
+    "
+    >
+      <h2 className="text-xl font-medium text-center border-b-1 mb-4 ">
         {isEditMode ? "Edit Event" : "Add New Event"}
       </h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="text-center text-md">
         <div>
           <label>Title</label>
           <input
@@ -172,7 +179,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className=" rounded border w-full mt-1 p-2 text-sm"
+            className="rounded border w-full mt-1 p-2 text-sm"
           />
         </div>
 
@@ -187,7 +194,40 @@ const EventsForm = ({ event, onSuccess }: Props) => {
         </div>
 
         <div>
-          <label>Image URL</label>
+          <label>
+            {" "}
+            Image URL <i>OR </i>upload image
+          </label>
+          <br />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                setImageFile(e.target.files[0]);
+                setImageUrl(""); // file wins
+              }
+            }}
+            className="
+                  text-md  
+                  bg-gray-500 
+                  p-2 
+                  rounded-md border
+                  cursor-pointer
+                  hover:bg-gray-600
+                  "
+          />
+          {imageFile && (
+            <p className="text-sm text-gray-300 mt-1">
+              Selected image: {imageFile.name}
+            </p>
+          )}
+
+          {hasSubmitted && !isImageValid && (
+            <p className="text-sm text-red-600 mt-1">
+              Image URL must start with "/" or "http"
+            </p>
+          )}
           <input
             type="text"
             value={imageUrl}
@@ -199,47 +239,38 @@ const EventsForm = ({ event, onSuccess }: Props) => {
           />
         </div>
 
-        <div>
-          <label>OR upload image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              if (e.target.files?.[0]) {
-                setImageFile(e.target.files[0]);
-                setImageUrl(""); // file wins
-              }
-            }}
-            className="rounded border w-full mt-1 p-2 text-sm"
-          />
-        </div>
+        <div className="flex justify-center my-4">
+          <div>
+            <label>Start Date</label>
+            <br />
+            <input
+              type="date"
+              required
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="
+              rounded border 
+              w-full 
+              mt-1 p-2 
+              text-md"
+            />
+          </div>
 
-        {hasSubmitted && !isImageValid && (
-          <p className="text-sm text-red-600 mt-1">
-            Image URL must start with "/" or "http"
-          </p>
-        )}
-
-        <div>
-          <label>Start Date</label>
-          <input
-            type="date"
-            required
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="rounded border w-full mt-1 p-2 text-sm"
-          />
-        </div>
-
-        <div>
-          <label>End Date</label>
-          <input
-            type="date"
-            required
-            value={endDate}
-            onChange={(e) => handleDateValidation(e.target.value)}
-            className="rounded border w-full mt-1 p-2 text-sm"
-          />
+          <div>
+            <label>End Date</label>
+            <br />
+            <input
+              type="date"
+              required
+              value={endDate}
+              onChange={(e) => handleDateValidation(e.target.value)}
+              className="
+              rounded border 
+              w-full 
+              mt-1 ml-4 p-2
+              text-md"
+            />
+          </div>
         </div>
 
         <div>
@@ -249,7 +280,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
             required
             value={hours}
             onChange={(e) => setHours(e.target.value)}
-            className="rounded border w-full mt-1 p-2 text-sm"
+            className="rounded border w-full mt-1 p-2 text-md"
           />
         </div>
 
@@ -260,7 +291,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
             required
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="rounded border w-full mt-1 p-2 text-sm"
+            className="rounded border w-full mt-1 p-2 text-md"
           />
         </div>
 
@@ -273,7 +304,17 @@ const EventsForm = ({ event, onSuccess }: Props) => {
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded border p-3 my-6 text-sm "
+          className="
+          w-1/2 
+          mt-3  p-2 
+          text-md  
+          bg-gray-500 
+          rounded-full border
+          cursor-pointer
+          hover:bg-gray-600 
+          disabled:opacity-50
+          disabled:bg-gray-600 
+          disabled:cursor-not-allowed "
         >
           {isLoading ? (
             <LoadingAnimation />
