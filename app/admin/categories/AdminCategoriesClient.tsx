@@ -72,7 +72,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
           rounded border 
           p-2 
           text-md 
-          hover:cursor-pointer
+          cursor-pointer
           hover:bg-gray-600 
           "
         >
@@ -149,11 +149,11 @@ const AdminCategoriesClient = ({ categories }: Props) => {
                   }}
                   className="
                   w-20 
-                  mt-3 text-md  
+                  mt-3  p-2 
+                  text-md  
                   bg-gray-500 
-                  p-2 
                   rounded-full border
-                  hover:cursor-pointer
+                  cursor-pointer
                   hover:bg-gray-600 
                   "
                 >
@@ -165,12 +165,11 @@ const AdminCategoriesClient = ({ categories }: Props) => {
                   onClick={() => handleDelete(category.id)}
                   className="
                   w-20
-                  mt-3 ml-4 
+                  mt-3 ml-4 p-2 
                   text-md  
                   bg-kilored  
-                  p-2 
                   rounded-full border
-                  hover:cursor-pointer
+                  cursor-pointer
                   hover:bg-red-700
                   "
                 >

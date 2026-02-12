@@ -23,8 +23,8 @@ const AdminCategoriesPage = async () => {
 
   return (
     <div >
-      <div className="text-center ">
-        <h1 className="text-3xl border-b-1">CATEGORIES ADMIN</h1>
+      <div className="text-center">
+        <h1 className="text-3xl ">CATEGORIES ADMIN</h1>
         <p className="text-xl">
           Manage Product Categories
         </p>

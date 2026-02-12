@@ -104,7 +104,10 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
     rounded-md border
     ">
       <div >
-        <h2 className="text-xl font-medium text-center border-b-1 mb-4 ">
+        <h2 className="
+        text-xl font-medium text-center
+        border-b-1 mb-4
+        ">
           {isEditMode ? "Edit Category" : "Add New Category"}
         </h2>
       </div>
@@ -154,7 +157,7 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
           rounded border
           p-3 my-6
           text-md
-          hover: cursor-pointer
+          cursor-pointer
           hover:bg-gray-600 
           ">
           {isLoading ? <LoadingAnimation /> : (isEditMode ? "Save Changes" : "Create Category")}
