@@ -23,15 +23,15 @@ const AdminCategoriesPage = async () => {
 
   return (
     <div >
-      <div>
-        <h1 className="text-3xl">CATEGORIES ADMIN</h1>
-        <p>
+      <div className="text-center ">
+        <h1 className="text-3xl border-b-1">CATEGORIES ADMIN</h1>
+        <p className="text-xl">
           Manage Product Categories
         </p>
       </div>
 
 
-      <br /> <br /> <br />
+      <br /> 
 
       {/* Pass fetched categories to the client wrapper.
       The server component handles data fetching,
