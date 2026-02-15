@@ -37,91 +37,195 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
   return (
     <div>
       <button
-        className="bg-gray-400 p-2 rounded-lg w-1/4 self-center mt-5"
+        className="
+                  my-3
+                  text-md  
+                  bg-gray-500 
+                  p-2 
+                  rounded-full border
+                  cursor-pointer
+                  hover:bg-gray-600"
         onClick={handleUpdateForm}
       >
-        Update Info
+        {updateForm ? "Close" : "Update Info"}
       </button>
-      {updateForm && <OrderForm id={orderId} updateFormInfo={orderFormInfo}  onClose={() => setUpdateForm(false)}/>}
+      {updateForm && (
+        <OrderForm
+          id={orderId}
+          updateFormInfo={orderFormInfo}
+          onClose={() => setUpdateForm(false)}
+        />
+      )}
 
-      <br />
-      <br />
-      <section>
-        <h1>Order Info: </h1>
-        <div>
-          <p>Order Number / ID : {orderInfo.id}</p>
-          <p>Order Status: {orderInfo.status}</p>
-          <p className="max-w-full break-all overflow-hidden">
-            Stripe Session ID : {orderInfo.stripe_session_id}
-          </p>
-          <p>Total Order Amount: ${orderInfo.total_cents / 100}</p>
-          <p>Payment Status: {orderInfo.payment_status}</p>
-          <p>Order Created : {formatDate(orderInfo.created_at)}</p>
-          <p>Order Last Updated : {formatDate(orderInfo.updated_at)}</p>
-        </div>
-        <br />
-        <br />
-        <h1>Order Items: </h1>
-        <section className="flex">
-          {orderInfo.order_products.map((productData: any) => (
-            <div key={productData.id} className="m-5">
-              <p>Product Number / ID : {productData.products.id}</p>
-              <p>Product Name: {productData.products.title}</p>
-              <Image
-                className="h-30 w-30 object-cover"
-                src={productData.products.image_URL}
-                width={100}
-                height={100}
-                alt={productData.products.description}
-              />
-              <p>Product Price: ${productData.unit_price_cents / 100}</p>
-              <p>QTY: {productData.quantity}</p>
+      <section
+        className="
+        flex-col
+        p-4 mb-6
+        "
+      >
+        <div className="flex justify-around">
+          <section
+            className="
+        w-2/5 
+        bg-gray-800 
+        p-4 mb-6
+        rounded-md border
+        "
+          >
+            <h1
+              className="
+            text-2xl text-center text-kilored
+            border-b-1 
+            mb-2
+            "
+            >
+              Order Info:{" "}
+            </h1>
+            <div>
+              <section className="flex justify-evenly text-center">
+                <div>
+                  <h2 className="text-lg">Order ID :</h2>
+                  <p> #{orderInfo.id}</p>
+                </div>
+                <div>
+                  <h2 className="text-lg">Order Status:</h2>
+                  <p>{orderInfo.status}</p>
+                </div>
+                <div>
+                  <h2 className="text-lg">Payment Status: </h2>
+                  <p>{orderInfo.payment_status}</p>
+                </div>
+                <div>
+                  <h2 className="text-lg">Total Order Amount:</h2>
+                  <p>${orderInfo.total_cents / 100}</p>
+                </div>
+                
+              </section>
+              <h2 className="text-lg text-center mt-4"> Stripe Session ID :</h2>
+              <p className="max-w-full break-all overflow-hidden text-sm">
+                {orderInfo.stripe_session_id}
+              </p>
+
+              <section className="flex justify-around">
+                <div>
+                  <h2 className="text-lg">Order Created :</h2>
+                  <p>{formatDate(orderInfo.created_at)}</p>
+                </div>
+                <div>
+                  <h2 className="text-lg">Order Last Updated:</h2>
+                  <p> {formatDate(orderInfo.updated_at)}</p>
+                </div>
+              </section>
             </div>
-          ))}
-        </section>{" "}
-        <h1>Customer Info:</h1>
-        <div>
-          <p>Customer Name: {orderInfo.full_name}</p>
-          <p>Address Line 1: {orderInfo.address_line_1}</p>
-          <p>Address Line 2: {orderInfo.address_line_2 || "N/A"}</p>
-          <p>Postal : {orderInfo.postal}</p>
-          <p>City : {orderInfo.city}</p>
-          <p>email : {orderInfo.email}</p>
-          <p>Phone Number : {orderInfo.phone_number}</p>
+          </section>
+          <section
+            className="
+        w-2/5 
+        bg-gray-800 
+        p-4 mb-6
+        rounded-md border
+        "
+          >
+            <h1
+              className="
+            text-2xl text-center text-kilored
+            border-b-1 
+            mb-2
+            "
+            >
+              Customer Info:
+            </h1>
+            <div>
+              <p>Customer Name: {orderInfo.full_name}</p>
+              <p>Address Line 1: {orderInfo.address_line_1}</p>
+              <p>Address Line 2: {orderInfo.address_line_2 || "N/A"}</p>
+              <p>Postal : {orderInfo.postal}</p>
+              <p>City : {orderInfo.city}</p>
+              <p>email : {orderInfo.email}</p>
+              <p>Phone Number : {orderInfo.phone_number}</p>
+            </div>
+          </section>
         </div>
-        <br />
-        <br />
-        <h1>Shipping Info:</h1>
-        <div>
-          <p>
-            Shipping Status:
-            <select name="shipping_status" id="shipping-status">
-              <option className="bg-gray-800" value="pending">
-                Pending
-              </option>
-              <option className="bg-gray-800" value="shipped">
-                Shipped
-              </option>
-              <option className="bg-gray-800" value="delivered">
-                Delivered
-              </option>
-            </select>
-          </p>
-          <p>Shipping Fee : ${orderInfo.shipping_fee_cents / 100} </p>
+
+        <div className="flex justify-around">
+          <section
+            className="
+        w-2/5 
+        bg-gray-800 
+        p-4 mb-6
+        rounded-md border
+        "
+          >
+            <h1
+              className="
+            text-2xl text-center text-kilored
+            border-b-1 
+            mb-2
+            "
+            >
+              Order Items:{" "}
+            </h1>
+            <section>
+              {orderInfo.order_products.map((productData: any) => (
+                <div key={productData.id} className="m-5">
+                  <p>Product Number / ID : {productData.products.id}</p>
+                  <p>Product Name: {productData.products.title}</p>
+                  <Image
+                    className="h-30 w-30 object-cover"
+                    src={productData.products.image_URL}
+                    width={100}
+                    height={100}
+                    alt={productData.products.description}
+                  />
+                  <p>Product Price: ${productData.unit_price_cents / 100}</p>
+                  <p>QTY: {productData.quantity}</p>
+                </div>
+              ))}
+            </section>
+          </section>
+
+          <section
+            className="
+            w-2/5  
+            bg-gray-800 
+            p-4 mb-6
+            rounded-md border
+            "
+          >
+            <div>
+              <h1
+                className="
+              text-2xl text-center text-kilored
+              border-b-1 
+              mb-2
+              "
+              >
+                Shipping Info:
+              </h1>
+              <p>Shipping Status: {orderInfo.shipping_status}</p>
+              <p>Shipping Fee : ${orderInfo.shipping_fee_cents / 100} </p>
+            </div>
+            <p>Tracking Number : {orderInfo.tracking_number}</p>
+            <p>
+              Label URL:
+              {!orderInfo.label_url && " N/A"}
+              <a
+                className="text-blue-400 underline"
+                target="blank"
+                href={orderInfo.label_url}
+              >
+                {" "}
+                {orderInfo.label_url && shortenUrl(orderInfo.label_url)}
+              </a>
+            </p>
+            {/* Add formatDate function if real labels need it */}
+            <p>
+              Estimated Delivery Time:
+              {!orderInfo.estimated_delivery && " N/A"}
+              {orderInfo.estimated_delivery}
+            </p>
+          </section>
         </div>
-        <p>Tracking Number : {orderInfo.tracking_number}</p>
-        <p>
-          Label URL:
-          {!orderInfo.label_url && (' N/A')}
-          <a className="text-blue-400 underline" target="blank" href={orderInfo.label_url}>
-            {" "}
-            {orderInfo.label_url && shortenUrl(orderInfo.label_url)}
-          </a>
-        </p>
-        {/* Add formatDate function if real labels need it */}
-        <p>Estimated Delivery Time: 
-          {!orderInfo.estimated_delivery && (' N/A')}
-          {orderInfo.estimated_delivery}</p>
       </section>
     </div>
   );

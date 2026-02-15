@@ -9,31 +9,87 @@ const AdminOrders = async () => {
     throw new Error("Failed to fetch products");
   }
 
- 
   const orderData = await orderRes.json();
 
   return (
     <div>
-      <div>
-        <h1 className="text-3xl">ORDERS ADMIN</h1>
+      <div className="text-center">
+        <h1 className="text-3xl border-b-1">ORDERS ADMIN</h1>
         <p>Manage Orders</p>
       </div>
-      <br />
-      {orderData.orders.map((order: any) => (
-        <div key={order.id} className="bg-stone-800 m-5 p-5">
-          <p>Order Number / ID: {order.id} </p>
-          <p>Status: {order.status}</p>
-          <p>Customer Name: {order.full_name}</p>
-          <p>Total Amount: ${order.total_cents / 100}</p>
-          <p>Shipping Status: {order.shipping_status}</p>
-          <p>Order Date: {formatDate(order.created_at)}</p>
-          <p>Last Updated: {formatDate(order.updated_at) || 'N/A'}</p>
-          <Link  href={`/admin/orders/${order.id}`}>
-          <button className="bg-gray-400 p-2 rounded-lg">View Details</button>
-          </Link>
-          
-        </div>
-      ))}
+      <br /> <br />
+      <ul
+        className="
+        space-y-8 mt-6 
+        grid grid-cols-4
+        gap-6 
+        "
+      >
+        {orderData.orders.map((order: any) => (
+          <li
+            key={order.id}
+            className=" 
+            flex flex-col justify-around items-center
+            rounded-xl border
+            bg-gray-800
+            p-4"
+          >
+            <h2 className="text-2xl text-kilored border-b-1 mb-2">
+              Order ID: #{order.id}{" "}
+            </h2>
+            <div className="flex flex-col text-center text-sm">
+              <section className="text-lg">
+                <div>
+                  <h2>Customer Name:</h2>
+                  <p>{order.full_name}</p>
+                </div>
+              </section>
+
+              <section className="flex justify-around my-2">
+                <div>
+                  <h2>Total Amount:</h2>
+                  <p>${order.total_cents / 100}</p>
+                </div>
+                <div>
+                  <h2>Status:</h2>
+                  <p>{order.status}</p>
+                </div>
+                <div>
+                  <h2>Shipping Status:</h2>
+                  <p>{order.shipping_status}</p>
+                </div>
+              </section>
+
+              <section className="flex justify-evenly">
+                <div>
+                  <h2>Order Date:</h2>
+                  <p className="text-sm mr-1">{formatDate(order.created_at)}</p>
+                </div>
+                <div>
+                  <h2>Last Updated:</h2>
+                  <p className="text-sm ml-1">
+                    {formatDate(order.updated_at) || "N/A"}
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            <Link href={`/admin/orders/${order.id}`}>
+              <button
+                className="
+                  mt-3 text-md  
+                  bg-gray-500 
+                  p-2 
+                  rounded-full border
+                  cursor-pointer
+                  hover:bg-gray-600"
+              >
+                View Details
+              </button>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
