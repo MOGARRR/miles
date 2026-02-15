@@ -1,5 +1,5 @@
 import { NextResponse} from "next/server";
-import { getAllProducts, createProduct, createProductWithCategories } from "@/src/controllers/productControllers";
+import { getAllProducts, createProductWithCategories } from "@/src/controllers/productControllers";
 
 
 /**

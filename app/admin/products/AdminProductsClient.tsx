@@ -178,19 +178,33 @@ const AdminProductsClient = ({
                 <p className="mt-2 text-sm">{product.description}</p>
               )}
 
-              {/* PRICES */}
+              {/* PRICES AND STOCK COUNT*/}
               {product.product_sizes && (
                 <div className="mt-2 text-sm">
-                  <p className="font-medium">Prices</p>
+                  <p className="font-medium">Variants</p>
                   <ul className="ml-4 list-disc space-y-1">
                     {product.product_sizes.map((size) => (
                       <li key={size.id}>
                         {size.label}: ${(size.price_cents / 100).toFixed(2)}
+                        {" · "}
+                        <span
+                          className={
+                            size.stock === 0
+                              ? "text-rose-500"
+                              : size.stock < 5
+                              ? "text-amber-500"
+                              : "text-white"
+                          }
+                        >
+                          Stock: {size.stock}
+                        </span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
+
+       
 
               <p className="mt-2 text-sm">
                 Status:{" "}

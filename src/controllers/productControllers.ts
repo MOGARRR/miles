@@ -38,7 +38,8 @@ export async function getAllProducts({
         product_sizes (
           id,
           label,
-          price_cents
+          price_cents, 
+          stock
         ),
 
         products_categories (
@@ -93,7 +94,8 @@ export async function getProductById(id: string) {
       product_sizes (
         id,
         label,
-        price_cents
+        price_cents,
+        stock
       ),
 
       product_images (
