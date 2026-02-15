@@ -160,73 +160,102 @@ const CartPage = () => {
 
           <div className="rounded-lg border bg-kilodarkgrey my-12 p-8">
             <ul className="space-y-4">
-              {items.map((item) => (
-                <li
-                  key={`${item.id}-${item.product_size.id}`}
-                  className="flex items-center gap-4 border-b pb-4"
-                >
-                  <img
-                    src={item.image_URL}
-                    alt={item.title}
-                    className="w-24 h-24 object-cover rounded-md"
-                  />
+              {items.map((item) => {
+                const isMaxReached =
+                  item.quantity >= item.product_size.stock;
 
-                  <div className="flex-1">
-                    <p className="font-semibold">{item.title}</p>
-                    <p className="text-sm text-gray-400">
-                      Size: {item.product_size.label}
+                return (
+                  <li
+                    key={`${item.id}-${item.product_size.id}`}
+                    className="flex items-center gap-4 pb-4"
+                  >
+                    <img
+                      src={item.image_URL}
+                      alt={item.title}
+                      className="w-24 h-24 object-cover rounded-md"
+                    />
+
+                    <div className="flex-1">
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="text-sm text-gray-400">
+                        Size: {item.product_size.label}
+                      </p>
+                      <p className="text-sm">
+                        ${(item.price_cents / 100).toFixed(2)}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        decrementQuantity(item.id, item.product_size.id)
+                      }
+                      className="px-2 py-1 border rounded hover:bg-gray-700"
+                    >
+                      −
+                    </button>
+
+                    <span>{item.quantity}</span>
+
+                    <div className="flex flex-col items-center">
+                      <button
+                        disabled={isMaxReached}
+                        onClick={() =>
+                          addToCart({
+                            id: item.id,
+                            title: item.title,
+                            description: item.description,
+                            image_URL: item.image_URL,
+                            category_id: item.category_id,
+                            price_cents: item.price_cents,
+                            product_size: item.product_size,
+                          })
+                        }
+                        className={`
+                          px-2 border rounded
+                          ${isMaxReached
+                            ? "opacity-40 cursor-not-allowed"
+                            : "hover:bg-gray-700"}
+                        `}
+                      >
+                        +
+                      </button>
+
+                      
+                    </div>
+                    
+
+                    <p className="w-[80px] text-right font-semibold">
+                      ${((item.price_cents * item.quantity) / 100).toFixed(2)}
                     </p>
-                    <p className="text-sm">
-                      ${(item.price_cents / 100).toFixed(2)}
-                    </p>
-                  </div>
 
-                  <button
-                    onClick={() =>
-                      decrementQuantity(item.id, item.product_size.id)
-                    }
-                    className="
-                      cursor-pointer
-                      px-2 py-1 border rounded
-                      hover:bg-gray-700
-                    "
-                  >
-                    −
-                  </button>
 
-                  <span>{item.quantity}</span>
+                    <div>
+                      {isMaxReached && (
+                      <p className="text-[11px] text-kilotextgrey mt-1 text-center">
+                        Only {item.product_size.stock} available
+                      </p>
+                    )}
 
-                  <button
-                    onClick={() =>
-                      addToCart({
-                        id: item.id,
-                        title: item.title,
-                        description: item.description,
-                        image_URL: item.image_URL,
-                        category_id: item.category_id,
-                        price_cents: item.price_cents,
-                        product_size: item.product_size,
-                      })
-                    }
-                    className="px-2 border rounded"
-                  >
-                    +
-                  </button>
+                    </div>
+                    
+                    
 
-                  <p className="w-[80px] text-right font-semibold">
-                    ${((item.price_cents * item.quantity) / 100).toFixed(2)}
-                  </p>
-
-                  <button
-                    onClick={() =>
-                      removeFromCart(item.id, item.product_size.id)
-                    }
-                    className="p-2"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </li>
-              ))}
+                    <button
+                      onClick={() =>
+                        removeFromCart(item.id, item.product_size.id)
+                      }
+                      className="p-2"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                    
+                    
+                  </li>
+                  
+                  
+                );
+              })}
+              
             </ul>
 
             {items.length === 0 && (
@@ -234,6 +263,8 @@ const CartPage = () => {
                 YOUR CART IS EMPTY!
               </p>
             )}
+
+            <br /> 
 
             <LinkButton href="/store" variant="secondary" className="mt-10">
               {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING"}

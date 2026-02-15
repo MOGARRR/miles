@@ -16,6 +16,7 @@ export type CartProduct = {
     id: number;
     label: string;
     price_cents: number;
+    stock: number;
   };
 
   quantity: number;
@@ -87,11 +88,20 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
       // If same product + same size already exists → increment quantity
       if (existingIndex !== -1) {
+        const existingItem = prevItems[existingIndex];
+        const maxStock = existingItem.product_size.stock;
+
+        // Stop if we reached stock limit
+        if (existingItem.quantity >= maxStock) {
+          return prevItems;
+        }
+
         const updatedItems = [...prevItems];
         updatedItems[existingIndex] = {
-          ...updatedItems[existingIndex],
-          quantity: updatedItems[existingIndex].quantity + 1,
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
         };
+
         return updatedItems;
       }
 

@@ -153,7 +153,12 @@ export default function StoreItemPage() {
               image_URL: product.image_URL,
               category_id: product.category_id,
               price_cents: selectedSize.price_cents,
-              product_size: selectedSize,
+              product_size: {
+                id: selectedSize.id,
+                label: selectedSize.label,
+                price_cents: selectedSize.price_cents,
+                stock: selectedSize.stock, 
+              },
             })
           }
           className={`mt-6 px-6 py-3 rounded-md font-semibold

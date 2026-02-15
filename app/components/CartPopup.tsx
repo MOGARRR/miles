@@ -21,6 +21,9 @@ const CartPopup = () => {
 
   const [isOpen, setIsOpen] = useState(true);
 
+
+
+
   // Clear cart after successful checkout
   useEffect(() => {
     if (pathname === "/checkout_success") {
@@ -81,64 +84,87 @@ const CartPopup = () => {
       {isOpen && (
         <div className="flex flex-col">
           <ul className="max-h-52 overflow-y-auto py-2 px-3">
-            {items.map((item) => (
-              <li
-                key={`${item.id}-${item.product_size.id}`}
-                className="flex items-center gap-3 py-2.5 border-b border-[#3a3a41]/80 last:border-0"
-              >
-                <img
-                  src={item.image_URL}
-                  alt={item.title}
-                  className="w-11 h-11 object-cover rounded-lg"
-                />
+            {items.map((item) => {
+              const isMaxReached =
+                item.quantity >= item.product_size.stock;
 
-                <div className="flex-1 min-w-0">
-                  <p className="truncate font-medium">
-                    {item.title}
-                  </p>
-                  <p className="text-xs text-kilotextgrey">
-                    Size: {item.product_size.label}
-                  </p>
-                  <p className="text-xs tabular-nums">
-                    ${((item.price_cents * item.quantity) / 100).toFixed(2)}
-                  </p>
-                </div>
+              return (
+                
+                <li
+                  key={`${item.id}-${item.product_size.id}`}
+                  className="flex items-center gap-3 py-2.5 border-b border-[#3a3a41]/80 last:border-0"
+                >
+                  <img
+                    src={item.image_URL}
+                    alt={item.title}
+                    className="w-11 h-11 object-cover rounded-lg"
+                  />
 
-                <div className="flex items-center gap-1">
-                  {/* DECREMENT */}
-                  <button
-                    onClick={() =>
-                      decrementQuantity(item.id, item.product_size.id)
-                    }
-                    className="w-7 h-7 border rounded"
-                  >
-                    −
-                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate font-medium">
+                      {item.title}
+                    </p>
+                    <p className="text-xs text-kilotextgrey">
+                      Size: {item.product_size.label}
+                    </p>
+                    <p className="text-xs tabular-nums">
+                      ${((item.price_cents * item.quantity) / 100).toFixed(2)}
+                    </p>
+                  </div>
 
-                  <span className="w-6 text-center">
-                    {item.quantity}
-                  </span>
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-1">
+                      {/* DECREMENT */}
+                      <button
+                        onClick={() =>
+                          decrementQuantity(item.id, item.product_size.id)
+                        }
+                        className="w-7 h-7 border rounded"
+                      >
+                        −
+                      </button>
 
-                  {/* INCREMENT */}
-                  <button
-                    onClick={() =>
-                      addToCart({
-                        id: item.id,
-                        title: item.title,
-                        description: item.description,
-                        image_URL: item.image_URL,
-                        category_id: item.category_id,
-                        price_cents: item.price_cents,
-                        product_size: item.product_size,
-                      })
-                    }
-                    className="w-7 h-7 border rounded"
-                  >
-                    +
-                  </button>
-                </div>
-              </li>
-            ))}
+                      <span className="w-6 text-center">
+                        {item.quantity}
+                      </span>
+
+                      {/* INCREMENT */}
+                      <button
+                        onClick={() =>
+                          addToCart({
+                            id: item.id,
+                            title: item.title,
+                            description: item.description,
+                            image_URL: item.image_URL,
+                            category_id: item.category_id,
+                            price_cents: item.price_cents,
+                            product_size: item.product_size,
+                          })
+                        }
+                        disabled={isMaxReached}
+                        className={`
+                          w-7 h-7 border rounded
+                          ${
+                            isMaxReached
+                              ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                              : "hover:bg-black/30"
+                          }
+                        `}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {isMaxReached && (
+                      <p className="text-[11px] text-kilotextgrey">
+                        Only {item.product_size.stock} available
+                      </p>
+                    )}
+                  </div>
+
+                </li>
+              );
+          })}
           </ul>
 
           <div className="px-4 py-3 border-t border-[#3a3a41] bg-black/25">
