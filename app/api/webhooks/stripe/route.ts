@@ -9,6 +9,23 @@ import {
 } from "@/src/controllers/orderControllers";
 import { createOrderProduct } from "@/src/controllers/order_productsControllers";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
+import { decrementProductSizeStock } from "@/src/controllers/inventoryControllers";
+
+
+/**
+ * Stripe webhook handler
+ *
+ * NOTE:
+ * - This file is primarily responsible for post-payment side effects:
+ *   - order creation
+ *   - order_products creation
+ *   - shipping label generation
+ *   - confirmation emails
+ *
+ * Inventory updates are intentionally handled here (and not on the frontend)
+ * to avoid race conditions and overselling.
+ */
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -33,16 +50,26 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const customerEmail = session.customer_details?.email;
+
+    // IMPORTANT:
+    // Each Stripe line item must include `productSizeId` in metadata
+    // when the checkout session is created.
+    // This allows us to safely decrement inventory for the correct size.
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
       limit: 100,
       expand: ["data.price.product"],
     });
 
     // Get product meta data information
+    // NOTE: Inventory is tracked at the product_size level (not product level)
     const orderItems = lineItems.data.map((item) => {
       const product = item.price?.product as Stripe.Product | null;
       return {
         productId: product?.metadata?.productId ?? null,
+
+        // Product size ID (used for inventory decrement)
+        productSizeId: product?.metadata?.productSizeId ?? null,
+        
         quantity: item.quantity ?? 1,
         amount_total: item.amount_total,
         description: item.description,
@@ -50,7 +77,11 @@ export async function POST(req: NextRequest) {
     });
 
     // Filter out Hst and shipping from meta data
-    const filteredOrderItems = orderItems.filter((item) => item.productId);
+    const filteredOrderItems = orderItems.filter(
+      (item) => item.productId && item.productSizeId
+    );
+
+    
 
     // /// Email Formatting
     const html = `
@@ -111,6 +142,26 @@ export async function POST(req: NextRequest) {
       console.log("Order already processed:", session.id);
       return NextResponse.json({ received: true });
     }
+
+    /**
+     * INVENTORY UPDATE
+     * Inventory is decremented ONLY after Stripe confirms payment
+     * via `checkout.session.completed`.
+     */
+    try {
+      await Promise.all(
+        filteredOrderItems.map((item) =>
+          decrementProductSizeStock(
+            Number(item.productSizeId),
+            item.quantity
+          )
+        )
+      );
+    } catch (err) {
+      console.error("Inventory update error:", err);
+      throw err; // Stripe will retry the webhook
+    }
+
 
     /// Create order to DB
     const order = await createOrder({
