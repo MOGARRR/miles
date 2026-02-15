@@ -38,6 +38,11 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<any[]>([]);
 
+  const [smallPrice, setSmallPrice] = useState("");
+  const [largePrice, setLargePrice] = useState("");
+  const [smallStock, setSmallStock] = useState("");
+  const [largeStock, setLargeStock] = useState("");
+
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,8 +50,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   // “The user has attempted to submit the form at least once.”
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  const [smallPrice, setSmallPrice] = useState("");
-  const [largePrice, setLargePrice] = useState("");
+  
 
   
   // state for errors 
@@ -73,7 +77,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   useEffect(() => {
     if (!product) return;
 
-    console.log("ADMIN PRODUCT PROP:", product);
+    //console.log("ADMIN PRODUCT PROP:", product);
 
     setTitle(product.title);
     setCategoryIds(
@@ -91,6 +95,15 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
     setSmallPrice(small ? (small.price_cents / 100).toString() : "");
     setLargePrice(large ? (large.price_cents / 100).toString() : "");
+
+    setSmallStock(
+      typeof small?.stock === "number" ? small.stock.toString() : ""
+    );
+
+    setLargeStock(
+      typeof large?.stock === "number" ? large.stock.toString() : ""
+    );
+
   }, [product]);
 
 
@@ -158,10 +171,12 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             {
               label: "Small",
               price_cents: Math.round(Number(smallPrice) * 100),
+              stock: Number(smallStock),
             },
             {
               label: "Large",
               price_cents: Math.round(Number(largePrice) * 100),
+              stock: Number(largeStock),
             },
           ],
         }),
@@ -217,6 +232,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         setSmallPrice("");
         setLargePrice("");
         setGalleryFiles([]);
+        setSmallStock("");
+        setLargeStock("");
       }
       
     } catch (err: any) {
@@ -277,6 +294,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
         <br/>
 
+        {/* CATEGORIES */}
         <div>
           <label className="block mb-2">Categories</label>
 
@@ -306,7 +324,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             })}
           </div>
         </div>
-
+        
+        {/* DESCRIPTION */}
         <div>
           <label>Description</label>
           <textarea 
@@ -346,9 +365,40 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           </div>
         </div>
 
+        <div className="mt-4">
+          <label className="block mb-2 font-medium">Inventory</label>
+
+          <div className="flex gap-4">
+            <div className="flex flex-col">
+              <label className="text-sm">Small stock</label>
+              <input
+                type="number"
+                min={0}
+                value={smallStock}
+                onChange={(e) => setSmallStock(e.target.value)}
+                className="border p-2 text-sm"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm">Large stock</label>
+              <input
+                type="number"
+                min={0}
+                value={largeStock}
+                onChange={(e) => setLargeStock(e.target.value)}
+                className="border p-2 text-sm"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+
         <br/><br/><br/>
 
-
+        {/* IMAGES */}
         <div>
           <label>Main Image URL </label>
           <input 
@@ -451,8 +501,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         )}
 
 
-      
-        
+            
 
         <br/> <br/> <br/>
 

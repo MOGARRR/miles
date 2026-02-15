@@ -16,6 +16,7 @@ export type ProductSize = {
   id: number;
   label: "Small" | "Large";
   price_cents: number;
+  stock: number;
 };
 
 export type ProductImages = {
