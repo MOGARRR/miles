@@ -126,6 +126,12 @@ const ProductListClient: React.FC = () => {
               ? Math.min(...product.product_sizes.map((s) => s.price_cents))
               : undefined;
 
+          const isSoldOut =
+            Array.isArray(product.product_sizes) &&
+            product.product_sizes.length > 0 &&
+            product.product_sizes.every((size) => size.stock === 0);
+
+
           return (
             <ProductListItem
               key={product.id}
@@ -134,7 +140,7 @@ const ProductListClient: React.FC = () => {
               description={product.description}
               image_URL={product.image_URL}
               starting_price_cents={startingPriceCents}
-              sold_out={product.sold_out}
+              sold_out={isSoldOut}
               is_available={product.is_available}
               created_at={product.created_at}
               updated_at={product.updated_at}
@@ -150,9 +156,7 @@ const ProductListClient: React.FC = () => {
           Array.from({ length: PAGE_SIZE }).map((_, index) => (
             <ProductSkeletonCard key={`skeleton-${index}`} />
           ))
-        }
-
-  
+        } 
       </div>
 
       {hasMore && (

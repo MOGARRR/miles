@@ -37,16 +37,19 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
 }) => {
   return (
     <div
-      className="
+      className={`
         flex flex-col
         rounded-lg border border-[#3a3a41]
         bg-kilodarkgrey
-      "
+        ${sold_out ? "opacity-70" : ""}
+      `}
     >
       {/* Clickable area: image + main content */}
       <Link href={`/store/${id}`}>
         {/* IMAGE */}
-        <div className="pt-3 pb-3 bg-[#3F3F46] rounded-t-lg">
+        <div className="pt-3 pb-3 bg-[#3F3F46] rounded-t-lg relative">
+
+
           <div className="relative w-full aspect-[1/1] overflow-hidden">
             <Image
               src={image_URL}
@@ -103,20 +106,23 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           </p>
         )}
 
-        <Link
+       <Link
           href={`/store/${id}`}
-          className="
-            bg-kilored
+          className={`
             px-4 py-2
             border border-[#3a3a41]
             rounded-lg
             font-semibold
             transition-colors duration-200
-            hover:bg-[#B53535]
             text-white
-          "
+            ${
+              sold_out
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-kilored hover:bg-[#B53535]"
+            }
+          `}
         >
-          View
+          {sold_out ? "Sold out" : "View"}
         </Link>
       </div>
     </div>

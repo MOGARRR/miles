@@ -36,6 +36,9 @@ export default function StoreItemPage() {
 
   const displayedPrice =
     selectedSize?.price_cents ?? product.price_cents;
+  
+  const canAddToCart =
+    selectedSize && selectedSize.stock > 0;
 
   return (
     <section className="max-w-5xl mx-auto p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -92,29 +95,56 @@ export default function StoreItemPage() {
         </p>
 
         {/* SIZE SELECTOR */}
-        <div className="mt-4">
-          <p className="text-sm font-medium mb-2">Size</p>
-          <div className="flex gap-3">
-            {product.product_sizes.map((size: any) => (
-              <button
+       <div className="mt-4">
+        <p className="text-sm font-medium mb-2">Size</p>
+
+        <div className="flex flex-col gap-2">
+          {product.product_sizes.map((size: any) => {
+            const isSoldOut = size.stock === 0;
+            const isSelected = selectedSize?.id === size.id;
+
+            return (
+              <label
                 key={size.id}
-                onClick={() => setSelectedSize(size)}
-                className={`px-4 py-2 border rounded-md text-sm
+                className={`
+                  flex items-center gap-3
+                  px-4 py-3 rounded-md border cursor-pointer
                   ${
-                    selectedSize?.id === size.id
-                      ? "border-black"
-                      : "border-gray-300"
-                  }`}
+                    isSoldOut
+                      ? "bg-gray-800 text-gray-400 cursor-not-allowed"
+                      : isSelected
+                      ? "border-kilored"
+                      : "border-gray-300 hover:border-kilored"
+                  }
+                `}
               >
-                {size.label}
-              </button>
-            ))}
-          </div>
+                <input
+                  type="radio"
+                  name="product-size"
+                  disabled={isSoldOut}
+                  checked={isSelected}
+                  onChange={() => setSelectedSize(size)}
+                  className="accent-kilored"
+                />
+
+                <span className="text-sm font-medium">
+                  {size.label}
+                </span>
+
+                {isSoldOut && (
+                  <span className="text-xs text-rose-500 ml-auto">
+                    Sold out
+                  </span>
+                )}
+              </label>
+            );
+          })}
         </div>
+      </div>
 
         {/* ADD TO CART */}
         <button
-          disabled={!selectedSize}
+          disabled={!canAddToCart}
           onClick={() =>
             addToCart({
               id: product.id,
@@ -128,7 +158,7 @@ export default function StoreItemPage() {
           }
           className={`mt-6 px-6 py-3 rounded-md font-semibold
             ${
-              selectedSize
+              canAddToCart
                 ? "bg-kilored text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
