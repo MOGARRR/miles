@@ -167,7 +167,11 @@ const EventsForm = ({ event, onSuccess }: Props) => {
     rounded-md border
     "
     >
-      <h2 className="text-xl font-medium text-center border-b-1 mb-4 ">
+      <h2 className="
+          text-xl font-medium text-center text-kilored
+          border-b-1
+          mb-4
+          ">
         {isEditMode ? "Edit Event" : "Add New Event"}
       </h2>
 

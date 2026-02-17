@@ -195,7 +195,11 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     rounded-md border"
     >
       <div>
-        <h2 className="text-xl font-medium text-center border-b-1 mb-4 ">
+        <h2 className="
+            text-xl font-medium text-center text-kilored
+            border-b-1 
+            mb-4
+            ">
           {isEditMode ? "Edit Product" : "Add New Product"}
         </h2>
       </div>

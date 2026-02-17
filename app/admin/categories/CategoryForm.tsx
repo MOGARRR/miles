@@ -105,7 +105,7 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
     ">
       <div >
         <h2 className="
-        text-xl font-medium text-center
+        text-xl font-medium text-center text-kilored
         border-b-1 mb-4
         ">
           {isEditMode ? "Edit Category" : "Add New Category"}

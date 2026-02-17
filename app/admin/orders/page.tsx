@@ -45,7 +45,7 @@ const AdminOrders = async () => {
                 </div>
               </section>
 
-              <section className="flex justify-around my-2">
+              <section className="flex justify-around my-2 text-">
                 <div>
                   <h2>Total Amount:</h2>
                   <p>${order.total_cents / 100}</p>

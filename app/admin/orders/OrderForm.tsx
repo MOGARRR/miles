@@ -79,13 +79,31 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
   };
 
   return (
-    <div className="bg-gray-800 p-5">
-      <form className="flex flex-col " onSubmit={handleSubmit}>
-        <h2 className="text-lg font-medium">Customer Info</h2>
+    <div
+      className="
+         w-2/4 
+         bg-gray-800 
+         p-4 mb-6
+         rounded-md border
+         "
+    >
+      <form className="flex flex-col text-center text-md" onSubmit={handleSubmit}>
+        <h2 className="
+            text-xl font-medium text-center text-kilored 
+            border-b-1 
+            mb-4 
+            ">
+          Customer Info
+        </h2>
         <br />
         <label>Customer Name:</label>
         <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
+          className="
+          rounded border
+          w-full
+          mt-1 p-2
+          text-sm
+          "
           name="full_name"
           value={formData.full_name}
           onChange={handleChange}
@@ -94,7 +112,11 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
         <br />
         <label>Address Line 1:</label>
         <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
+          className="
+          rounded border 
+          w-full
+          mt-1 p-2
+          text-sm"
           name="address_line_1"
           value={formData.address_line_1}
           onChange={handleChange}
@@ -155,11 +177,14 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
           placeholder="Phone Number"
         />
         <br />
-        <h2 className="text-lg font-medium">Shipping Info</h2>
+        <h2 className="
+            text-xl font-medium text-center text-kilored
+            border-b-1
+            ">Shipping Info</h2>
         <br />
         <label>Shipping Status:</label>
         <select
-          className=" rounded border w-full  mt-1 p-2 text-sm"
+          className=" rounded border w-1/6  mt-4 p-2 text-md self-center"
           name="shipping_status"
           id="shipping_status"
           value={formData.shipping_status}
@@ -196,7 +221,13 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
         <br />
         <label>Estimated Delivery:</label>
         <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
+          className="
+          rounded border 
+          w-1/6
+          my-2 p-2 
+          text-sm
+          self-center
+          "
           type="date"
           name="estimated_delivery"
           value={formData.estimated_delivery}
