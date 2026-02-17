@@ -11,19 +11,16 @@
 // interactive state across server and client boundaries and makes the UI
 // easier to reason about as it grows.
 
-
 import { useState } from "react";
 import type { Category } from "@/src/types/category";
 import CreateCategoryForm from "./CategoryForm";
 import { useRouter } from "next/navigation";
-
 
 type Props = {
   categories: Category[];
 };
 
 const AdminCategoriesClient = ({ categories }: Props) => {
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
@@ -32,12 +29,9 @@ const AdminCategoriesClient = ({ categories }: Props) => {
 
   const router = useRouter();
 
-
-
   const handleDelete = async (categoryId: number) => {
-
     const confirmed = confirm(
-      "Are you sure you want to delete this category? This action cannot be undone."
+      "Are you sure you want to delete this category? This action cannot be undone.",
     );
 
     if (!confirmed) return;
@@ -46,10 +40,9 @@ const AdminCategoriesClient = ({ categories }: Props) => {
       setDeleteError(null);
       setDeletingId(categoryId);
 
-      const res = await fetch(
-        `/api/categories/${categoryId}`,
-        { method: "DELETE" }
-      );
+      const res = await fetch(`/api/categories/${categoryId}`, {
+        method: "DELETE",
+      });
 
       const data = await res.json();
 
@@ -58,7 +51,6 @@ const AdminCategoriesClient = ({ categories }: Props) => {
       }
 
       router.refresh();
-
     } catch (err: any) {
       setDeleteError(err.message);
     } finally {
@@ -66,19 +58,30 @@ const AdminCategoriesClient = ({ categories }: Props) => {
     }
   };
 
+  
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col">
+      <div className="mb-6 ">
         <button
           type="button"
           onClick={() => {
             setIsFormOpen((prev) => !prev);
             setEditingCategory(null);
           }}
-          className="rounded border px-3 py-1 text-sm"
+          id="edit-form"
+          className="
+          bg-gray-500 
+          rounded border 
+          p-2 
+          text-md 
+          cursor-pointer
+          hover:bg-gray-600 
+          "
         >
           {isFormOpen ? "Close" : "Add New Category"}
         </button>
+      
       </div>
 
       {isFormOpen && (
@@ -87,57 +90,101 @@ const AdminCategoriesClient = ({ categories }: Props) => {
           onSuccess={() => {
             setIsFormOpen(false);
             setEditingCategory(null);
-          }} />
+          }}
+        />
       )}
 
       {deleteError && (
-        <p className="text-sm text-red-400 mb-4">
+        <p
+          className="
+        text-sm text-red-400 
+        mb-4"
+        >
           {deleteError}
         </p>
       )}
 
-
-      <h1>All Categories</h1>
+      <h1 className="text-3xl">All Categories:</h1>
 
       {categories.length === 0 ? (
         <p>No categories found.</p>
       ) : (
-        <ul className="space-y-4 mt-6">
+        <ul
+          className="
+        space-y-4 mt-6 
+        grid grid-cols-4 gap-6 
+        text-center 
+        "
+        >
           {categories.map((category) => (
             <li
               key={category.id}
-              className="rounded border p-4"
+              className="
+              rounded-xl border 
+              p-4  
+              flex flex-col items-center 
+              bg-gray-800
+              "
             >
-              <p className="font-medium">{category.title}</p>
-
-              {category.description && (
-                <p className="mt-2 text-sm">{category.description}</p>
-              )}
-
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingCategory(category);
-                  setIsFormOpen(true);
-                }}
-                className="mt-3 text-sm underline"
+              <p
+                className="
+                 w-1/2 
+                 p-2 
+                 text-lg font-semibold
+                 bg-kilored
+                 rounded-full
+                 "
               >
-                Edit
-              </button>
+                {category.title}
+              </p>
 
-              <button
-                type="button"
-                onClick={() => handleDelete(category.id)}
-                className="mt-3 ml-4 text-sm text-red-400 underline"
-              >
-                Delete
-              </button>
+              <p className="mt-2 text-lg">
+                Description: <br />
+                {!category.description && "Empty"}
+                {category.description}
+              </p>
+
+              <div>
+                <a href="#edit-form">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingCategory(category);
+                    setIsFormOpen(true);
+                  }}
+                  className="
+                  w-20 
+                  mt-3  p-2 
+                  text-md  
+                  bg-gray-500 
+                  rounded-full border
+                  cursor-pointer
+                  hover:bg-gray-600 
+                  "
+                >
+                  Edit
+                </button>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(category.id)}
+                  className="
+                  w-20
+                  mt-3 ml-4 p-2 
+                  text-md  
+                  bg-kilored  
+                  rounded-full border
+                  cursor-pointer
+                  hover:bg-red-700
+                  "
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       )}
-
-
     </div>
   );
 };

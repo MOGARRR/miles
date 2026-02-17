@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // Product
 // ├─ id
@@ -9,7 +9,7 @@
 // ├─ is_available
 // ├─ product_sizes[]  ← source of truth for prices
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
@@ -17,22 +17,19 @@ import { Product } from "@/src/types/product";
 import FormAlert from "@/app/components/FormAlert";
 
 type Props = {
-  product?: Product;     // edit mode
+  product?: Product; // edit mode
   categories: Category[];
   onSuccess?: () => void;
-
 };
 
-
 const ProductForm = ({ categories, product, onSuccess }: Props) => {
-
   // state for form fields [ no image upload yet ]
-  const [title, setTitle] = useState(""); 
-  const [categoryIds, setCategoryIds] = useState<number[]>([]); 
-  const [description, setDescription] = useState(""); 
+  const [title, setTitle] = useState("");
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
+  const [description, setDescription] = useState("");
 
-  const [isAvailable, setIsAvailable] = useState(true); 
-  const [imageUrl, setImageUrl] = useState(""); 
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -73,16 +70,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
   const router = useRouter();
 
-
   useEffect(() => {
     if (!product) return;
 
     //console.log("ADMIN PRODUCT PROP:", product);
 
     setTitle(product.title);
-    setCategoryIds(
-      product.categories?.map((c) => c.id) ?? []
-    );
+    setCategoryIds(product.categories?.map((c) => c.id) ?? []);
     setDescription(product.description ?? "");
     setImageUrl(product.image_URL ?? "");
     setImageFile(null);
@@ -121,14 +115,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       largePriceInvalid
     ) {
       return;
-    } 
+    }
 
     setIsLoading(true);
     setError(null); //clear previous errors
     setSuccessMessage(null);
 
     try {
-
       //handle image upload
       let finalImageUrl = imageUrl;
 
@@ -156,7 +149,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
       const method = isEditMode ? "PUT" : "POST";
 
-      const res = await fetch (endpoint, {
+      const res = await fetch(endpoint, {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +158,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           title,
           category_ids: categoryIds,
           description,
-          image_URL: finalImageUrl, 
+          image_URL: finalImageUrl,
           is_available: isAvailable,
           product_sizes: [
             {
@@ -212,15 +205,14 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       setSuccessMessage(
         isEditMode
           ? "Product updated successfully!"
-          : "New product created successfully!"
+          : "New product created successfully!",
       );
 
       setTimeout(() => {
         onSuccess?.();
       }, 1500);
 
-     
-      // reset form only when creating 
+      // reset form only when creating
       if (!isEditMode) {
         setTitle("");
         setCategoryIds([]);
@@ -238,7 +230,6 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
-
     } finally {
       setIsLoading(false);
     }
@@ -273,19 +264,28 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
 
   return (
-    <div>
+    <div
+      className=" 
+    w-2/4 
+    bg-gray-800 
+    p-4 mb-6
+    rounded-md border"
+    >
       <div>
-        <h2 className="text-lg font-medium">
+        <h2 className="
+            text-xl font-medium text-center text-kilored
+            border-b-1 
+            mb-4
+            ">
           {isEditMode ? "Edit Product" : "Add New Product"}
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit}>
-
-        <div>
+      <form onSubmit={handleSubmit} className="text-center text-md">
+        <div className="my-2">
           <label>Title</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -298,14 +298,28 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         <div>
           <label className="block mb-2">Categories</label>
 
-          <div className="flex  gap-8 space-y-2 border rounded p-3 bg-black text-white">
+          <div
+            className="
+          rounded border 
+          p-6
+          grid grid-cols-5 gap-4
+          "
+          >
             {categories.map((category) => {
               const checked = categoryIds.includes(category.id);
 
               return (
                 <label
                   key={category.id}
-                  className="flex items-center gap-2 cursor-pointer"
+                  className="
+                  bg-gray-500 
+                  flex items-center
+                  gap-2 p-2 
+                  cursor-pointer 
+                  rounded-full border 
+                  w-4/5
+                  hover:bg-gray-600 
+                  "
                 >
                   <input
                     type="checkbox"
@@ -314,7 +328,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
                       setCategoryIds((prev) =>
                         checked
                           ? prev.filter((id) => id !== category.id)
-                          : [...prev, category.id]
+                          : [...prev, category.id],
                       );
                     }}
                   />
@@ -326,21 +340,21 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
         
         {/* DESCRIPTION */}
-        <div>
+        <div className="my-2">
           <label>Description</label>
-          <textarea 
+          <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className=" rounded border w-full  mt-1 p-2 text-sm"
           />
         </div>
 
-        <div className="mt-4">
+        <div className="my-4">
           <label className="block mb-2 font-medium">Prices</label>
 
-          <div className="flex gap-4">
+          <div className="flex justify-evenly ">
             <div className="flex flex-col">
-              <label className="text-sm">Small</label>
+              <label className="text-md">Small</label>
               <input
                 type="number"
                 step="0.01"
@@ -352,7 +366,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm">Large</label>
+              <label className="text-md">Large</label>
               <input
                 type="number"
                 step="0.01"
@@ -423,7 +437,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
                 setImageUrl(""); // file wins
               }
             }}
-            className="rounded border w-full mt-1 p-2 text-sm"
+            className="
+                  text-md  
+                  bg-gray-500 
+                  p-2 
+                  rounded-md border
+                  cursor-pointer
+                  hover:bg-gray-600"
           />
 
         </div>
@@ -511,18 +531,33 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             checked={isAvailable}
             onChange={(e) => setIsAvailable(e.target.checked)}
           />
-          <label>Available</label>
+        </div>
+
+        <div className="my-4">
+          <label
+            className="
+          w-1/4 
+          p-2 
+          text-md  
+          bg-gray-500 
+          rounded-full border
+          cursor-pointer
+          hover:bg-gray-600"
+          >
+            <input
+              type="checkbox"
+              checked={isAvailable}
+              onChange={(e) => setIsAvailable(e.target.checked)}
+            />
+            Available
+          </label>
         </div>
 
         {successMessage && (
           <FormAlert type="success" message={successMessage} />
         )}
 
-        {error && (
-          <FormAlert type="error" message={error} />
-        )}
-
-        
+        {error && <FormAlert type="error" message={error} />}
 
         <button
           type="submit"
@@ -534,7 +569,19 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             smallPriceInvalid ||
             largePriceInvalid
           }
-          className="rounded border p-3 my-6 text-sm disabled:opacity-50"
+          className="
+          w-1/2 
+          mt-3  p-2 
+          text-md  
+          bg-gray-500 
+          rounded-full border
+          cursor-pointer
+          hover:bg-gray-600 
+          disabled:opacity-50
+          disabled:bg-gray-600 
+          disabled:cursor-not-allowed
+          "
+          
         >
           {isLoading ? (
             <LoadingAnimation />
@@ -543,12 +590,10 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           ) : (
             "Create Product"
           )}
-        </button> 
-
+        </button>
       </form>
-      
     </div>
-  )
+  );
 };
 
 export default ProductForm;
