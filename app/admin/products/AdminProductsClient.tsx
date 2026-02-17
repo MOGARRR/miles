@@ -195,7 +195,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
               {/* PRICES AND STOCK COUNT*/}
               {product.product_sizes && (
                 <div className="mt-2 text-sm">
-                  <p className="font-medium">Variants</p>
+                  <p className="font-medium text-center mb-2">Variants</p>
                   <ul className="ml-4 list-disc space-y-1">
                     {product.product_sizes.map((size) => (
                       <li key={size.id}>

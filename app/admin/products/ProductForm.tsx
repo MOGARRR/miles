@@ -47,10 +47,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   // “The user has attempted to submit the form at least once.”
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  
-
-  
-  // state for errors 
+  // state for errors
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -84,31 +81,29 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
     setExistingImages(product.product_images ?? []);
 
-    const small = product.product_sizes?.find(s => s.label === "Small");
-    const large = product.product_sizes?.find(s => s.label === "Large");
+    const small = product.product_sizes?.find((s) => s.label === "Small");
+    const large = product.product_sizes?.find((s) => s.label === "Large");
 
     setSmallPrice(small ? (small.price_cents / 100).toString() : "");
     setLargePrice(large ? (large.price_cents / 100).toString() : "");
 
     setSmallStock(
-      typeof small?.stock === "number" ? small.stock.toString() : ""
+      typeof small?.stock === "number" ? small.stock.toString() : "",
     );
 
     setLargeStock(
-      typeof large?.stock === "number" ? large.stock.toString() : ""
+      typeof large?.stock === "number" ? large.stock.toString() : "",
     );
-
   }, [product]);
 
-
-  //HANDLE SUBMIT FORM 
+  //HANDLE SUBMIT FORM
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setHasSubmitted(true);
 
     if (
-      !isImageValid || 
+      !isImageValid ||
       isCategoryInvalid ||
       !hasImage ||
       smallPriceInvalid ||
@@ -180,8 +175,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       }
 
       // Determine product id (create vs edit)
-      const productId =
-        isEditMode ? product!.id : (await res.json()).product.id;
+      const productId = isEditMode
+        ? product!.id
+        : (await res.json()).product.id;
 
       // Upload gallery images
       if (galleryFiles.length > 0) {
@@ -190,16 +186,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           galleryFormData.append("files", file);
         });
 
-        await fetch(
-          `/api/products/${productId}/gallery-images`,
-          {
-            method: "POST",
-            body: galleryFormData,
-          }
-        );
+        await fetch(`/api/products/${productId}/gallery-images`, {
+          method: "POST",
+          body: galleryFormData,
+        });
       }
-    
-      // Trigger a re-render of the Server Component 
+
+      // Trigger a re-render of the Server Component
       router.refresh();
 
       setSuccessMessage(
@@ -227,13 +220,12 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         setSmallStock("");
         setLargeStock("");
       }
-      
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   // DELETE GALLERY IMAGE
   const handleDeleteGalleryImage = async (imageId: number) => {
@@ -245,7 +237,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     try {
       const res = await fetch(
         `/api/products/${product.id}/gallery-images/${imageId}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
 
       if (!res.ok) {
@@ -253,15 +245,11 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       }
 
       // update UI immediately
-      setExistingImages((prev) =>
-        prev.filter((img) => img.id !== imageId)
-      );
+      setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (err) {
       alert("Could not delete image");
     }
   };
-
-
 
   return (
     <div
@@ -272,11 +260,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     rounded-md border"
     >
       <div>
-        <h2 className="
+        <h2
+          className="
             text-xl font-medium text-center text-kilored
             border-b-1 
             mb-4
-            ">
+            "
+        >
           {isEditMode ? "Edit Product" : "Add New Product"}
         </h2>
       </div>
@@ -292,7 +282,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             className=" rounded border w-full mt-1 p-2 text-sm"
           />
         </div>
-        <br/>
+        <br />
 
         {/* CATEGORIES */}
         <div>
@@ -338,7 +328,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             })}
           </div>
         </div>
-        
+
         {/* DESCRIPTION */}
         <div className="my-2">
           <label>Description</label>
@@ -350,7 +340,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
 
         <div className="my-4">
-          <label className="block mb-2 font-medium">Prices</label>
+          <label className="block mb-2 font-medium border-b-1">Prices</label>
 
           <div className="flex justify-evenly ">
             <div className="flex flex-col">
@@ -380,9 +370,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
 
         <div className="mt-4">
-          <label className="block mb-2 font-medium">Inventory</label>
+          <label className="block mb-2 font-medium border-b-1">Inventory</label>
 
-          <div className="flex gap-4">
+          <div className="flex justify-evenly">
             <div className="flex flex-col">
               <label className="text-sm">Small stock</label>
               <input
@@ -409,17 +399,18 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           </div>
         </div>
 
-
-        <br/><br/><br/>
+        <br />
+        <br />
+        <br />
 
         {/* IMAGES */}
         <div>
           <label>Main Image URL </label>
-          <input 
+          <input
             type="text"
             value={imageUrl}
             onChange={(e) => {
-              setImageUrl(e.target.value)
+              setImageUrl(e.target.value);
               setImageFile(null); // URL wins
             }}
             className=" rounded border w-full  mt-1 p-2 text-sm"
@@ -428,7 +419,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
         <div>
           <label>OR upload Main image</label>
-          <input 
+          <br />
+          <input
             type="file"
             accept="image/*"
             onChange={(e) => {
@@ -445,7 +437,6 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
                   cursor-pointer
                   hover:bg-gray-600"
           />
-
         </div>
         {imageFile && (
           <p className="text-sm text-gray-600 mt-1">
@@ -453,8 +444,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           </p>
         )}
 
-
-        <br/><br/><br/>
+        <br />
+        <br />
+        <br />
 
         <div>
           <label>Gallery images (optional)</label>
@@ -519,19 +511,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             )}
           </div>
         )}
-
-
-            
-
-        <br/> <br/> <br/>
-
-        <div>
-          <input 
-            type="checkbox"
-            checked={isAvailable}
-            onChange={(e) => setIsAvailable(e.target.checked)}
-          />
-        </div>
+        <br />
 
         <div className="my-4">
           <label
@@ -581,7 +561,6 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           disabled:bg-gray-600 
           disabled:cursor-not-allowed
           "
-          
         >
           {isLoading ? (
             <LoadingAnimation />
