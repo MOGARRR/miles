@@ -69,7 +69,7 @@ const FeaturedProducts = async () => {
         <div>
           <FeaturedProductsClient
             products={featuredProducts}
-            categoryMap={categoryMap}
+
           />
         </div>
 
