@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // Product
 // ├─ id
@@ -9,7 +9,7 @@
 // ├─ is_available
 // ├─ product_sizes[]  ← source of truth for prices
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
@@ -17,22 +17,19 @@ import { Product } from "@/src/types/product";
 import FormAlert from "@/app/components/FormAlert";
 
 type Props = {
-  product?: Product;     // edit mode
+  product?: Product; // edit mode
   categories: Category[];
   onSuccess?: () => void;
-
 };
 
-
 const ProductForm = ({ categories, product, onSuccess }: Props) => {
-
   // state for form fields [ no image upload yet ]
-  const [title, setTitle] = useState(""); 
-  const [categoryIds, setCategoryIds] = useState<number[]>([]); 
-  const [description, setDescription] = useState(""); 
+  const [title, setTitle] = useState("");
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
+  const [description, setDescription] = useState("");
 
-  const [isAvailable, setIsAvailable] = useState(true); 
-  const [imageUrl, setImageUrl] = useState(""); 
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -50,10 +47,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
   // “The user has attempted to submit the form at least once.”
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  
-
-  
-  // state for errors 
+  // state for errors
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -73,16 +67,13 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
   const router = useRouter();
 
-
   useEffect(() => {
     if (!product) return;
 
     //console.log("ADMIN PRODUCT PROP:", product);
 
     setTitle(product.title);
-    setCategoryIds(
-      product.categories?.map((c) => c.id) ?? []
-    );
+    setCategoryIds(product.categories?.map((c) => c.id) ?? []);
     setDescription(product.description ?? "");
     setImageUrl(product.image_URL ?? "");
     setImageFile(null);
@@ -90,45 +81,42 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
     setExistingImages(product.product_images ?? []);
 
-    const small = product.product_sizes?.find(s => s.label === "Small");
-    const large = product.product_sizes?.find(s => s.label === "Large");
+    const small = product.product_sizes?.find((s) => s.label === "Small");
+    const large = product.product_sizes?.find((s) => s.label === "Large");
 
     setSmallPrice(small ? (small.price_cents / 100).toString() : "");
     setLargePrice(large ? (large.price_cents / 100).toString() : "");
 
     setSmallStock(
-      typeof small?.stock === "number" ? small.stock.toString() : ""
+      typeof small?.stock === "number" ? small.stock.toString() : "",
     );
 
     setLargeStock(
-      typeof large?.stock === "number" ? large.stock.toString() : ""
+      typeof large?.stock === "number" ? large.stock.toString() : "",
     );
-
   }, [product]);
 
-
-  //HANDLE SUBMIT FORM 
+  //HANDLE SUBMIT FORM
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setHasSubmitted(true);
 
     if (
-      !isImageValid || 
+      !isImageValid ||
       isCategoryInvalid ||
       !hasImage ||
       smallPriceInvalid ||
       largePriceInvalid
     ) {
       return;
-    } 
+    }
 
     setIsLoading(true);
     setError(null); //clear previous errors
     setSuccessMessage(null);
 
     try {
-
       //handle image upload
       let finalImageUrl = imageUrl;
 
@@ -156,7 +144,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
       const method = isEditMode ? "PUT" : "POST";
 
-      const res = await fetch (endpoint, {
+      const res = await fetch(endpoint, {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +153,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           title,
           category_ids: categoryIds,
           description,
-          image_URL: finalImageUrl, 
+          image_URL: finalImageUrl,
           is_available: isAvailable,
           product_sizes: [
             {
@@ -187,8 +175,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       }
 
       // Determine product id (create vs edit)
-      const productId =
-        isEditMode ? product!.id : (await res.json()).product.id;
+      const productId = isEditMode
+        ? product!.id
+        : (await res.json()).product.id;
 
       // Upload gallery images
       if (galleryFiles.length > 0) {
@@ -197,30 +186,26 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           galleryFormData.append("files", file);
         });
 
-        await fetch(
-          `/api/products/${productId}/gallery-images`,
-          {
-            method: "POST",
-            body: galleryFormData,
-          }
-        );
+        await fetch(`/api/products/${productId}/gallery-images`, {
+          method: "POST",
+          body: galleryFormData,
+        });
       }
-    
-      // Trigger a re-render of the Server Component 
+
+      // Trigger a re-render of the Server Component
       router.refresh();
 
       setSuccessMessage(
         isEditMode
           ? "Product updated successfully!"
-          : "New product created successfully!"
+          : "New product created successfully!",
       );
 
       setTimeout(() => {
         onSuccess?.();
       }, 1500);
 
-     
-      // reset form only when creating 
+      // reset form only when creating
       if (!isEditMode) {
         setTitle("");
         setCategoryIds([]);
@@ -235,14 +220,12 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         setSmallStock("");
         setLargeStock("");
       }
-      
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
-
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   // DELETE GALLERY IMAGE
   const handleDeleteGalleryImage = async (imageId: number) => {
@@ -254,7 +237,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     try {
       const res = await fetch(
         `/api/products/${product.id}/gallery-images/${imageId}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
 
       if (!res.ok) {
@@ -262,50 +245,71 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
       }
 
       // update UI immediately
-      setExistingImages((prev) =>
-        prev.filter((img) => img.id !== imageId)
-      );
+      setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (err) {
       alert("Could not delete image");
     }
   };
 
-
-
   return (
-    <div>
+    <div
+      className=" 
+    w-2/4 
+    bg-gray-800 
+    p-4 mb-6
+    rounded-md border"
+    >
       <div>
-        <h2 className="text-lg font-medium">
+        <h2
+          className="
+            text-xl font-medium text-center text-kilored
+            border-b-1 
+            mb-4
+            "
+        >
           {isEditMode ? "Edit Product" : "Add New Product"}
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit}>
-
-        <div>
+      <form onSubmit={handleSubmit} className="text-center text-md">
+        <div className="my-2">
           <label>Title</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className=" rounded border w-full mt-1 p-2 text-sm"
           />
         </div>
-        <br/>
+        <br />
 
         {/* CATEGORIES */}
         <div>
           <label className="block mb-2">Categories</label>
 
-          <div className="flex  gap-8 space-y-2 border rounded p-3 bg-black text-white">
+          <div
+            className="
+          rounded border 
+          p-6
+          grid grid-cols-5 gap-4
+          "
+          >
             {categories.map((category) => {
               const checked = categoryIds.includes(category.id);
 
               return (
                 <label
                   key={category.id}
-                  className="flex items-center gap-2 cursor-pointer"
+                  className="
+                  bg-gray-500 
+                  flex items-center
+                  gap-2 p-2 
+                  cursor-pointer 
+                  rounded-full border 
+                  w-4/5
+                  hover:bg-gray-600 
+                  "
                 >
                   <input
                     type="checkbox"
@@ -314,7 +318,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
                       setCategoryIds((prev) =>
                         checked
                           ? prev.filter((id) => id !== category.id)
-                          : [...prev, category.id]
+                          : [...prev, category.id],
                       );
                     }}
                   />
@@ -324,23 +328,23 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             })}
           </div>
         </div>
-        
+
         {/* DESCRIPTION */}
-        <div>
+        <div className="my-2">
           <label>Description</label>
-          <textarea 
+          <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className=" rounded border w-full  mt-1 p-2 text-sm"
           />
         </div>
 
-        <div className="mt-4">
-          <label className="block mb-2 font-medium">Prices</label>
+        <div className="my-4">
+          <label className="block mb-2 font-medium border-b-1">Prices</label>
 
-          <div className="flex gap-4">
+          <div className="flex justify-evenly ">
             <div className="flex flex-col">
-              <label className="text-sm">Small</label>
+              <label className="text-md">Small</label>
               <input
                 type="number"
                 step="0.01"
@@ -352,7 +356,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm">Large</label>
+              <label className="text-md">Large</label>
               <input
                 type="number"
                 step="0.01"
@@ -366,9 +370,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
         </div>
 
         <div className="mt-4">
-          <label className="block mb-2 font-medium">Inventory</label>
+          <label className="block mb-2 font-medium border-b-1">Inventory</label>
 
-          <div className="flex gap-4">
+          <div className="flex justify-evenly">
             <div className="flex flex-col">
               <label className="text-sm">Small stock</label>
               <input
@@ -395,17 +399,18 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           </div>
         </div>
 
-
-        <br/><br/><br/>
+        <br />
+        <br />
+        <br />
 
         {/* IMAGES */}
         <div>
           <label>Main Image URL </label>
-          <input 
+          <input
             type="text"
             value={imageUrl}
             onChange={(e) => {
-              setImageUrl(e.target.value)
+              setImageUrl(e.target.value);
               setImageFile(null); // URL wins
             }}
             className=" rounded border w-full  mt-1 p-2 text-sm"
@@ -414,7 +419,8 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
         <div>
           <label>OR upload Main image</label>
-          <input 
+          <br />
+          <input
             type="file"
             accept="image/*"
             onChange={(e) => {
@@ -423,9 +429,14 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
                 setImageUrl(""); // file wins
               }
             }}
-            className="rounded border w-full mt-1 p-2 text-sm"
+            className="
+                  text-md  
+                  bg-gray-500 
+                  p-2 
+                  rounded-md border
+                  cursor-pointer
+                  hover:bg-gray-600"
           />
-
         </div>
         {imageFile && (
           <p className="text-sm text-gray-600 mt-1">
@@ -433,8 +444,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           </p>
         )}
 
-
-        <br/><br/><br/>
+        <br />
+        <br />
+        <br />
 
         <div>
           <label>Gallery images (optional)</label>
@@ -499,30 +511,33 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             )}
           </div>
         )}
+        <br />
 
-
-            
-
-        <br/> <br/> <br/>
-
-        <div>
-          <input 
-            type="checkbox"
-            checked={isAvailable}
-            onChange={(e) => setIsAvailable(e.target.checked)}
-          />
-          <label>Available</label>
+        <div className="my-4">
+          <label
+            className="
+          w-1/4 
+          p-2 
+          text-md  
+          bg-gray-500 
+          rounded-full border
+          cursor-pointer
+          hover:bg-gray-600"
+          >
+            <input
+              type="checkbox"
+              checked={isAvailable}
+              onChange={(e) => setIsAvailable(e.target.checked)}
+            />
+            Available
+          </label>
         </div>
 
         {successMessage && (
           <FormAlert type="success" message={successMessage} />
         )}
 
-        {error && (
-          <FormAlert type="error" message={error} />
-        )}
-
-        
+        {error && <FormAlert type="error" message={error} />}
 
         <button
           type="submit"
@@ -534,7 +549,18 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             smallPriceInvalid ||
             largePriceInvalid
           }
-          className="rounded border p-3 my-6 text-sm disabled:opacity-50"
+          className="
+          w-1/2 
+          mt-3  p-2 
+          text-md  
+          bg-gray-500 
+          rounded-full border
+          cursor-pointer
+          hover:bg-gray-600 
+          disabled:opacity-50
+          disabled:bg-gray-600 
+          disabled:cursor-not-allowed
+          "
         >
           {isLoading ? (
             <LoadingAnimation />
@@ -543,12 +569,10 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           ) : (
             "Create Product"
           )}
-        </button> 
-
+        </button>
       </form>
-      
     </div>
-  )
+  );
 };
 
 export default ProductForm;

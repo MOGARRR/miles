@@ -97,31 +97,47 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
 
 
   return (
-    <div>
-      <div>
-        <h2 className="text-lg font-medium">
+    <div className="
+    w-1/4 
+    bg-gray-800 
+    p-4 mb-6
+    rounded-md border
+    ">
+      <div >
+        <h2 className="
+        text-xl font-medium text-center text-kilored
+        border-b-1 mb-4
+        ">
           {isEditMode ? "Edit Category" : "Add New Category"}
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label className="text-sm">Title</label>
+      <form onSubmit={handleSubmit} className="text-center">
+        <div className="my-4">
+          <label className="text-md">Title</label>
           <input
             type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className=" rounded border w-full  mt-1 p-2 text-sm"
+            className=" 
+            rounded border 
+            w-full  mt-1 p-2 
+            text-sm
+            "
           />
         </div>
 
         <div>
-          <label className="text-sm">Description</label>
+          <label className="text-md">Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className=" rounded border w-full mt-1 p-2 text-sm"
+            className="
+            rounded border 
+            w-full 
+            mt-1 p-2 
+            text-sm"
           />
         </div>
 
@@ -136,7 +152,14 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded border p-3 my-6 text-sm ">
+          className="
+          bg-gray-500 
+          rounded border
+          p-3 my-6
+          text-md
+          cursor-pointer
+          hover:bg-gray-600 
+          ">
           {isLoading ? <LoadingAnimation /> : (isEditMode ? "Save Changes" : "Create Category")}
         </button>
 
