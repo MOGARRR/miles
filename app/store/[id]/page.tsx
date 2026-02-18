@@ -21,10 +21,22 @@ export default function StoreItemPage() {
       const res = await fetch(`/api/products/${id}`);
       const data = await res.json();
 
-      console.log("PRODUCT FROM API:", data.product);
+      //console.log("PRODUCT FROM API:", data.product);
+
+      const product = data.product;
       
-      setProduct(data.product);
-      setActiveImage(data.product.image_URL);  // main image first 
+      setProduct(product);
+      setActiveImage(product.image_URL);  // main image first 
+
+      // auto-select first in-stock size
+      const firstAvailableSize = product.product_sizes?.find(
+        (size: any) => size.stock > 0
+      );
+
+      if (firstAvailableSize) {
+        setSelectedSize(firstAvailableSize);
+      }
+
       setLoading(false);
     }
 
@@ -35,13 +47,18 @@ export default function StoreItemPage() {
   if (!product) return <p className="p-10">Product not found</p>;
 
   const displayedPrice =
-    selectedSize?.price_cents ?? product.price_cents;
+    selectedSize?.price_cents ?? product.price_cents ?? 0;
   
   const canAddToCart =
     selectedSize && selectedSize.stock > 0;
 
   return (
-    <section className="max-w-5xl mx-auto p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <section className="
+      max-w-5xl mx-auto 
+      p-10 
+      grid grid-cols-1 
+      md:grid-cols-2 gap-10"
+    >
       <div className="flex flex-col gap-4">
         {/* HERO IMAGE */}
         <div className="relative aspect-square">
@@ -145,7 +162,9 @@ export default function StoreItemPage() {
         {/* ADD TO CART */}
         <button
           disabled={!canAddToCart}
-          onClick={() =>
+          onClick={() => {
+            if (!selectedSize) return;
+
             addToCart({
               id: product.id,
               title: product.title,
@@ -160,7 +179,7 @@ export default function StoreItemPage() {
                 stock: selectedSize.stock, 
               },
             })
-          }
+          }}
           className={`mt-6 px-6 py-3 rounded-md font-semibold
             ${
               canAddToCart
