@@ -13,6 +13,7 @@ const EventCard = ({ event }: EventCardProps) => {
 
   return (
     <div className="
+      h-full
       rounded-xl border border-[#3a3a41]
       bg-kiloblack
       flex flex-col      
@@ -33,7 +34,7 @@ const EventCard = ({ event }: EventCardProps) => {
       </div>
 
       {/* EVENT INFO */}
-      <div className="flex flex-col px-6 gap-2">
+      <div className="flex flex-col px-6 gap-2 flex-1">
 
         <h1 className="
           mt-2 text-lg md:text-2xl font-bold"
@@ -44,7 +45,8 @@ const EventCard = ({ event }: EventCardProps) => {
         {event.description && (
           <p className="
             text-xs md:text-base text-kilotextgrey
-            my-4"
+            my-4
+            line-clamp-3"
           >
             {event.description}
           </p>

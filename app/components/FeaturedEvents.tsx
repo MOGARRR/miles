@@ -22,6 +22,9 @@ const FeaturedEvents = async () => {
   .filter((e) => e.end_date >= today)
   .slice(0, 3);
 
+  const hasEvents = featuredEvents.length > 0;
+  const isSingleEvent = featuredEvents.length === 1;
+
 
   return (
     <section className="bg-kilodarkgrey">
@@ -30,7 +33,7 @@ const FeaturedEvents = async () => {
         px-6 md:px-16
       ">
       {/* HEADING */}
-      <div className="pt-20 pb-16">
+      <div className="pt-20 pb-20">
         <h1 className="
           text-3xl md:text-5xl leading-tight
           font-bold"
@@ -43,32 +46,35 @@ const FeaturedEvents = async () => {
           text-kilotextgrey
           pt-6"
         >
-          Catch KiloBoy live at these exclusive pop-ups and exhibitions.
+          {hasEvents
+          ? "Catch KiloBoy live at these exclusive pop-ups and exhibitions."
+          : "No upcoming events. New pop-ups and exhibitions will be announced soon."
+        }
+          
         </p>
       </div>
 
       {/* DISPLAY FEATURED EVENT CARDS */}
       <div>
-        {featuredEvents.length === 0 ? (
-          <p>No upcoming events right now. Stay tuned for more.</p>
-        ) : (
-          // STYLING NOTES: 
-          // Create as many columns as possible (auto-fit)
-          // Each column must be at least 280px wide
-          // Columns can grow to fill the row (1fr)
-          // If there are fewer items, the grid shrinks naturally
-          <ul className="grid gap-12 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
-          {featuredEvents.map((e) => (
-            <EventCard 
-              key={e.id} event={e}
-            />
-          ))}
+        {hasEvents && (
+          <ul className="
+            grid gap-12
+            grid-cols-1
+            md:grid-cols-2
+            justify-items-center
+          ">
+            {featuredEvents.map((e) => (
+           
+              <EventCard event={e} />
+           
+            ))}
           </ul>
         )}
       </div>
 
       {/* SEE ALL BUTTON - REDIRECTS TO EVENTS PAGE */}
-      <div className="flex justify-center p-12">
+      {hasEvents && (
+        <div className="flex justify-center p-12">
         <Link
             href="/events"
             className="
@@ -85,6 +91,9 @@ const FeaturedEvents = async () => {
               className="transition-transform group-hover:translate-x-1" />
           </Link>
       </div>
+
+      )}
+      
 
       
       
