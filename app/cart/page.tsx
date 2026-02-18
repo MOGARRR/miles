@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "../components/CartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import ShippingForm from "../components/ShippingForm";
@@ -17,7 +17,72 @@ import {
 
 const CartPage = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [isStockValid, setIsStockValid] = useState(true);
+
   const { items, addToCart, decrementQuantity, removeFromCart } = useCart();
+
+  // ----------STOCK---------
+  const syncCartStock = async () => {
+    try {
+      // Collect unique product_size IDs from cart
+      const sizeIds = Array.from(
+        new Set(items.map((item) => item.product_size.id))
+      );
+
+      if (sizeIds.length === 0) return;
+
+      const res = await fetch("/api/product-sizes/stock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sizeIds }),
+      });
+
+      if (!res.ok) {
+        console.error("Failed to sync stock");
+        return;
+      }
+
+      const data = await res.json();
+
+      let stockIsValid = true;
+
+      /**
+       * data.stock shape:
+       * [{ id: number, stock: number }]
+       */
+      data.stock.forEach((latest: { id: number; stock: number }) => {
+        const cartItem = items.find(
+          (item) => item.product_size.id === latest.id
+        );
+
+        if (!cartItem) return;
+
+        // If cart quantity exceeds backend stock : clamp it
+        if (cartItem.quantity > latest.stock) {
+
+          stockIsValid = false;
+
+          const diff = cartItem.quantity - latest.stock;
+
+          // Reduce quantity until it matches stock
+          for (let i = 0; i < diff; i++) {
+            decrementQuantity(cartItem.id, cartItem.product_size.id);
+          }
+        }
+      });
+      setIsStockValid(stockIsValid);
+    } catch (err) {
+      console.error("Cart stock sync error:", err);
+    }
+  };
+
+  // Sync only on /cart page load
+  useEffect(() => {
+    syncCartStock();
+ 
+  }, []);
+
+
 
   // ------ SHIPPING --------
   const [shippingForm, setShippingForm] = useState({
@@ -95,6 +160,8 @@ const CartPage = () => {
 
       const data = await rateRes.json();
       setShippingEstimate(parseFloat(data.rate.amount));
+      await syncCartStock();
+
     } catch (err) {
       console.error("Shipping estimate error:", err);
     }
@@ -112,7 +179,7 @@ const CartPage = () => {
   const hstCents = Math.round(subtotalCents * 0.13);
   const shippingCents = Math.round(shippingAmount * 100);
 
-  const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy;
+  const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy && isStockValid;
 
   // ----- STRIPE PAYLOAD -----
   const checkoutCart = items.map((item) => ({
@@ -308,6 +375,12 @@ const CartPage = () => {
               I agree to the <Link href="/privacy">Privacy Policy</Link>
             </span>
           </label>
+
+          {!isStockValid && (
+            <p className="text-sm text-amber-400 mb-2">
+              Some items were adjusted due to limited stock. Please review your cart.
+            </p>
+          )}
 
           <SubmitButton
             className="w-full mt-6"
