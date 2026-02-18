@@ -91,7 +91,7 @@ const ProductListClient: React.FC = () => {
 
       {/* Basic search input field  */}
       <div className="
-        sticky top-0 z-20
+        
         px-4 py-3
         sm:px-6
         md:px-10 md:py-0

@@ -215,7 +215,16 @@ const CartPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-16 py-20 flex gap-8 items-start">
+      <div className="
+        max-w-7xl mx-auto 
+        px-6 md:px-16 
+        py-12 md:py-20 
+        flex flex-col
+        md:flex-row
+        gap-8 
+        items-start">
+
+        {/* SHIPPING FORM */}
         <div className="flex-1">
           <ShippingForm
             shippingForm={shippingForm}
@@ -224,6 +233,7 @@ const CartPage = () => {
             shippingEstimate={shippingEstimate}
             addressError={addressError}
           />
+
 
           <div className="rounded-lg border bg-kilodarkgrey my-12 p-8">
             <ul className="space-y-4">
@@ -234,12 +244,20 @@ const CartPage = () => {
                 return (
                   <li
                     key={`${item.id}-${item.product_size.id}`}
-                    className="flex items-center gap-4 pb-4"
+                    className="
+                      flex flex-col
+                      md:flex-row
+                      items-center 
+                      gap-4 
+                      pb-4"
                   >
                     <img
                       src={item.image_URL}
                       alt={item.title}
-                      className="w-24 h-24 object-cover rounded-md"
+                      className="
+                        w-20 h-20 md:w-24 md:h-24 
+                        object-cover rounded-md
+                      "
                     />
 
                     <div className="flex-1">
@@ -305,8 +323,6 @@ const CartPage = () => {
 
                     </div>
                     
-                    
-
                     <button
                       onClick={() =>
                         removeFromCart(item.id, item.product_size.id)
@@ -315,8 +331,6 @@ const CartPage = () => {
                     >
                       <Trash2 size={18} />
                     </button>
-                    
-                    
                   </li>
                   
                   
@@ -331,16 +345,26 @@ const CartPage = () => {
               </p>
             )}
 
-            <br /> 
+        
+            <div className="flex justify-center">
+              <LinkButton href="/store" variant="secondary" className="mt-10">
+                {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING"}
+              </LinkButton>
 
-            <LinkButton href="/store" variant="secondary" className="mt-10">
-              {items.length === 0 ? "GO TO GALLERY" : "CONTINUE SHOPPING"}
-            </LinkButton>
+            </div>
+            
+
+
           </div>
         </div>
 
         {/* ORDER SUMMARY */}
-        <div className="w-[400px] bg-kilodarkgrey rounded-lg border p-8">
+        <div className="
+          w-full
+          md:w-[400px] 
+          bg-kilodarkgrey 
+          rounded-lg border 
+          p-6 md:p-8">
           <h3 className="text-xl mb-4">ORDER SUMMARY</h3>
 
           <div className="flex justify-between my-2">
