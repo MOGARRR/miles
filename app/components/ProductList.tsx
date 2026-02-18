@@ -5,7 +5,6 @@ import ProductListClient from "./ProductListClient";
 const ProductList = async () => {
 
 
-
   return (
     <div>
 

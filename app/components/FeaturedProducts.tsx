@@ -26,6 +26,7 @@ const FeaturedProducts = async () => {
     categoryMap[c.id] = c.title
   });
 
+  
 
   //fetch PRODUCTS from the api route
   // "no-store" ensures we always get fresh data (no caching)

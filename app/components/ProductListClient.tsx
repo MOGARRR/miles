@@ -8,10 +8,6 @@ import { useDebounce } from "@/src/hooks/useDebounce";
 import ProductSkeletonCard from "./ProductSkeletonCard";
 
 
-
-// defines the type of props 
-type ProductListClientProps = {}; 
-
 const ProductListClient: React.FC = () => {
 
   //LAZY LOADING 
@@ -75,6 +71,12 @@ const ProductListClient: React.FC = () => {
   // True while debounce delay is still running
   const isSearching = searchInput !== debouncedSearch;
 
+  // if no results
+  const noResults =
+    !isLoading &&
+    debouncedSearch.length > 0 &&
+    products.length === 0;
+
   //reset pagination when search changes
   useEffect(() => {
     setPage(1);
@@ -89,7 +91,11 @@ const ProductListClient: React.FC = () => {
 
       {/* Basic search input field  */}
       <div className="
-        px-10
+        sticky top-0 z-20
+        px-4 py-3
+        sm:px-6
+        md:px-10 md:py-0
+        border-b border-black/10
       ">
         <SearchBar 
           value={searchInput}
@@ -99,7 +105,11 @@ const ProductListClient: React.FC = () => {
 
       </div>
       
-      <div className="flex items-center gap-2 mt-2 min-h-[20px] px-10">
+      <div className="
+        flex items-center 
+        gap-2 mt-2 min-h-[20px] 
+        px-4 sm:px-6 md:px-10"
+      >
         {isSearching && (
           <span className="text-xs text-kilotextlight italic">
             Searching…
@@ -108,15 +118,29 @@ const ProductListClient: React.FC = () => {
       </div>
             
 
-      {/* <p>Found {filteredProducts.length} results</p> */}
+      {noResults && (
+        <div className="
+          px-4
+          sm:px-6
+          md:px-10
+          mt-6
+          text-center
+        ">
+          <p className="text-sm text-kilotextlight">
+            No results found for{" "}
+            <span className="italic">“{debouncedSearch}”</span>
+          </p>
+        </div>
+      )}
 
+      {/* PRODUCT GRID  */}
       <div className="
         grid
         grid-cols-1
         sm:grid-cols-2
         md:grid-cols-3
         gap-8
-        p-10
+        md:p-10
         
       ">
         {products.map((product) => {
@@ -161,7 +185,7 @@ const ProductListClient: React.FC = () => {
       </div>
 
       {hasMore && (
-          <div className="flex justify-center pb-12">
+          <div className="flex justify-center pt-12">
             <button
               onClick={() => {
                 if (isLoading) return;
@@ -178,6 +202,7 @@ const ProductListClient: React.FC = () => {
                 hover:bg-black hover:text-white
                 transition
                 disabled:opacity-50
+                
               "
             >
               {isLoading ? "Loading…" : "Load more"}
