@@ -6,13 +6,9 @@ import { Product } from "@/src/types/product";
 // -----------------------------
 // PROPS TYPE
 // -----------------------------
-// This component receives from FeaturedProducts.tsx:
-// - products: plain product data prepared by the server
-// - categoryMap: a lookup table to resolve category names
 type FeaturedProductsClientProps = {
-  products : Product[];
-  categoryMap: Record<number, string>;
-}
+  products: Product[];
+};
 
 // -----------------------------
 // CLIENT COMPONENT
@@ -22,18 +18,26 @@ type FeaturedProductsClientProps = {
 // No data fetching or business logic happens here.
 const FeaturedProductsClient = ({
   products,
-  categoryMap,
 }: FeaturedProductsClientProps) => {
 
   return (
     <div className=" grid grid-cols-1 md:grid-cols-3 gap-8 ">
       {products.map((product) => {
-        // Resolve the category name using the category map
-        // (only if the product has a category_id)
-        const categoryName =
-          product.category_id !== null
-            ? categoryMap[product.category_id]
+
+        const categories = product.categories ?? [];
+
+        const startingPriceCents =
+          product.product_sizes && product.product_sizes.length > 0
+            ? Math.min(...product.product_sizes.map((s) => s.price_cents))
             : undefined;
+
+        const isSoldOut =
+          Array.isArray(product.product_sizes) &&
+          product.product_sizes.length > 0 &&
+          product.product_sizes.every((size) => size.stock === 0);
+
+
+
 
         // Render the interactive product card
         // ProductListItem uses client-side hooks (useCart),
@@ -44,14 +48,13 @@ const FeaturedProductsClient = ({
             id={product.id}
             title={product.title}
             description={product.description}
-            category_id={product.category_id}
-            category_name={categoryName}
             image_URL={product.image_URL}
-            price_cents={product.price_cents}
-            sold_out={product.sold_out}
+            starting_price_cents={startingPriceCents}
+            sold_out={isSoldOut}
             is_available={product.is_available}
             created_at={product.created_at}
             updated_at={product.updated_at}
+            categories={categories}
           />
         );
       })}

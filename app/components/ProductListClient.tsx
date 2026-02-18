@@ -8,6 +8,7 @@ import { useDebounce } from "@/src/hooks/useDebounce";
 import ProductSkeletonCard from "./ProductSkeletonCard";
 
 
+
 // defines the type of props 
 type ProductListClientProps = {}; 
 

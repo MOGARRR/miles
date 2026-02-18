@@ -101,9 +101,12 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
         "
       >
         {starting_price_cents !== undefined && (
-          <p className="text-kilored text-sm font-semibold">
-            Starting at ${(starting_price_cents / 100).toFixed(2)}
-          </p>
+          <div className="text-kilored">
+            <p className="text-xs text-gray-400 uppercase">Starting at</p>
+            <p className="text-lg font-semibold">
+              ${(starting_price_cents / 100).toFixed(2)}
+            </p>
+          </div>
         )}
 
        <Link
