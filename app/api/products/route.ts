@@ -20,6 +20,7 @@ export async function GET(req: Request) {
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 9;
     const search = searchParams.get("search") || "";
+    const searchType = searchParams.get("searchType") === "true";
 
     // Convert page to offset for database queries
     // page 1 -> offset 0
@@ -27,7 +28,7 @@ export async function GET(req: Request) {
     const offset = (page - 1) * limit;
 
     // Fetch paginated products from the controller
-    const products = await getAllProducts({ limit, offset, search });
+    const products = await getAllProducts({ limit, offset, search, searchType });
 
     return NextResponse.json({ products }, { status: 200 });
 

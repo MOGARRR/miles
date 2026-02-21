@@ -1,40 +1,41 @@
-"use client"; 
+"use client";
 
 import React, { useState, useEffect } from "react";
 import ProductListItem from "./ProductListItem";
 import { Product } from "@/src/types/product";
+import { Category } from "@/src/types/category";
 import SearchBar from "./ui/SearchBar";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import ProductSkeletonCard from "./ProductSkeletonCard";
 
-
-// defines the type of props 
-type ProductListClientProps = {}; 
+// defines the type of props
+type ProductListClientProps = {};
 
 const ProductListClient: React.FC = () => {
-
-  //LAZY LOADING 
+  //LAZY LOADING
   const PAGE_SIZE = 6;
 
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   /**
    * Fetch products from the API using page-based pagination.
    * Page 1 replaces products, next pages append to the list.
    */
+
   const fetchProducts = async (
     pageToLoad: number,
-    searchTerm = debouncedSearch
-
+    searchTerm?: string,
+    searchType?: boolean,
   ) => {
+    const finalSearch = searchTerm ?? debouncedSearch;
+    const finalSearchType = searchType ?? isCategorySearch;
     try {
-      setIsLoading(true);
-
       const res = await fetch(
-        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}&search=${encodeURIComponent(searchTerm)}`
+        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}&search=${encodeURIComponent(finalSearch)}&searchType=${finalSearchType}`,
       );
 
       const data = await res.json();
@@ -60,11 +61,21 @@ const ProductListClient: React.FC = () => {
     }
   };
 
+  const fetchCategoties = async () => {
+    try {
+      const res = await fetch("/api/categories/");
+      const data = await res.json();
+      setCategories(data.categories);
+    } catch (err: any) {
+      console.error("Error fetching Categories", err);
+    }
+  };
+
   // Initial page load
   useEffect(() => {
     fetchProducts(1);
+    fetchCategoties();
   }, []);
-
 
   // SEARCH
   // Raw input value (updates on keystroke)
@@ -73,43 +84,62 @@ const ProductListClient: React.FC = () => {
   const debouncedSearch = useDebounce(searchInput, 300);
   // True while debounce delay is still running
   const isSearching = searchInput !== debouncedSearch;
+  // True - filter for Category, False - filter for product
+  const [isCategorySearch, setIsCategorySearch] = useState(false);
 
   //reset pagination when search changes
   useEffect(() => {
     setPage(1);
     setProducts([]);
-    fetchProducts(1, debouncedSearch);
-  }, [debouncedSearch]);
+    fetchProducts(1, debouncedSearch, isCategorySearch);
+  }, [debouncedSearch, isCategorySearch]);
+
+  const handleSearchType = () => setIsCategorySearch(!isCategorySearch);
   
 
-
   return (
-    <section className="mt-20" >
-
+    <section className="mt-20">
       {/* Basic search input field  */}
-      <div className="
+      <div
+        className="
         px-10
-      ">
-        <SearchBar 
-          value={searchInput}
-          onChange={setSearchInput}
-          placeholder="Search by name or category"
-        />
-
-      </div>
+      "
+      >
       
+        {/* {categories.map((category) => {
+          return (
+            <div key={category.id} className="m-2 cursor-pointer">
+              {category.title}
+            </div>
+          );
+        })} */}
+
+        <div className="flex">
+          <SearchBar
+            value={searchInput}
+            onChange={setSearchInput}
+            placeholder="Search by Name or by Category"
+          />
+          <button
+          onClick={handleSearchType}
+          className="bg-gray-500 ml-2 p-2 cursor-pointer"
+        >
+          {isCategorySearch && "Category"}
+          {!isCategorySearch && "Product"}
+        </button>
+        </div>
+      </div>
+
       <div className="flex items-center gap-2 mt-2 min-h-[20px] px-10">
         {isSearching && (
-          <span className="text-xs text-kilotextlight italic">
-            Searching…
-          </span>
+          <span className="text-xs text-kilotextlight italic">Searching…</span>
         )}
       </div>
-            
 
       {/* <p>Found {filteredProducts.length} results</p> */}
 
-      <div className="
+      <div
+        className="
         grid
         grid-cols-1
         sm:grid-cols-2
@@ -117,7 +147,8 @@ const ProductListClient: React.FC = () => {
         gap-8
         p-10
         
-      ">
+      "
+      >
         {products.map((product) => {
           const categories = product.categories ?? [];
 
@@ -130,7 +161,6 @@ const ProductListClient: React.FC = () => {
             Array.isArray(product.product_sizes) &&
             product.product_sizes.length > 0 &&
             product.product_sizes.every((size) => size.stock === 0);
-
 
           return (
             <ProductListItem
@@ -145,32 +175,29 @@ const ProductListClient: React.FC = () => {
               created_at={product.created_at}
               updated_at={product.updated_at}
               categories={categories}
-
             />
-
-          )
+          );
         })}
 
         {/* Skeleton cards while loading */}
         {isLoading &&
           Array.from({ length: PAGE_SIZE }).map((_, index) => (
             <ProductSkeletonCard key={`skeleton-${index}`} />
-          ))
-        } 
+          ))}
       </div>
 
       {hasMore && (
-          <div className="flex justify-center pb-12">
-            <button
-              onClick={() => {
-                if (isLoading) return;
+        <div className="flex justify-center pb-12">
+          <button
+            onClick={() => {
+              if (isLoading) return;
 
-                const nextPage = page + 1;
-                setPage(nextPage);
-                fetchProducts(nextPage);
-              }}
-              disabled={isLoading}
-              className="
+              const nextPage = page + 1;
+              setPage(nextPage);
+              fetchProducts(nextPage);
+            }}
+            disabled={isLoading}
+            className="
                 px-6 py-2
                 border border-black
                 text-sm uppercase tracking-wide
@@ -178,15 +205,13 @@ const ProductListClient: React.FC = () => {
                 transition
                 disabled:opacity-50
               "
-            >
-              {isLoading ? "Loading…" : "Load more"}
-            </button>
-          </div>
-        )}
-      
+          >
+            {isLoading ? "Loading…" : "Load more"}
+          </button>
+        </div>
+      )}
     </section>
-  )
-
-}
+  );
+};
 
 export default ProductListClient;

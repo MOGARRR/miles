@@ -1,10 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
-import { createCategoriesProducts, getAllCategoriesProducts } from "@/src/controllers/categoriesControllers";
+import { createCategoriesProducts, getAllCategories } from "@/src/controllers/categoriesControllers";
 
 //GET
 export async function GET() {
   try {
-    const categories = await getAllCategoriesProducts();
+    const categories = await getAllCategories();
     return NextResponse.json({ categories }, { status: 200 });
   } catch (error: any) {
     console.error("GET /api/categories error:", error.message);
