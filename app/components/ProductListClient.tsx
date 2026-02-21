@@ -7,6 +7,7 @@ import { Category } from "@/src/types/category";
 import SearchBar from "./ui/SearchBar";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import ProductSkeletonCard from "./ProductSkeletonCard";
+import { RotateCw } from "lucide-react";
 
 // defines the type of props
 type ProductListClientProps = {};
@@ -31,6 +32,7 @@ const ProductListClient: React.FC = () => {
     searchTerm?: string,
     searchType?: boolean,
   ) => {
+    setIsLoading(true)
     const finalSearch = searchTerm ?? debouncedSearch;
     const finalSearchType = searchType ?? isCategorySearch;
     try {
@@ -95,7 +97,15 @@ const ProductListClient: React.FC = () => {
   }, [debouncedSearch, isCategorySearch]);
 
   const handleSearchType = () => setIsCategorySearch(!isCategorySearch);
-  
+  {
+    /* {categories.map((category) => {
+          return (
+            <div key={category.id} className="m-2 cursor-pointer">
+              {category.title}
+            </div>
+          );
+        })} */
+  }
 
   return (
     <section className="mt-20">
@@ -105,28 +115,31 @@ const ProductListClient: React.FC = () => {
         px-10
       "
       >
-      
-        {/* {categories.map((category) => {
-          return (
-            <div key={category.id} className="m-2 cursor-pointer">
-              {category.title}
-            </div>
-          );
-        })} */}
-
-        <div className="flex">
-          <SearchBar
-            value={searchInput}
-            onChange={setSearchInput}
-            placeholder="Search by Name or by Category"
-          />
+        <div className="flex justify-center ">
+          <div className="flex flex-col">
+            <h2 className="text-xl text-center">
+              Search by
+              {isCategorySearch && " Category"}
+              {!isCategorySearch && " Product"}
+            </h2>
+            <SearchBar
+              value={searchInput}
+              onChange={setSearchInput}
+              placeholder="Name or Category"
+            />
+          </div>
           <button
-          onClick={handleSearchType}
-          className="bg-gray-500 ml-2 p-2 cursor-pointer"
-        >
-          {isCategorySearch && "Category"}
-          {!isCategorySearch && "Product"}
-        </button>
+            onClick={handleSearchType}
+            className="
+            bg-gray-700 hover:bg-gray-800
+            self-end
+            rounded-full
+            p-2 ml-2
+            cursor-pointer
+            "
+          >
+            <RotateCw />
+          </button>
         </div>
       </div>
 

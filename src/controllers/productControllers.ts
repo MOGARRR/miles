@@ -46,22 +46,33 @@ export async function getAllProducts({
           stock
         ),
 
+
         products_categories!inner (
           categories!inner (
             id,
             title
           )
-        )
+        ),
+   
+         all_categories:products_categories (
+      categories (
+        id,
+        title
+      )
+    )
       `,
     )
+    // !inner tables is for filtering Categories
+    // all_categories is for displaying all categories for a product
+    
     // Stable ordering is required for pagination / infinite scroll
     .order("created_at", { ascending: false });
 
   // Apply search if provided
 
-  /// Turn this into a conditional query - regular / Category searches
+    // Conditional queries for product or category filtering
   if (search) {
-      searchType ? query = query.or(`title.ilike.%${search}%`, {foreignTable: "products_categories.categories",}) 
+      searchType ?  query = query.ilike("products_categories.categories.title",`%${search}%`)
       : query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
   }
 
@@ -70,11 +81,11 @@ export async function getAllProducts({
   if (error) throw new Error(error.message);
 
   //Normalize categories into a flat array
-  const normalized = data.map((product: any) => ({
-    ...product,
-    categories:
-      product.products_categories?.map((pc: any) => pc.categories) ?? [],
-  }));
+const normalized = data.map((product: any) => ({
+  ...product,
+  categories:
+    product.all_categories?.map((pc: any) => pc.categories) ?? [],
+}));
 
   return normalized;
 }
