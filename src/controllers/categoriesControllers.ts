@@ -2,7 +2,7 @@ import { supabasePublic } from "@/utils/supabase/supabasePublic";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 // GET all Categories products
-export async function getAllCategoriesProducts() {
+export async function getAllCategories() {
   const supabase = supabasePublic;
   const { data, error } = await supabase
     .from("categories")

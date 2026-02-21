@@ -9,24 +9,28 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
  * @param offset - starting index (calculated from page)
  */
 
+const searchType = false;
+
 type GetAllProductsOptions = {
   limit: number;
   offset: number;
   search?: string;
+  searchType: boolean;
 };
-
 
 // GET all Products PAGINATED
 export async function getAllProducts({
   limit,
   offset,
+  searchType,
   search = "",
 }: GetAllProductsOptions) {
   const supabase = supabasePublic;
 
-    let query = supabase
-      .from("products")
-      .select(`
+  let query = supabase
+    .from("products")
+    .select(
+      `
         id,
         title,
         description,
@@ -42,37 +46,46 @@ export async function getAllProducts({
           stock
         ),
 
-        products_categories (
-          categories (
+
+        products_categories!inner (
+          categories!inner (
             id,
             title
           )
-        )
-      `)
+        ),
+   
+         all_categories:products_categories (
+      categories (
+        id,
+        title
+      )
+    )
+      `,
+    )
+    // !inner tables is for filtering Categories
+    // all_categories is for displaying all categories for a product
+    
     // Stable ordering is required for pagination / infinite scroll
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: false });
 
   // Apply search if provided
+
+    // Conditional queries for product or category filtering
   if (search) {
-    query = query.or(
-      `title.ilike.%${search}%,description.ilike.%${search}%`
-    );
+      searchType ?  query = query.ilike("products_categories.categories.title",`%${search}%`)
+      : query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
   }
 
-  const { data, error } = await query.range(
-    offset,
-    offset + limit - 1
-  )
+  const { data, error } = await query.range(offset, offset + limit - 1);
 
   if (error) throw new Error(error.message);
 
   //Normalize categories into a flat array
-  const normalized = data.map((product: any) => ({
-    ...product,
-    categories: product.products_categories?.map(
-      (pc: any) => pc.categories
-    ) ?? [],
-  }));
+const normalized = data.map((product: any) => ({
+  ...product,
+  categories:
+    product.all_categories?.map((pc: any) => pc.categories) ?? [],
+}));
 
   return normalized;
 }
@@ -82,7 +95,8 @@ export async function getProductById(id: string) {
   const supabase = supabasePublic;
   const { data, error } = await supabase
     .from("products")
-    .select(`
+    .select(
+      `
       id,
       title,
       description,
@@ -110,7 +124,8 @@ export async function getProductById(id: string) {
           title
         )
       )
-    `)
+    `,
+    )
     .eq("id", id)
     .single();
 
@@ -119,20 +134,15 @@ export async function getProductById(id: string) {
   // IMPORTANT: sort gallery images
   const sortedImages =
     data.product_images?.sort(
-      (a: any, b: any) => a.sort_order - b.sort_order
+      (a: any, b: any) => a.sort_order - b.sort_order,
     ) ?? [];
-
 
   return {
     ...data,
     product_images: sortedImages,
-    categories:
-      data.products_categories?.map(
-        (pc: any) => pc.categories
-      ) ?? [],
+    categories: data.products_categories?.map((pc: any) => pc.categories) ?? [],
   };
 }
-
 
 // // POST
 // export async function createProduct(userItem: any) {
@@ -193,8 +203,6 @@ export async function deleteProduct(id: string) {
   return data;
 }
 
-
-
 export async function createProductWithCategories(payload: {
   title: string;
   description?: string;
@@ -244,7 +252,6 @@ export async function createProductWithCategories(payload: {
   return product;
 }
 
-
 export async function updateProductWithCategories(
   productId: number,
   payload: {
@@ -257,7 +264,7 @@ export async function updateProductWithCategories(
       label: string;
       price_cents: number;
     }[];
-  }
+  },
 ) {
   const { category_ids, product_sizes, ...productData } = payload;
 
@@ -307,5 +314,3 @@ export async function updateProductWithCategories(
 
   return { success: true };
 }
-
-
