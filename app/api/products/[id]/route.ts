@@ -26,8 +26,7 @@ export async function GET(
 
 // PUT
 export async function PUT(
-  req: NextRequest,
-request: NextRequest, context: RouteContext
+  req: NextRequest, context: RouteContext
 ) {
   try {
     const { id } = await context.params;
@@ -47,8 +46,7 @@ request: NextRequest, context: RouteContext
 
 // DELETE
 export async function DELETE(
-  req: NextRequest,
-  request: NextRequest, context: RouteContext
+  req: NextRequest, context: RouteContext
 ) {
   try {
     const { id } = await context.params;
