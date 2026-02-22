@@ -10,6 +10,7 @@ import { CartProvider } from "./components/CartContext";
 import TopNavBar from "./components/TopNavBar";
 import Footer from "./components/Footer";
 import CartPopup from "./components/CartPopup";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 
 // Initialize the Google fonts with variables for CSS usage
@@ -70,7 +71,7 @@ export default function RootLayout({
 
         </CartProvider>
         
-        
+        <SpeedInsights />
       
 
       </body>
