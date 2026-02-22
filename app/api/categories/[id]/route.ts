@@ -6,9 +6,9 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-
+  const {id} = params;
   try {
-    const categories = await getCategorieProductById(params.id);
+    const categories = await getCategorieProductById(id);
     return NextResponse.json({ categories }, { status: 200 });
   } catch (error: any) {
     console.error("GET /api/categories error:", error.message);
