@@ -1,14 +1,18 @@
 import { NextResponse, NextRequest } from "next/server";
-import { deleteCategoriesProducts, getCategorieProductById, updateCategoriesProducts } from "@/src/controllers/categoriesControllers";
+import {
+  deleteCategoriesProducts,
+  getCategorieProductById,
+  updateCategoriesProducts,
+} from "@/src/controllers/categoriesControllers";
+
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
 
 //GET
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const id = (await context.params).id;
+    const { id } = await context.params;
     const categories = await getCategorieProductById(id);
     return NextResponse.json({ categories }, { status: 200 });
   } catch (error: any) {
@@ -18,43 +22,39 @@ export async function GET(
 }
 
 // PUT
-export async function PUT(
-   req: NextRequest,
-   context: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: NextRequest, context: RouteContext) {
   try {
-    const id = (await context.params).id;
+    const { id } = await context.params;
     const categoriesProductsId = id;
     const updatedCategoriesProductsItem = await req.json();
 
-    const result = await updateCategoriesProducts(categoriesProductsId, updatedCategoriesProductsItem);
+    const result = await updateCategoriesProducts(
+      categoriesProductsId,
+      updatedCategoriesProductsItem,
+    );
 
     return NextResponse.json({ categories: result });
   } catch (error: any) {
     console.error("Update error:", error);
     return NextResponse.json(
       { error: error.message ?? "Unexpected error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 // DELETE
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
   try {
-    const categoriesProductsId = params.id;
+    const { id } = await params;
 
-    const result = await deleteCategoriesProducts(categoriesProductsId);
+    const result = await deleteCategoriesProducts(id);
 
     return NextResponse.json({ categories: result });
   } catch (error: any) {
     console.error("Delete error:", error);
     return NextResponse.json(
       { error: error.message ?? "Unexpected error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
