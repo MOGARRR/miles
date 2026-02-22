@@ -11,7 +11,7 @@ export interface orderData {
   shipping_fee_cents: number;
   tracking_number: string;
   label_url: string;
-  estimated_delivery: any;
+  estimated_delivery: string | null;
   shipping_status: string;
   full_name: string;
   address_line_1: string;
