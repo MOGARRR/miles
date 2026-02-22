@@ -4,10 +4,7 @@ import {
   getCategorieProductById,
   updateCategoriesProducts,
 } from "@/src/controllers/categoriesControllers";
-
-type RouteContext = {
-  params: Promise<{ id: string }>;
-};
+import { RouteContext } from "@/src/types/routeContext";
 
 //GET
 export async function GET(request: NextRequest, context: RouteContext) {
