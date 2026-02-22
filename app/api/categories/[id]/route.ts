@@ -3,9 +3,10 @@ import { deleteCategoriesProducts, getCategorieProductById, updateCategoriesProd
 
 //GET
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+
   try {
     const categories = await getCategorieProductById(params.id);
     return NextResponse.json({ categories }, { status: 200 });
