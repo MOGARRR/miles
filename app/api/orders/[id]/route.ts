@@ -1,14 +1,14 @@
 import { NextResponse, NextRequest } from "next/server";
 import { deleteOrder, getOrderById, updateOrder } from "@/src/controllers/orderControllers";
-
+import { RouteContext } from "@/src/types/routeContext";
 
 //GET
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest, context: RouteContext
 ) {
   try {
-    const orders = await getOrderById(params.id);
+    const { id } = await context.params;
+    const orders = await getOrderById(id);
     return NextResponse.json({ orders }, { status: 200 });
   } catch (error: any) {
     console.error("GET /api/orders error:", error.message);
@@ -19,15 +19,12 @@ export async function GET(
 
 
 // PUT
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: RouteContext) {
   try {
-    const orderId = params.id;
+    const {id}= await context.params;
     const updatedOrderItem = await req.json();
 
-    const result = await updateOrder(orderId, updatedOrderItem);
+    const result = await updateOrder(id, updatedOrderItem);
 
     return NextResponse.json({ orders: result });
   } catch (error: any) {
@@ -41,14 +38,12 @@ export async function PUT(
 
  // DELETE //CHANGE TO UPDATE CAUSE OF REFERENCE ERROR
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+export async function DELETE(request: NextRequest, context: RouteContext
 ) {
   try {
-    const orderId = params.id;
+    const {id} = await context.params;
 
-    const result = await deleteOrder(orderId);
+    const result = await deleteOrder(id);
 
     return NextResponse.json({ orders: result });
   } catch (error: any) {

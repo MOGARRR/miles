@@ -1,18 +1,17 @@
 import { NextResponse, NextRequest } from "next/server";
 import {
   getProductById,
-  updateProduct,
   updateProductWithCategories,
   deleteProduct,
 } from "@/src/controllers/productControllers";
+import { RouteContext } from "@/src/types/routeContext";
 
 // GET
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+ request: NextRequest, context: RouteContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
     const product = await getProductById(id);
 
     return NextResponse.json({ product }, { status: 200 });
@@ -28,10 +27,10 @@ export async function GET(
 // PUT
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+request: NextRequest, context: RouteContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
     const updatedProductItem = await req.json();
 
     const result = await updateProductWithCategories(Number(id), updatedProductItem)
@@ -49,10 +48,10 @@ export async function PUT(
 // DELETE
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest, context: RouteContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
 
     const result = await deleteProduct(id);
 

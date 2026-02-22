@@ -1,16 +1,16 @@
 import { NextResponse, NextRequest } from "next/server";
 import { updateEvent, deleteEvent } from "@/src/controllers/eventsControllers";
+import { RouteContext } from "@/src/types/routeContext";
 
 // PUT
 export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+req: NextRequest, context: RouteContext
 ) {
   try {
-    const eventId = params.id;
+    const { id } = await context.params;
     const updatedeventItem = await req.json();
 
-    const result = await updateEvent(eventId, updatedeventItem);
+    const result = await updateEvent(id, updatedeventItem);
 
     return NextResponse.json({ event: result });
   } catch (error: any) {
@@ -24,13 +24,12 @@ export async function PUT(
 
 // DELETE
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+ request: NextRequest, context: RouteContext
 ) {
   try {
-    const eventId = params.id;
+    const { id } = await context.params ;
 
-    const result = await deleteEvent(eventId);
+    const result = await deleteEvent(id);
 
     return NextResponse.json({ event: result });
   } catch (error: any) {
