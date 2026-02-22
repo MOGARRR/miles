@@ -21,12 +21,12 @@ export async function getOrderProductById(id: string) {
 }
 
 // GET OrderProducts by OrderId
-export async function getOrderProductByOrderId(orderId: string) {
+export async function getOrderProductByOrderId(id: string) {
   const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("order_products")
     .select("*")
-    .eq("order_id", orderId);
+    .eq("order_id", id);
   if (error) throw new Error(error.message);
   return data;
 }
