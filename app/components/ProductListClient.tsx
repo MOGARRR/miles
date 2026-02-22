@@ -117,9 +117,6 @@ const ProductListClient: React.FC = () => {
     <section className="mt-20">
       {/* Basic search input field  */}
       <div
-        className="
-        px-10
-      "
       >
         <div className="flex justify-center ">
           <div className="flex flex-col">
@@ -149,7 +146,7 @@ const ProductListClient: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-2 min-h-[20px] px-10">
+      <div className="flex items-center gap-2 mt-2 min-h-[20px] px-6 md:px-10">
         {isSearching && (
           <span className="text-xs text-kilotextlight italic">Searching…</span>
         )}
@@ -179,7 +176,7 @@ const ProductListClient: React.FC = () => {
         sm:grid-cols-2
         md:grid-cols-3
         gap-8
-        p-10
+        md:p-10
         
       "
       >

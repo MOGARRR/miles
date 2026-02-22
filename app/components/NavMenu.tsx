@@ -20,7 +20,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ active }) => {
                   { name: "Events", path: "/events" }, 
 
                   // ADMIN LINK JUST FOR TESTING, REMOVE IT LATER 
-                  { name: "Admin", path: "/admin" }, 
+                  // { name: "Admin", path: "/admin" }, 
 
                 ]
 

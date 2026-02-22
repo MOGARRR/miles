@@ -408,8 +408,9 @@ const CartPage = () => {
 
           <SubmitButton
             className="w-full mt-6"
-            disabled={!canProceedToCheckout || !addressValid}
-            onClick={handleCheckout}
+            // disabled={!canProceedToCheckout || !addressValid}
+            // onClick={handleCheckout}
+            disabled
           >
             PROCEED TO CHECKOUT
           </SubmitButton>
