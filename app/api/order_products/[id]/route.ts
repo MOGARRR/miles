@@ -20,8 +20,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
 
 // PUT
 export async function PUT(
-  req: NextRequest,
- request: NextRequest, context: RouteContext
+  req: NextRequest, context: RouteContext
 ) {
   try {
     const {id} = await context.params;
