@@ -19,11 +19,12 @@ export async function GET(
 
 // PUT
 export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+   req: NextRequest,
+   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const categoriesProductsId = params.id;
+    const id = (await context.params).id;
+    const categoriesProductsId = id;
     const updatedCategoriesProductsItem = await req.json();
 
     const result = await updateCategoriesProducts(categoriesProductsId, updatedCategoriesProductsItem);
