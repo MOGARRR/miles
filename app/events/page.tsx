@@ -47,7 +47,7 @@ const EventsPage = () => {
   return (
     <section className="
       bg-gradient-to-l from-kilodarkgrey to-kiloblack 
-      p-24"
+      py-24"
     >
 
       <div className="
@@ -81,7 +81,7 @@ const EventsPage = () => {
             grid-cols-1
             sm:grid-cols-2
             gap-8
-            px-8
+            md:px-8
           ">
             {upcomingEvents.map((event) => (
               <EventCard key={event.id} event={event} />

@@ -17,7 +17,7 @@ const SubmitButton = ({
   variant = "primary",
   isLoading = false,
   loadingText,
-  disabled = false,
+  disabled = true,
   className,
   type = "submit",
   onClick,
@@ -27,7 +27,8 @@ const SubmitButton = ({
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled || isLoading}
+      // disabled={disabled || isLoading}
+      disabled
       className={clsx(
         // base styles (match LinkButton)
         "text-center",
