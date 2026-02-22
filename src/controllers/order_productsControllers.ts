@@ -7,18 +7,19 @@ export async function getAllOrderProducts() {
   if (error) throw new Error(error.message);
   return data;
 }
+/// Remove after?
 
-// GET OrderProducts by id
-export async function getOrderProductById(id: string) {
-  const supabase = supabaseAdmin;
-  const { data, error } = await supabase
-    .from("order_products")
-    .select("*")
-    .eq("id", id)
-    .single();
-  if (error) throw new Error(error.message);
-  return data;
-}
+// // GET OrderProducts by id
+// export async function getOrderProductById(id: string) {
+//   const supabase = supabaseAdmin;
+//   const { data, error } = await supabase
+//     .from("order_products")
+//     .select("*")
+//     .eq("id", id)
+//     .single();
+//   if (error) throw new Error(error.message);
+//   return data;
+// }
 
 // GET OrderProducts by OrderId
 export async function getOrderProductByOrderId(id: string) {
