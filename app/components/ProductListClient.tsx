@@ -108,23 +108,26 @@ const ProductListClient: React.FC = () => {
   return (
     <section className="mt-20">
       {/* Basic search input field  */}
-      <section>
+     
         <div className="flex justify-center ">
           <div className="flex flex-col">
             <h2 className="text-2xl text-center">
-              Search by Product or Filter By Category
+              Search by Product
             </h2>
             <div className="flex">
               <SearchBar
                 value={searchInput}
                 onChange={setSearchInput}
-                placeholder="Product Name or Description"
+                placeholder="Name or Description"
               />
               <button
                 onClick={handleFilterMenu}
                 className="
-              bg-gray-700 hover:bg-gray-800 
-              p-2 ml-3
+              lg:flex
+              hidden
+              bg-gray-700 hover:bg-gray-800
+              self-end
+              p-2 ml-2
               rounded-full
               cursor-pointer
               "
@@ -134,12 +137,15 @@ const ProductListClient: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
 
-       {/* Filter Section */}
-     
-        <section className={`filter ${filterMenu ? 'open' : 'closed'} flex justify-center mt-4`}>
-          <div className=" bg-gray-800 flex  justify-evenly w-1/3 p-3 rounded-full">
+       {/* Filter Section */} 
+        <section className={`filter ${filterMenu ? 'open' : 'closed'} lg:flex hidden justify-center mt-4 `}>
+          <div className=" 
+          bg-gray-800 
+          flex flex-wrap gap-1 justify-evenly 
+          w-1/3 p-3
+          rounded-full
+          ">
             {categories.map((category) => (
               <label
                 key={category.id}
