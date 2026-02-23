@@ -9,20 +9,19 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
  * @param offset - starting index (calculated from page)
  */
 
-const searchType = false;
 
 type GetAllProductsOptions = {
   limit: number;
   offset: number;
   search?: string;
-  searchType: boolean;
+  categoryIds?: number[];
 };
 
 // GET all Products PAGINATED
 export async function getAllProducts({
   limit,
   offset,
-  searchType,
+  categoryIds = [],
   search = "",
 }: GetAllProductsOptions) {
   const supabase = supabasePublic;
@@ -69,12 +68,19 @@ export async function getAllProducts({
     .order("created_at", { ascending: false });
 
   // Apply search if provided
+  // Conditional queries for product or category filtering
+if (search) {
+  query = query.or(
+    `title.ilike.%${search}%,description.ilike.%${search}%`
+  );
+}
 
-    // Conditional queries for product or category filtering
-  if (search) {
-      searchType ?  query = query.ilike("products_categories.categories.title",`%${search}%`)
-      : query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
-  }
+if (categoryIds.length > 0) {
+  query = query.in(
+    "products_categories.categories.id",
+    categoryIds
+  );
+}
 
   const { data, error } = await query.range(offset, offset + limit - 1);
 
@@ -143,34 +149,6 @@ export async function getProductById(id: string) {
     categories: data.products_categories?.map((pc: any) => pc.categories) ?? [],
   };
 }
-
-// // POST
-// export async function createProduct(userItem: any) {
-//   const supabase = supabaseAdmin;
-//   const { data, error } = await supabase
-//     .from("products")
-//     .insert([userItem])
-//     .select()
-//     .single();
-//   if (error) throw new Error(error.message);
-//   return data;
-// }
-
-// // PUT
-// export async function updateProduct(id: string, updatedProductItem: any) {
-//   const supabase = supabaseAdmin;
-//   const updates = Object.fromEntries(
-//     Object.entries(updatedProductItem).filter(([_, v]) => v !== undefined),
-//   );
-//   const { data, error } = await supabase
-//     .from("products")
-//     .update(updates)
-//     .eq("id", id)
-//     .select()
-//     .single();
-//   if (error) throw new Error(error.message);
-//   return data;
-// }
 
 // DELETE Product
 export async function deleteProduct(id: string) {

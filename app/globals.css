@@ -70,3 +70,22 @@ select:-webkit-autofill {
     --foreground: #FAFAFA;
   }
 }
+
+/* =====================
+       Animations
+   ===================== */
+
+.filter{
+  transition: transform .5s ease, opacity .5s ease;
+}
+
+.filter.closed {
+  transform: translateY(-40%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filter.open {
+  transform: translateY(0);
+  opacity: 1;
+}
