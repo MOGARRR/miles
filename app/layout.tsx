@@ -10,7 +10,7 @@ import { CartProvider } from "./components/CartContext";
 import TopNavBar from "./components/TopNavBar";
 import Footer from "./components/Footer";
 import CartPopup from "./components/CartPopup";
-
+import { Analytics } from "@vercel/analytics/next"
 
 // Initialize the Google fonts with variables for CSS usage
 // These variables (--font-inter / --font-bebas) will be available globally.
@@ -37,6 +37,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${bebas.variable}`} 
     >
+      <Analytics/> // To track analytics for visitors and page views
 
       {/* 
         min-h-screen → ensures page is at least the full viewport height (100vh)
