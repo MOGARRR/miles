@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+#  KiloBoy Artwork | Full-Stack E-Commerce Platform
 
-## Getting Started
+![KiloBoy HomePage](./public/images/KiloboyHompage.gif)
+### Live Site: https://miles-delta.vercel.app/
 
-First, run the development server:
+**KiloBoy Artwork** is a gallery and e-commerce site for a Toronto-based artist, built with **Next.js**, **Supabase**, and **Stripe**. The application manages the complete order lifecycle from product discovery to payment processing, shipping label generation, and customer notifications.
+
+The platform is built on a secure full-stack architecture that integrates payment processing, shipping logistics, and database operations into a reliable, event-driven workflow.
+
+---
+
+## 🎁 Features
+
+- Product browsing with filtering by title, description, and category
+- Secure checkout using Stripe
+- Automated order creation via Stripe webhooks
+- Shipping label generation using Shippo
+- Email receipts sent on successful payment
+- Protected admin dashboard with role-based access
+- Address validation before shipping label creation
+- Production deployment with environment configuration and API route handling
+
+---
+
+## 🥞 Tech Stack
+
+### Frontend 
+
+  ![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat&logo=nextdotjs&logoColor=fff)
+  ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat&logo=typescript&logoColor=fff)
+  ![React](https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=000)
+  ![CSS](https://img.shields.io/badge/-CSS-1572B6?style=flat&logo=css3&logoColor=fff)
+
+### Backend
+
+  ![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat&logo=nextdotjs&logoColor=fff)
+  ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat&logo=typescript&logoColor=fff)
+  ![Supabase](https://img.shields.io/badge/-Supabase-3ECF8E?style=flat&logo=supabase&logoColor=000)
+  ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=fff)
+
+### Authentication & Security
+
+- **Supabase Auth**
+- **Middleware-protected admin routes**
+
+### Third-Party API Integrations
+
+- **Stripe** - Checkout sessions, payment processing, and secure webhook handling  
+
+- **Shippo** - Server-side shipping label creation  
+
+- **Resend** - Automated transactional email delivery  
+
+### Deployment
+
+-   ![Vercel](https://img.shields.io/badge/-Vercel-000000?style=flat&logo=vercel&logoColor=fff)
+---
+
+## 🔒 Security & Architecture
+
+- Admin routes protected with middleware and role-based authentication
+- Webhook signature verification for secure Stripe event handling
+- Server-side order creation triggered by successful payments
+- Environment variable separation for development and production
+- Input validation for shipping addresses
+
+---
+
+## 📦 Order Flow Overview
+
+1. Customer completes checkout via Stripe
+2. Stripe sends a webhook event to the server
+3. Server verifies the webhook signature
+4. Order and order items are created in the database
+5. Shipping label is generated
+6. Confirmation email is sent to the customer
+
+Orders are created only after verified Stripe webhook events, ensuring payment confirmation before database entries or shipping label creation.
+
+---
+
+## ⚙️ Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+  npm install
+```
+
+3. Configure environment variables:
+
+- SUPABASE_URL
+- SUPABASE_ANON_KEY
+- STRIPE_SECRET_KEY
+- STRIPE_WEBHOOK_SECRET
+- SHIPPO_API_KEY
+- RESEND_API_KEY
+
+4. Run locally:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+##  Team
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Developers
 
-## Learn More
+- **Anthony Alicea**  
+  GitHub: https://github.com/MOGARRR
 
-To learn more about Next.js, take a look at the following resources:
+- **Tayrine Soares**  
+  GitHub: https://github.com/TayrineSoares
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Client / Brand Owner
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Miles Antwi**  
+  Instagram: https://www.instagram.com/kiloboyartwork/
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+This project was developed for a client and is not open for commercial redistribution. Code is shared for portfolio and educational purposes only.
