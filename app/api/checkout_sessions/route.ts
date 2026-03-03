@@ -8,6 +8,7 @@ export async function POST(req: Request) {
     const headersList = await headers();
     const origin = headersList.get("origin");
     // Create Checkout Sessions from body params.
+
     const line_items = [
       ...cart.map((item: any) => ({
         price_data: {
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
             name: item.title,
             metadata: {
               productId: item.id,
+              productSizeId: item.productSizeId
             },
           },
           unit_amount: item.price_cents,

@@ -69,7 +69,6 @@ export async function POST(req: NextRequest) {
 
         // Product size ID (used for inventory decrement)
         productSizeId: product?.metadata?.productSizeId ?? null,
-        
         quantity: item.quantity ?? 1,
         amount_total: item.amount_total,
         description: item.description,

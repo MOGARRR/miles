@@ -187,6 +187,7 @@ const CartPage = () => {
     title: `${item.title} (${item.product_size.label})`,
     price_cents: item.price_cents,
     quantity: item.quantity,
+    productSizeId: item.product_size.id,
   }));
 
   const handleCheckout = async () => {
@@ -206,6 +207,10 @@ const CartPage = () => {
     const data = await res.json();
     if (data.url) window.location.href = data.url;
   };
+
+      useEffect(() => {
+      console.log('items:',items);
+    },[items])
 
   return (
     <section>
@@ -408,9 +413,9 @@ const CartPage = () => {
 
           <SubmitButton
             className="w-full mt-6"
-            // disabled={!canProceedToCheckout || !addressValid}
-            // onClick={handleCheckout}
-            disabled
+            disabled={!canProceedToCheckout || !addressValid}
+            onClick={handleCheckout}
+            // disabled
           >
             PROCEED TO CHECKOUT
           </SubmitButton>
