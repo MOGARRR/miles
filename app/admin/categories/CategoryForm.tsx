@@ -115,12 +115,13 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
       <form onSubmit={handleSubmit} className="text-center">
         <div className="my-4">
           <label className="text-md">Title</label>
-          <p>12 character limit</p>
-          {/* Add character limit */}
+          <p className="text-xs">Max Character Limit: 12</p>
           <input
             type="text"
             required
+            maxLength={12}
             value={title}
+            placeholder="Marvel, Sports, etc."
             onChange={(e) => setTitle(e.target.value)}
             className=" 
             rounded border 
