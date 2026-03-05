@@ -115,6 +115,8 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
       <form onSubmit={handleSubmit} className="text-center">
         <div className="my-4">
           <label className="text-md">Title</label>
+          <p>12 character limit</p>
+          {/* Add character limit */}
           <input
             type="text"
             required
