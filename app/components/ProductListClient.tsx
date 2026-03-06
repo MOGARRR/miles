@@ -94,7 +94,7 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
       <div className="flex justify-center">
         <div className="flex flex-col">
           <h2 className="text-2xl text-center">Search by Product</h2>
-          <div className="flex">
+          <div className="flex justify-center">
             <SearchBar
               value={searchInput}
               onChange={setSearchInput}
@@ -107,57 +107,62 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
               <Funnel />
             </button>
           </div>
+          
+          {/* Filter Menu */}
+          {filterMenu && (
+            <section className={`filter lg:flex hidden mt-4`}>
+              <div className="bg-kilodarkgrey p-5  border rounded-md">
+                <div className="border-b-1 text-xl text-center mb-2">
+                  <h1>Filter By:</h1>
+                </div>
+
+                <div
+                  className={`grid grid-flow-col gap-3 ${
+                    categories.length >= 12 ? "grid-rows-2" : "grid-rows-1"
+                  }`}
+                >
+                  {categories.map((category) => {
+                    const isChecked = selectedCategories.includes(category.id);
+                    return (
+                      <label
+                        key={category.id}
+                        className="flex items-center gap-2 cursor-pointer select-none"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            setSelectedCategories((prev) =>
+                              prev.includes(category.id)
+                                ? prev.filter((id) => id !== category.id)
+                                : [...prev, category.id],
+                            );
+                          }}
+                          // Hides default style and is only visible by screen readers
+                          className="sr-only"
+                        />
+
+                        {/* Custom checkbox */}
+                        <span
+                          className={`min-w-5 h-5 flex items-center justify-center border-2 rounded transition-colors ${
+                            isChecked
+                              ? "bg-kilored border-none"
+                              : "border-gray-400"
+                          }`}
+                        >
+                          {isChecked && <Check />}
+                        </span>
+
+                        <span>{category.title}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          )}
         </div>
       </div>
-
-      {/* Filter Menu */}
-      <section
-        className={`filter ${ filterMenu ? "open" : "closed"} lg:flex lg:absolute hidden left-38 mt-15`}
-      > 
-      {/* FIX FILTER MENU RESPONSIVENESS */}
-        <div className="bg-kilodarkgrey p-5 w-42 border rounded-md">
-          <div className="border-b-1 text-xl text-center mb-2">
-            <h1>Filter By:</h1>
-          </div>
-
-          <div className="flex flex-col gap-2 justify-evenly">
-            {categories.map((category) => {
-              const isChecked = selectedCategories.includes(category.id);
-              return (
-                <label
-                  key={category.id}
-                  className="flex items-center gap-2 cursor-pointer select-none"
-                >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => {
-                      setSelectedCategories((prev) =>
-                        prev.includes(category.id)
-                          ? prev.filter((id) => id !== category.id)
-                          : [...prev, category.id],
-                      );
-                    }}
-                    // Hides default style and is only visible by screen readers
-                    className="sr-only"
-                  />
-
-                  {/* Custom checkbox */}
-                  <span
-                    className={`min-w-5 h-5 flex items-center justify-center border-2 rounded transition-colors ${
-                      isChecked ? "bg-kilored border-none" : "border-gray-400"
-                    }`}
-                  >
-                    {isChecked && <Check />}
-                  </span>
-
-                  <span>{category.title}</span>
-                </label>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* Searching indicator */}
       <div className="flex items-center gap-2 min-h-[20px] px-6 md:px-10">
