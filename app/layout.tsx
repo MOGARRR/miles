@@ -37,7 +37,10 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${bebas.variable}`} 
     >
-      <Analytics/> // To track analytics for visitors and page views
+      <span className="hidden">
+        <Analytics/> // To track analytics for visitors and page views
+      </span>
+      
 
       {/* 
         min-h-screen → ensures page is at least the full viewport height (100vh)
