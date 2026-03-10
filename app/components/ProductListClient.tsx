@@ -103,12 +103,12 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
             />
             <button
               onClick={handleFilterMenu}
-              className="lg:flex hidden bg-gray-700 hover:bg-gray-800 self-end p-2 ml-2 rounded-full cursor-pointer"
+              className="flex bg-gray-700 hover:bg-gray-800 self-end p-2 ml-2 rounded-full cursor-pointer"
             >
               <Funnel />
             </button>
           </div>
-          
+
           {/* Filter Menu */}
           {filterMenu && (
             <FilterMenu
