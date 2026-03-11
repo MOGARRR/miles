@@ -17,7 +17,6 @@ import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const bebas = Bebas_Neue({ weight: "400", subsets: ["latin"], variable: "--font-bebas" });
 
-
 // Define metadata for the entire app (SEO and browser tab titles)
 export const metadata: Metadata = {
   title: "KiloBoy Artwork",
@@ -40,7 +39,6 @@ export default function RootLayout({
       <span className="hidden">
         <Analytics/> // To track analytics for visitors and page views
       </span>
-      
 
       {/* 
         min-h-screen → ensures page is at least the full viewport height (100vh)
@@ -60,22 +58,15 @@ export default function RootLayout({
 
           <main className="flex-grow mt-[60px] w-full">
             {children}
-
           </main>
-
 
           {/* 
             flex-grow → makes content area expand to fill leftover space 
             ensures the footer stays at the bottom when content is short.
           */}
-
         
           <Footer />
-
-        </CartProvider>
-        
-        
-      
+        </CartProvider>      
 
       </body>
     </html>
