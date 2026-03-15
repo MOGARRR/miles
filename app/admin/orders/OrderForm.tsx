@@ -1,8 +1,8 @@
 "use client";
 import { FC, useState } from "react";
-import React from "react";
 import { orderFormData } from "@/src/types/orderFormData";
 import { formatUpdateEmail } from "@/src/emails/formatUpdateEmails";
+import { useRouter } from "next/navigation";
 
 interface OrderFormProps {
   id: string;
@@ -26,6 +26,12 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
       ? updateFormInfo.estimatedDelivery.split("T")[0]
       : "",
   });
+
+  const router = useRouter();
+
+  const handleRefresh = () => {
+    router.refresh();
+  };
 
   const emailHtml = formatUpdateEmail(id, formData);
 
@@ -69,6 +75,7 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
         }
 
         onClose();
+        handleRefresh();
       } catch (err: any) {
         console.error("Update Email Error:", err);
       }
@@ -87,12 +94,17 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
          rounded-md border
          "
     >
-      <form className="flex flex-col text-center text-md" onSubmit={handleSubmit}>
-        <h2 className="
+      <form
+        className="flex flex-col text-center text-md"
+        onSubmit={handleSubmit}
+      >
+        <h2
+          className="
             text-xl font-medium text-center text-kilored 
             border-b-1 
             mb-4 
-            ">
+            "
+        >
           Customer Info
         </h2>
         <br />
@@ -177,10 +189,14 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
           placeholder="Phone Number"
         />
         <br />
-        <h2 className="
+        <h2
+          className="
             text-xl font-medium text-center text-kilored
             border-b-1
-            ">Shipping Info</h2>
+            "
+        >
+          Shipping Info
+        </h2>
         <br />
         <label>Shipping Status:</label>
         <select
