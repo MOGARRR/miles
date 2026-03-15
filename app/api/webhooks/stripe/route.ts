@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
       try {
         /// Send Email Receipt to Customer Email
         await sendEmail({
-          to: "alicea.9a@gmail.com", /// REPLACE WITH customerEmail BEFORE PRODUCTION
+          to: customerEmail, /// REPLACE WITH customerEmail BEFORE PRODUCTION
           subject: "KiloBoy Order Receipt",
           html,
         });
