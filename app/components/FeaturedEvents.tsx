@@ -64,8 +64,7 @@ const FeaturedEvents = async () => {
             justify-items-center
           ">
             {featuredEvents.map((e) => (
-           
-              <EventCard event={e} />
+              <EventCard key={e.id} event={e} />
            
             ))}
           </ul>

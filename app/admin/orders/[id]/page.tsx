@@ -3,14 +3,13 @@ import { getOrderWithProducts } from "@/src/controllers/orderControllers";
 import Link from "next/link";
 import AdminOrdersClient from "../AdminOrdersClient";
 
-interface OrderDetailsProps {
-  params: {
-    id: string;
-  };
-}
+export default async function OrderDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
 
-export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
-  const orderData = await getOrderWithProducts(params.id);
+  const orderData = await getOrderWithProducts( (await params).id);
 
   return (
     <div>
@@ -26,7 +25,7 @@ export default async function OrderDetailsPage({ params }: OrderDetailsProps) {
       </Link>{" "}
       <br />
       <br />
-      <AdminOrdersClient orderId={params.id}orderInfo={orderData} />
+      <AdminOrdersClient orderId={ (await params).id} orderInfo={orderData} />
     </div>
   );
 }
