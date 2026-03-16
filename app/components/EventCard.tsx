@@ -21,16 +21,19 @@ const EventCard = ({ event }: EventCardProps) => {
       "
     >
       {/* IMAGE */}
-      <div className="flex">
-        <div className="w-1/2">
-          <img 
-            src={event.image_url}
-            alt={event.title}
-            className=" w-full h-48 object-cover border border-[#3a3a41] rounded mb-2"
-          />
-
-        </div>
-        
+      <div className="w-full">
+        <img
+          src={event.image_url}
+          alt={event.title}
+          className="
+            w-full 
+            h-48 
+            mb-4
+            object-cover 
+            rounded-t-xl
+            border-b border-[#3a3a41]
+          "
+        />
       </div>
 
       {/* EVENT INFO */}
