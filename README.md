@@ -79,32 +79,6 @@ Orders are created only after verified Stripe webhook events, ensuring payment c
 
 ---
 
-## ⚙️ Installation
-
-1. Clone the repository
-2. Install dependencies:
-
-```bash
-  npm install
-```
-
-3. Configure environment variables:
-
-- SUPABASE_URL
-- SUPABASE_ANON_KEY
-- STRIPE_SECRET_KEY
-- STRIPE_WEBHOOK_SECRET
-- SHIPPO_API_KEY
-- RESEND_API_KEY
-
-4. Run locally:
-
-```bash
-npm run dev
-```
-
----
-
 ##  Team
 
 ### Developers
