@@ -91,33 +91,50 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
 
   return (
     <section className="mt-20">
-      {/* Search Bar */}
-      <div className="flex justify-center">
-        <div className="flex flex-col">
-          <h2 className="text-2xl text-center">Search by Product</h2>
-          <div className="flex justify-center">
+      {/* SEARCH BAR + FILTERS */}
+      <div className="px-4 sm:px-6 md:px-10 mb-6">
+        <div
+          className="
+    flex flex-col sm:flex-row
+    gap-3
+    sm:items-center sm:justify-between"
+        >
+          {/* SEARCH BAR */}
+          <div className="flex-1">
             <SearchBar
               value={searchInput}
               onChange={setSearchInput}
-              placeholder="Name or Description"
+              placeholder="Search by name"
             />
-            <button
-              onClick={handleFilterMenu}
-              className="flex bg-gray-700 hover:bg-gray-800 self-end p-2 ml-2 rounded-full cursor-pointer"
-            >
-              <Funnel />
-            </button>
           </div>
 
-          {/* Filter Menu */}
-          {filterMenu && (
-            <FilterMenu
-            categories={categories}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            />
-          )}
+          {/* FILTER BUTTON */}
+          <button
+            onClick={handleFilterMenu}
+            className="
+              flex items-center gap-2
+              border border-gray-500
+              text-white text-sm
+              px-4 py-2
+              rounded-lg
+              transition
+              hover:bg-gray-800"
+          >
+            <Funnel size={16} />
+            Filters
+          </button>
         </div>
+
+        {/* FILTER PANEL */}
+        {filterMenu && (
+          <div className="w-full mt-4">
+            <FilterMenu
+              categories={categories}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+            />
+          </div>
+        )}
       </div>
 
       {/* Searching indicator */}
@@ -138,7 +155,13 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
       )}
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:p-10">
+      <div
+        className="
+        grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+        gap-8 
+        pb-10 
+        md:p-10 "
+      >
         {products.map((product) => {
           const categories = product.categories ?? [];
           const startingPriceCents =
@@ -176,7 +199,7 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
 
       {/* Load More Button */}
       {hasMore && (
-        <div className="flex justify-center pb-12">
+        <div className="flex justify-center ">
           <button
             onClick={() => {
               if (isLoading) return;
@@ -185,7 +208,12 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
               fetchProducts(nextPage);
             }}
             disabled={isLoading}
-            className="px-6 py-2 border border-black text-sm uppercase tracking-wide hover:bg-black hover:text-white transition disabled:opacity-50"
+            className="
+              px-6 py-2 
+              border border-black text-sm 
+              uppercase tracking-wide 
+              hover:bg-black hover:text-white transition 
+              disabled:opacity-50"
           >
             {isLoading ? "Loading…" : "Load more"}
           </button>

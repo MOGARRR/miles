@@ -14,27 +14,36 @@ const FilterMenu: React.FC<Props> = ({
   setSelectedCategories,
 }) => {
   return (
-    <section className={
-      `
-      filter
-      flex mt-4
-      `}>
-      <div className="md:bg-kilodarkgrey p-5  md:border rounded-md">
-        <div className="border-b-1 md:text-xl text-2xl text-center mb-2">
-          <h1>Filter By Category:</h1>
+    <section className=" " >
+
+      <div className="
+        bg-kiloblack
+        border border-[#3a3a41]
+        rounded-xl
+        p-5
+        shadow-md
+        ">
+
+        {/* HEADER */}
+        <div className="
+          text-sm text-kilotextlight mb-4">
+          <p className="tracking-wide">Filter By Category</p>
         </div>
 
-        <div
-          className={`grid md:grid-flow-col grid-cols-3 gap-3${
-            categories.length >= 12 ? "grid-rows-2" : "grid-rows-1"
-          }`}
-        >
+        {/* CATEGORIES */}
+        <div className="flex flex-wrap gap-6">
+        
           {categories.map((category) => {
             const isChecked = selectedCategories.includes(category.id);
             return (
               <label
                 key={category.id}
-                className="flex items-center gap-2 cursor-pointer select-none p-3"
+                className="
+                  flex items-center gap-2
+                  cursor-pointer 
+                  select-none
+                  group
+                  "
               >
                 <input
                   type="checkbox"
@@ -52,14 +61,30 @@ const FilterMenu: React.FC<Props> = ({
 
                 {/* Custom checkbox */}
                 <span
-                  className={`min-w-5 h-5 flex items-center justify-center border-2 rounded transition-colors ${
+                  className={`
+                    w-5 h-5 
+                    flex items-center justify-center 
+                    border-2 rounded transition
+                    border-gray-500 group-hover:border-kilored
+                     ${
                     isChecked ? "bg-kilored border-none" : "border-gray-400"
                   }`}
                 >
-                  {isChecked && <Check />}
+                  {isChecked && <Check size={14} className="text-white" />}
                 </span>
 
-                <span className="lg:text-md text-lg">{category.title}</span>
+                <span className={`
+                  text-sm
+                  transition
+                  ${
+                    isChecked
+                      ? "text-white"
+                      : "text-kilotextlight group-hover:text-white"
+                  }
+                `}
+                >
+                  {category.title}
+                </span>
               </label>
             );
           })}
