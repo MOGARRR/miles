@@ -107,26 +107,26 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
               placeholder="Search by name"
             />
           </div>
-  {/* FILTER BUTTON */}
-  <div className="flex justify-center sm:justify-end">
-    <button
-      onClick={handleFilterMenu}
-      className="
-        flex items-center gap-2
-        border border-gray-500
-        text-gray-400 text-sm
-        bg-black/20
-        px-4 py-2
-        rounded-lg
-        transition
-        hover:bg-gray-800
-        w-auto"
-    >
-      <Funnel size={16} />
-      Filters
-    </button>
-  </div>
-</div>
+          {/* FILTER BUTTON */}
+          <div className="flex justify-center sm:justify-end">
+            <button
+              onClick={handleFilterMenu}
+              className="
+                flex items-center gap-2
+                border border-gray-500
+                text-gray-400 text-sm
+                bg-black/20
+                px-4 py-2
+                rounded-lg
+                transition
+                hover:bg-gray-800
+                w-auto"
+            >
+              <Funnel size={16} />
+              Filters
+            </button>
+          </div>
+        </div>
 
         {/* FILTER PANEL */}
         {filterMenu && (
@@ -158,8 +158,7 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
       )}
 
       {/* Product Grid */}
-      <div
-        className="
+      <div className="
         grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
         gap-8 
         pb-10 
@@ -213,7 +212,8 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
             disabled={isLoading}
             className="
               px-6 py-2 
-              border border-black text-sm 
+              border border-gray-500 rounded-lg
+              text-sm 
               uppercase tracking-wide 
               hover:bg-black hover:text-white transition 
               disabled:opacity-50"
