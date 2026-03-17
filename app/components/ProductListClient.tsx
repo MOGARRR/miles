@@ -95,9 +95,9 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
       <div className="px-4 sm:px-6 md:px-10 mb-6">
         <div
           className="
-    flex flex-col sm:flex-row
-    gap-3
-    sm:items-center sm:justify-between"
+            flex flex-col sm:flex-row
+            gap-3
+            sm:items-center sm:justify-between"
         >
           {/* SEARCH BAR */}
           <div className="flex-1">
@@ -107,23 +107,26 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
               placeholder="Search by name"
             />
           </div>
-
-          {/* FILTER BUTTON */}
-          <button
-            onClick={handleFilterMenu}
-            className="
-              flex items-center gap-2
-              border border-gray-500
-              text-white text-sm
-              px-4 py-2
-              rounded-lg
-              transition
-              hover:bg-gray-800"
-          >
-            <Funnel size={16} />
-            Filters
-          </button>
-        </div>
+  {/* FILTER BUTTON */}
+  <div className="flex justify-center sm:justify-end">
+    <button
+      onClick={handleFilterMenu}
+      className="
+        flex items-center gap-2
+        border border-gray-500
+        text-gray-400 text-sm
+        bg-black/20
+        px-4 py-2
+        rounded-lg
+        transition
+        hover:bg-gray-800
+        w-auto"
+    >
+      <Funnel size={16} />
+      Filters
+    </button>
+  </div>
+</div>
 
         {/* FILTER PANEL */}
         {filterMenu && (
