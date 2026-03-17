@@ -21,8 +21,15 @@ const ContactPage = () => {
           </p>
         </div>
       </div>
-  
+
+      <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16 
+        "
+      >
         <ContactForm />
+      </div>
+        
               
     </div>
   );

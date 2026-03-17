@@ -60,13 +60,13 @@ const CustomForm = () => {
 
       <div className="
           max-w-[768px] mx-auto
-          px-6 md:px-16 py-16
+          px-6 md:px-16 py-8
           my-16
           rounded-lg border border-[#3a3a41]
           bg-kilodarkgrey"
       >
         <h3 className="text-3xl mb-4 text-kilored">
-          Request your custom piece
+          Request a custom piece
         </h3>
         <p className="text-base text-kilotextgrey ">
           Fill out the form below with as much detail as possible. The more specific you are, the better we can bring your idea to life.</p>

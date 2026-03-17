@@ -34,7 +34,15 @@ const CustomArtworkPage = () => {
       
       
       {/* CUSTOM FORM */}
-      <CustomForm />
+      <div className="
+        max-w-7xl mx-auto
+        px-6 md:px-16 
+        "
+      >
+        <CustomForm />
+
+      </div>
+      
 
       {/* CUSTOM WORK INSPIRATION */}
       <div className="bg-kilodarkgrey" >
