@@ -20,7 +20,7 @@ const CartPopup = () => {
     clearCart,
   } = useCart();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
 
 
