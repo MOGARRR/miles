@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useCart } from "./CartContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ShoppingCart, Trash2, X } from "lucide-react";
 
 // Floating mini-cart when there are items. Collapsible; links to full cart page.
 
@@ -16,6 +16,7 @@ const CartPopup = () => {
     items,
     addToCart,
     decrementQuantity,
+    removeFromCart,
     clearCart,
   } = useCart();
 
@@ -53,13 +54,14 @@ const CartPopup = () => {
       className={`
         fixed bottom-6 right-6
         max-w-[calc(100vw-3rem)]
-        bg-kilodarkgrey text-kilotextlight
-        border border-[#3a3a41] rounded-xl
+        text-kilotextlight
+        border rounded-xl
         text-sm
         z-[9999] shadow-xl shadow-black/30
         overflow-hidden
-        transition-[width] duration-200
-        ${isOpen ? "w-72" : "w-fit"}
+        transition-[width,background-color,border-color] duration-200
+        bg-kilodarkgrey
+        ${isOpen ? "w-72 border border-[#3a3a41]" : "w-fit border-2 border-gray-500"}
       `}
     >
       {/* Header */}
@@ -68,17 +70,17 @@ const CartPopup = () => {
         onClick={() => setIsOpen((prev) => !prev)}
         className={`
           w-full flex items-center justify-between gap-2
-          border-b border-[#3a3a41]
-          bg-black/20 hover:bg-black/30
           transition-colors text-left
-          ${isOpen ? "px-4 py-3" : "px-3 py-2"}
+          ${isOpen ? "border-b border-[#3a3a41] bg-black/20 hover:bg-black/30 px-4 py-3" : "px-3 py-2 hover:bg-black/20"}
         `}
         aria-expanded={isOpen}
+        aria-label={`${isOpen ? "Collapse" : "Expand"} shopping cart, ${totalItems} ${totalItems === 1 ? "item" : "items"}`}
       >
-        <span className="font-semibold text-kilored truncate">
-          Your Cart ({totalItems})
+        <span className="flex items-center gap-2 font-semibold text-kilored">
+          <ShoppingCart size={18} className="shrink-0 text-kilored" aria-hidden />
+          <span className="tabular-nums">{totalItems}</span>
         </span>
-        {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+        {isOpen ? <X size={18} aria-hidden /> : <ChevronDown size={18} aria-hidden />}
       </button>
 
       {isOpen && (
@@ -153,6 +155,17 @@ const CartPopup = () => {
                       >
                         +
                       </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeFromCart(item.id, item.product_size.id)
+                        }
+                        className="p-1 ml-0.5 text-kilotextgrey hover:text-kilored"
+                        aria-label={`Remove ${item.title} from cart`}
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
 
                     {isMaxReached && (
@@ -178,10 +191,11 @@ const CartPopup = () => {
             <Link
               href="/cart"
               className="
-                block w-full text-center
-                px-4 py-3 rounded-lg
-                bg-kilored text-white
-                hover:bg-[#B53535]
+                block w-full text-center text-xs font-semibold
+                px-3 py-2 rounded-md
+                bg-kilored text-white border border-kilored
+                hover:bg-[#B53535] hover:border-[#B53535]
+                transition-colors
               "
             >
               Go to Checkout
