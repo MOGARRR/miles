@@ -25,7 +25,7 @@ const Footer = () => {
       
 
         <div className="text-center space-y-1">
-          <h1 className="text-lg">© {new Date().getFullYear()} KILOBOY ARTWORK</h1>
+          {/* <h1 className="text-lg">© {new Date().getFullYear()} KILOBOY ARTWORK</h1> */}
 
           <Link
             href="/privacy"
