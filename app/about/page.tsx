@@ -7,7 +7,7 @@ const AboutPage = () => {
     // PAGE CONTAINER 
     <div className="
       flex flex-col md:flex-row
-      items-center md:items-start
+      items-center
       justify-between
       gap-10
       max-w-7xl mx-auto
@@ -23,21 +23,31 @@ const AboutPage = () => {
         <h2 className="text-xl md:text-3xl text-gray-300">The artist behind KiloBoy</h2>
         <br />
         <p className="text-base md:text-lg text-gray-200 leading-relaxed">
-          I make art that hits with attitude — bold lines, loud colors, and real emotion. Every design comes from a place of passion and energy you can feel.
+          Miles Antwi is an artist driven by expression, identity, and the power of visual storytelling. His work blends bold style, character, and emotion, creating pieces that feel alive with personality and intention. Each artwork is an extension of his inner world—where imagination, culture, and individuality collide.
         </p>
 
         <p className="text-base md:text-lg text-gray-200 leading-relaxed">
-          KiloBoy started as a way for me to express what words couldn't. It's a reflection of the things that inspire me: music, culture, and the people around me. Through art, I get to share moments, moods, and stories that feel real and alive.
+          For Miles, art is more than creation—it's transformation. It's his way of shaping himself into a better man, channeling growth, discipline, and self-reflection through every piece he creates. At the same time, his work carries a simple but powerful purpose: to put a smile on someone's face. Whether it's through a striking visual, a relatable character, or an unexpected detail, he aims to bring a moment of joy and connection to those who experience his art.
         </p>
 
         <p className="text-base md:text-lg text-gray-200 leading-relaxed">
-          At the end of the day, it's about connection. If someone feels something when they see my work, then I've done what I set out to do.
+          With a deep passion for creating, Miles approaches every piece as an opportunity to explore new ideas while staying true to a signature edge that defines his style. His art doesn’t just aim to be seen—it aims to be felt. Whether through bold compositions or subtle details, his work invites viewers to connect, interpret, and find their own meaning within it.
         </p>
+
+         <p className="text-base md:text-lg text-gray-200 leading-relaxed">
+          Beyond the canvas, Miles is committed to growth—both as an artist and as a person. He continues to evolve his craft, pushing boundaries and refining his voice, with the goal of building a body of work that resonates and stands the test of time.
+        </p>
+
+         <p className="text-base md:text-lg text-gray-200 leading-relaxed">
+          This is more than art—it's a reflection of perspective, energy, growth, and a journey still unfolding.
+        </p>
+
+
         <Image
-          src="/images/miles-signature.png"
+          src="/images/new-signature2.png"
                     alt="Miles Signature"
-                    width={160}
-                    height={80}
+                    width={240}
+                    height={160}
                     className="mx-auto md:mx-0 mt-8">
 
         </Image>
@@ -48,8 +58,8 @@ const AboutPage = () => {
         <Image
         src="/images/miles.jpg"
                   alt="Miles"
-                  width={420}
-                  height={420}
+                  width={520}
+                  height={560}
                   className="rounded-lg object-cover shadow-lg">
 
         </Image>
