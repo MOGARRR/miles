@@ -79,9 +79,9 @@ const TopNavBar = () => {
           {/* Logo (mobile)*/}
           <Link href="/" className=" text-xl font-semibold tracking-wide hover:text-gray-300">
             <Image
-              src="/images/kiloboy-logo.png"
+              src="/images/new-logo-3.png"
               alt="KiloBoy Logo"
-              width={80}
+              width={100}
               height={20}
               priority
               className="object-contain hover:opacity-90 transition-opacity duration-200"
