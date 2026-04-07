@@ -253,7 +253,7 @@ const CartPage = () => {
                     />
 
                     <div className="flex-1 min-w-0 md:flex-1">
-                      <p className="font-semibold text-sm md:text-base leading-snug">
+                      <p className="text-sm md:text-base leading-snug">
                         {item.title}
                       </p>
                       <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
@@ -284,7 +284,7 @@ const CartPage = () => {
                         className={qtyBtn}
                         aria-label="Decrease quantity"
                       >
-                        −
+                        -
                       </button>
 
                       <span className="w-8 text-center text-sm font-medium tabular-nums">
