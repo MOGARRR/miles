@@ -10,11 +10,10 @@ const AboutPage = () => {
       px-6 md:px-16 py-24
       ">
 
-    
 
       {/* TEXT + SIGNATURE */}
       <div className="space-y-5 text-center md:text-left">
-        <h1 className="text-4xl md:text-6xl font-bold" >Hi, I'm <span className="text-[#E14747]">Miles</span></h1>
+        <h1 className="text-4xl md:text-6xl font-bold" >Meet <span className="text-[#E14747]">Miles</span></h1>
         <h2 className="text-xl md:text-3xl text-gray-300">The artist behind KiloBoy</h2>
 
         <Image
