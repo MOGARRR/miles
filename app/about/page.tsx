@@ -6,10 +6,6 @@ const AboutPage = () => {
   return (
     // PAGE CONTAINER 
     <div className="
-      flex flex-col md:flex-row
-      items-center
-      justify-between
-      gap-10
       max-w-7xl mx-auto
       px-6 md:px-16 py-24
       ">
@@ -17,10 +13,22 @@ const AboutPage = () => {
     
 
       {/* TEXT + SIGNATURE */}
-      {/* flex-1 tells an element to grow and take up all available space inside its flex container */}
-      <div className="flex-1 space-y-5 text-center md:text-left">
+      <div className="space-y-5 text-center md:text-left">
         <h1 className="text-4xl md:text-6xl font-bold" >Hi, I'm <span className="text-[#E14747]">Miles</span></h1>
         <h2 className="text-xl md:text-3xl text-gray-300">The artist behind KiloBoy</h2>
+
+        <Image
+          src="/images/miles.jpg"
+                    alt="Miles"
+                    width={400}
+                    height={480}
+                    className="
+                      float-right 
+                      ml-10 mt-2 
+                      rounded-lg 
+                      object-cover 
+                      shadow-lg">
+        </Image>
         <br />
         <p className="text-base md:text-lg text-gray-200 leading-relaxed">
           Miles Antwi is an artist driven by expression, identity, and the power of visual storytelling. His work blends bold style, character, and emotion, creating pieces that feel alive with personality and intention. Each artwork is an extension of his inner world—where imagination, culture, and individuality collide.
@@ -48,25 +56,11 @@ const AboutPage = () => {
                     alt="Miles Signature"
                     width={240}
                     height={160}
-                    className="mx-auto md:mx-0 mt-8">
+                    className="clear-both mt-8">
 
         </Image>
 
       </div>
-      
-      <div className="flex-1 flex justify-center md:justify-end">
-        <Image
-        src="/images/miles.jpg"
-                  alt="Miles"
-                  width={520}
-                  height={560}
-                  className="rounded-lg object-cover shadow-lg">
-
-        </Image>
-
-
-      </div>
-      
       
     </div>
   );
