@@ -14,7 +14,7 @@ export default function StoreItemPage() {
   const [loading, setLoading] = useState(true);
 
   const [activeImage, setActiveImage] = useState<string | null>(null);
-
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -24,13 +24,13 @@ export default function StoreItemPage() {
       //console.log("PRODUCT FROM API:", data.product);
 
       const product = data.product;
-      
+
       setProduct(product);
-      setActiveImage(product.image_URL);  // main image first 
+      setActiveImage(product.image_URL); // main image first
 
       // auto-select first in-stock size
       const firstAvailableSize = product.product_sizes?.find(
-        (size: any) => size.stock > 0
+        (size: any) => size.stock > 0,
       );
 
       if (firstAvailableSize) {
@@ -46,14 +46,13 @@ export default function StoreItemPage() {
   if (loading) return <p className="p-10">Loading…</p>;
   if (!product) return <p className="p-10">Product not found</p>;
 
-  const displayedPrice =
-    selectedSize?.price_cents ?? product.price_cents ?? 0;
-  
-  const canAddToCart =
-    selectedSize && selectedSize.stock > 0;
+  const displayedPrice = selectedSize?.price_cents ?? product.price_cents ?? 0;
+
+  const canAddToCart = selectedSize && selectedSize.stock > 0;
 
   return (
-    <section className="
+    <section
+      className="
       max-w-5xl mx-auto 
       p-10 
       grid grid-cols-1 
@@ -61,39 +60,41 @@ export default function StoreItemPage() {
     >
       <div className="flex flex-col gap-4">
         {/* HERO IMAGE */}
-        <div className="relative aspect-square">
+        <button
+          onClick={() => setLightboxOpen(true)}
+          className="relative aspect-square w-full cursor-zoom-in"
+        >
           <Image
             src={activeImage || product.image_URL}
             alt={product.title}
             fill
             className="object-cover rounded-lg"
           />
-        </div>
+        </button>
 
         {/* THUMBNAILS */}
         {product.product_images?.length > 0 && (
           <div className="flex gap-2">
-            {[product.image_URL, ...product.product_images.map((img: any) => img.image_url)].map(
-              (img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImage(img)}
-                  className={`relative h-20 w-20 rounded overflow-hidden border
+            {[
+              product.image_URL,
+              ...product.product_images.map((img: any) => img.image_url),
+            ].map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveImage(img)}
+                className={`relative h-20 w-20 rounded overflow-hidden border
                     ${
-                      activeImage === img
-                        ? "border-kilored"
-                        : "border-gray-300"
+                      activeImage === img ? "border-kilored" : "border-gray-300"
                     }`}
-                >
-                  <Image
-                    src={img}
-                    alt={`${product.title} thumbnail`}
-                    fill
-                    className="object-cover"
-                  />
-                </button>
-              )
-            )}
+              >
+                <Image
+                  src={img}
+                  alt={`${product.title} thumbnail`}
+                  fill
+                  className="object-cover"
+                />
+              </button>
+            ))}
           </div>
         )}
       </div>
@@ -102,9 +103,7 @@ export default function StoreItemPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">{product.title}</h1>
 
-        <p className="text-sm text-kilotextgrey">
-          {product.description}
-        </p>
+        <p className="text-sm text-kilotextgrey">{product.description}</p>
 
         {/* PRICE */}
         <p className="text-xl font-semibold text-kilored">
@@ -112,52 +111,50 @@ export default function StoreItemPage() {
         </p>
 
         {/* SIZE SELECTOR */}
-       <div className="mt-4">
-        <p className="text-sm font-medium mb-2">Size</p>
+        <div className="mt-4">
+          <p className="text-sm font-medium mb-2">Size</p>
 
-        <div className="flex flex-col gap-2">
-          {product.product_sizes.map((size: any) => {
-            const isSoldOut = size.stock === 0;
-            const isSelected = selectedSize?.id === size.id;
+          <div className="flex flex-col gap-2">
+            {product.product_sizes.map((size: any) => {
+              const isSoldOut = size.stock === 0;
+              const isSelected = selectedSize?.id === size.id;
 
-            return (
-              <label
-                key={size.id}
-                className={`
+              return (
+                <label
+                  key={size.id}
+                  className={`
                   flex items-center gap-3
                   px-4 py-3 rounded-md border cursor-pointer
                   ${
                     isSoldOut
                       ? "bg-gray-800 text-gray-400 cursor-not-allowed"
                       : isSelected
-                      ? "border-kilored"
-                      : "border-gray-300 hover:border-kilored"
+                        ? "border-kilored"
+                        : "border-gray-300 hover:border-kilored"
                   }
                 `}
-              >
-                <input
-                  type="radio"
-                  name="product-size"
-                  disabled={isSoldOut}
-                  checked={isSelected}
-                  onChange={() => setSelectedSize(size)}
-                  className="accent-kilored"
-                />
+                >
+                  <input
+                    type="radio"
+                    name="product-size"
+                    disabled={isSoldOut}
+                    checked={isSelected}
+                    onChange={() => setSelectedSize(size)}
+                    className="accent-kilored"
+                  />
 
-                <span className="text-sm font-medium">
-                  {size.label}
-                </span>
+                  <span className="text-sm font-medium">{size.label}</span>
 
-                {isSoldOut && (
-                  <span className="text-xs text-rose-500 ml-auto">
-                    Sold out
-                  </span>
-                )}
-              </label>
-            );
-          })}
+                  {isSoldOut && (
+                    <span className="text-xs text-rose-500 ml-auto">
+                      Sold out
+                    </span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
         {/* ADD TO CART */}
         <button
@@ -176,9 +173,9 @@ export default function StoreItemPage() {
                 id: selectedSize.id,
                 label: selectedSize.label,
                 price_cents: selectedSize.price_cents,
-                stock: selectedSize.stock, 
+                stock: selectedSize.stock,
               },
-            })
+            });
           }}
           className={`mt-6 px-6 py-3 rounded-md font-semibold
             ${
@@ -190,6 +187,33 @@ export default function StoreItemPage() {
           Add to cart
         </button>
       </div>
+
+      {/* MODAL */}
+      {lightboxOpen && (
+        <div
+          className="
+          fixed 
+          inset-0 z-50 
+          flex items-center justify-center 
+          bg-black/80"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <div className="relative w-[90vw] h-[90vh] max-w-4xl">
+            <Image
+              src={activeImage || product.image_URL}
+              alt={product.title}
+              fill
+              className="object-contain"
+            />
+          </div>
+          <button
+            className="absolute top-4 right-4 text-white text-3xl font-bold"
+            onClick={() => setLightboxOpen(false)}
+          >
+            &times;
+          </button>
+        </div>
+      )}
     </section>
   );
 }
