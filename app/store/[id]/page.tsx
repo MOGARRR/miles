@@ -207,10 +207,22 @@ export default function StoreItemPage() {
             />
           </div>
           <button
-            className="absolute top-4 right-4 text-white text-3xl font-bold"
-            onClick={() => setLightboxOpen(false)}
+            type="button"
+            aria-label="Close"
+            className="
+              absolute top-4 right-4 z-10
+              flex h-10 w-10 items-center justify-center
+              rounded-full text-2xl leading-none text-white
+              bg-black/40 hover:bg-black/60
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60
+              transition-colors
+            "
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxOpen(false);
+            }}
           >
-            &times;
+            ×
           </button>
         </div>
       )}
