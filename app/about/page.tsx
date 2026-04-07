@@ -55,7 +55,7 @@ const AboutPage = () => {
                     alt="Miles Signature"
                     width={240}
                     height={160}
-                    className="clear-both mt-8">
+                    className="clear-both mt-8 mx-auto md:mx-0">
 
         </Image>
 
