@@ -8,21 +8,21 @@ const questions = [
 
   {
     id: 2,
-    q: "What happens after I submit my inquiry?",
+    q: "After submitting your inquiry",
     answer:
       "We'll discuss your vision, pricing, and project details.",
   },
 
   {
     id: 3,
-    q: "When does work begin?",
+    q: "Work begins",
     answer:
       "Once approved, work begins after payment confirmation.",
   },
 
   {
     id: 4,
-    q: "How will I receive my custom piece?",
+    q: "Receive your custom piece",
     answer:
       "Your custom piece is created and shipped upon completion. Please note that custom orders may require additional production time depending on complexity and demand.",
   },
