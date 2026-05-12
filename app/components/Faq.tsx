@@ -17,22 +17,16 @@ const questions = [
     id: 3,
     q: "When does work begin?",
     answer:
-      "Once approved, work begins after deposit/payment confirmation.",
+      "Once approved, work begins after payment confirmation.",
   },
 
   {
     id: 4,
     q: "How will I receive my custom piece?",
     answer:
-      "Your custom piece is created and delivered/shipped upon completion.",
+      "Your custom piece is created and shipped upon completion. Please note that custom orders may require additional production time depending on complexity and demand.",
   },
 
-  {
-    id: 5,
-    q: "Is there anything I should know before ordering?",
-    answer:
-      "Custom orders are made with care and may require additional production time depending on complexity and demand. Serious inquiries only.",
-  },
 ];
 
 const Faq = () => {

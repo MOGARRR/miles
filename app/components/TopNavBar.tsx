@@ -81,8 +81,8 @@ const TopNavBar = () => {
             <Image
               src="/images/new-logo-3.png"
               alt="KiloBoy Logo"
-              width={100}
-              height={20}
+              width={80}
+              height={80}
               priority
               className="object-contain hover:opacity-90 transition-opacity duration-200"
             />
