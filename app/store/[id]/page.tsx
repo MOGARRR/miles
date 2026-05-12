@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useCart } from "@/app/components/CartContext";
+import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
 export default function StoreItemPage() {
   const { id } = useParams();
@@ -15,11 +16,6 @@ export default function StoreItemPage() {
 
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-
-  const sizeDisplayMap: Record<string, string> = {
-    Small: "11 × 14″ / 27 × 35 cm",
-    Large: "24 × 36″ / 61 × 91 cm",
-  };
 
   useEffect(() => {
     async function fetchProduct() {
@@ -150,7 +146,7 @@ export default function StoreItemPage() {
                   />
 
                   <span className="text-sm font-medium">
-                    {sizeDisplayMap[size.label] || size.label}
+                    {formatProductSizeLabel(size.label)}
                   </span>
 
                   {isSoldOut && (
@@ -187,11 +183,11 @@ export default function StoreItemPage() {
           }}
           className={`
             cursor-pointer 
-            transition-all duration-200
+            transition-colors duration-200
             mt-6 px-6 py-3 rounded-md font-semibold
             ${
               canAddToCart
-                ? "bg-kilored text-white hover:opacity-90 hover:shadow-md active:scale-[0.99]"
+                ? "bg-kilored text-white hover:bg-[#B53535] hover:shadow-md active:scale-[0.99]"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
         >

@@ -6,6 +6,7 @@ import { useCart } from "./CartContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, ShoppingCart, Trash2, X } from "lucide-react";
+import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
 // Floating mini-cart when there are items. Collapsible; links to full cart page.
 
@@ -21,8 +22,6 @@ const CartPopup = () => {
   } = useCart();
 
   const [isOpen, setIsOpen] = useState(false);
-
-
 
 
   // Clear cart after successful checkout
@@ -61,7 +60,7 @@ const CartPopup = () => {
         overflow-hidden
         transition-[width,background-color,border-color] duration-200
         bg-kilodarkgrey
-        ${isOpen ? "w-72 border border-[#3a3a41]" : "w-fit border-2 border-gray-500"}
+        ${isOpen ? "w-82 border border-[#3a3a41]" : "w-fit border-2 border-gray-500"}
       `}
     >
       {/* Header */}
@@ -94,27 +93,27 @@ const CartPopup = () => {
                 
                 <li
                   key={`${item.id}-${item.product_size.id}`}
-                  className="flex items-center gap-3 py-2.5 border-b border-[#3a3a41]/80 last:border-0"
+                  className="flex items-start gap-3 py-2.5 border-b border-[#3a3a41]/80 last:border-0"
                 >
                   <img
                     src={item.image_URL}
                     alt={item.title}
-                    className="w-11 h-11 object-cover rounded-lg"
+                    className="mt-0.5 h-11 w-11 shrink-0 object-cover rounded-lg"
                   />
 
                   <div className="flex-1 min-w-0">
                     <p className="truncate font-medium">
                       {item.title}
                     </p>
-                    <p className="text-xs text-kilotextgrey">
-                      Size: {item.product_size.label}
+                    <p className="text-xs leading-snug text-kilotextgrey break-words">
+                      Size: {formatProductSizeLabel(item.product_size.label)}
                     </p>
                     <p className="text-xs tabular-nums">
                       ${((item.price_cents * item.quantity) / 100).toFixed(2)}
                     </p>
                   </div>
 
-                  <div className="flex flex-col items-end gap-1">
+                  <div className="flex shrink-0 flex-col items-end gap-1">
                     <div className="flex items-center gap-1">
                       {/* DECREMENT */}
                       <button

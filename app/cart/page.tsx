@@ -14,6 +14,7 @@ import {
   normalizePostal,
   getNormalizedShipping,
 } from "@/src/helpers/normalizeShipping";
+import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
 const CartPage = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
@@ -179,7 +180,7 @@ const CartPage = () => {
   // ----- STRIPE PAYLOAD -----
   const checkoutCart = items.map((item) => ({
     id: item.id,
-    title: `${item.title} (${item.product_size.label})`,
+    title: `${item.title} (${formatProductSizeLabel(item.product_size.label)})`,
     price_cents: item.price_cents,
     quantity: item.quantity,
     productSizeId: item.product_size.id,
@@ -257,7 +258,7 @@ const CartPage = () => {
                         {item.title}
                       </p>
                       <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
-                        Size: {item.product_size.label}
+                        Size: {formatProductSizeLabel(item.product_size.label)}
                       </p>
                       <p className="text-xs text-kilotextgrey tabular-nums mt-0.5 md:hidden">
                         ${(item.price_cents / 100).toFixed(2)} each
