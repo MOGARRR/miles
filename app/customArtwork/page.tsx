@@ -35,9 +35,7 @@ const CustomArtworkPage = () => {
             </h1>
 
             <p className="text-base md:text-lg text-gray-200 max-w-[800px] mx-auto mt-8"> 
-              
-            Looking for a one-of-a-kind piece created just for you? <br/><br/>
-
+    
             I offer custom artwork and made-to-order art prints tailored to your vision — whether you're looking for a personalized portrait, statement canvas, collector's print, or a unique concept brought to life in my signature style. <br/><br/>
 
             Each custom piece is created with intention, creativity, and close attention to detail to ensure it reflects both your idea and my artistic vision.
