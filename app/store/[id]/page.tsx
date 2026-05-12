@@ -59,7 +59,8 @@ export default function StoreItemPage() {
     <section
       className="
       max-w-5xl mx-auto 
-      p-10 
+      p-10
+      py-24
       grid grid-cols-1 
       md:grid-cols-2 gap-10"
     >
@@ -184,10 +185,13 @@ export default function StoreItemPage() {
               },
             });
           }}
-          className={`mt-6 px-6 py-3 rounded-md font-semibold
+          className={`
+            cursor-pointer 
+            transition-all duration-200
+            mt-6 px-6 py-3 rounded-md font-semibold
             ${
               canAddToCart
-                ? "bg-kilored text-white"
+                ? "bg-kilored text-white hover:opacity-90 hover:shadow-md active:scale-[0.99]"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
         >
