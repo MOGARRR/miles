@@ -11,6 +11,7 @@ import type { Category } from "@/src/types/category";
 import CreateProductForm from "./ProductForm";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
 type Props = {
   products: Product[];
@@ -199,7 +200,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
                   <ul className="ml-4 list-disc space-y-1">
                     {product.product_sizes.map((size) => (
                       <li key={size.id}>
-                        {size.label}: ${(size.price_cents / 100).toFixed(2)}
+                        {formatProductSizeLabel(size.label)}: ${(size.price_cents / 100).toFixed(2)}
                         {" · "}
                         <span
                           className={

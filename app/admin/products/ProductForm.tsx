@@ -15,6 +15,7 @@ import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
 import { Product } from "@/src/types/product";
 import FormAlert from "@/app/components/FormAlert";
+import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
 type Props = {
   product?: Product; // edit mode
@@ -344,7 +345,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
           <div className="flex justify-evenly ">
             <div className="flex flex-col">
-              <label className="text-md">Small</label>
+              <label className="text-md">{formatProductSizeLabel("Small")}</label>
               <input
                 type="number"
                 step="0.01"
@@ -356,7 +357,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-md">Large</label>
+              <label className="text-md">{formatProductSizeLabel("Large")}</label>
               <input
                 type="number"
                 step="0.01"
@@ -374,7 +375,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
 
           <div className="flex justify-evenly">
             <div className="flex flex-col">
-              <label className="text-sm">Small stock</label>
+              <label className="text-sm">
+                {formatProductSizeLabel("Small")} stock
+              </label>
               <input
                 type="number"
                 min={0}
@@ -386,7 +389,9 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm">Large stock</label>
+              <label className="text-sm">
+                {formatProductSizeLabel("Large")} stock
+              </label>
               <input
                 type="number"
                 min={0}
