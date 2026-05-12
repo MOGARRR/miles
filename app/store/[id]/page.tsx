@@ -16,6 +16,11 @@ export default function StoreItemPage() {
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
+  const sizeDisplayMap: Record<string, string> = {
+    Small: "11 × 14″ / 27 × 35 cm",
+    Large: "24 × 36″ / 61 × 91 cm",
+  };
+
   useEffect(() => {
     async function fetchProduct() {
       const res = await fetch(`/api/products/${id}`);
@@ -143,7 +148,9 @@ export default function StoreItemPage() {
                     className="accent-kilored"
                   />
 
-                  <span className="text-sm font-medium">{size.label}</span>
+                  <span className="text-sm font-medium">
+                    {sizeDisplayMap[size.label] || size.label}
+                  </span>
 
                   {isSoldOut && (
                     <span className="text-xs text-rose-500 ml-auto">
