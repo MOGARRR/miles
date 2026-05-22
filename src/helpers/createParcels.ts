@@ -38,7 +38,7 @@ const createParcels = async (cart: any) => {
     }
   }
 
-  const sleevesNeeded = Math.floor(sleeveAmount / 6);
+  const sleevesNeeded = Math.ceil(sleeveAmount / 6);
 
   for (let i = 0; i < sleevesNeeded; i++) {
     parcels.push(smallPrint);
