@@ -19,21 +19,20 @@ const largePrint = {
 };
 
 const createParcels = async (cart: any) => {
-   
   let sleeveAmount = 0;
   
   const parcels: ParcelCreateRequest[] = [];
 
   // Each large print is packed individually
   for (const item of cart) {
-    if (item.product_size.label === "Large") {
+    if (item.sizeLabel === "Large") {
       for (let i = 0; i < item.quantity; i++) {
         parcels.push(largePrint);
       }
     }
     
   // Small prints can be packed into sleeves in groups of 6
-    if (item.product_size.label === "Small") {
+    if (item.sizeLabel === "Small") {
       sleeveAmount += item.quantity;
     }
   }
@@ -43,7 +42,7 @@ const createParcels = async (cart: any) => {
   for (let i = 0; i < sleevesNeeded; i++) {
     parcels.push(smallPrint);
   }
-
+  
   return parcels;
 };
 

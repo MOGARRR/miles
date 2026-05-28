@@ -22,32 +22,30 @@ const ADDRESS_FROM: AddressCreateRequest = {
 
 export async function createShippingLabel({
   addressTo,
-  parcel,
+  parcels,
 }: {
   addressTo: AddressCreateRequest;
-  parcel: ParcelCreateRequest;
+  parcels: ParcelCreateRequest[];
 }) {
-  
-  if (!addressTo || !parcel) {
-  throw new Error("addressTo and parcel are required");
-}
-  const parcelRequest = {
-    length: parcel.length,
-    width: parcel.width,
-    height: parcel.height,
-    distanceUnit: parcel.distanceUnit || DistanceUnitEnum.In,
-    weight: parcel.weight,
-    massUnit: parcel.massUnit || WeightUnitEnum.Lb,
-  };
+  if (!addressTo || !parcels) {
+    throw new Error("addressTo and parcel are required");
+  }
+  const parcelRequests: ParcelCreateRequest[] = parcels.map((item: any) => ({
+    length: item.length,
+    width: item.width,
+    height: item.height,
+    distanceUnit: item.distanceUnit || DistanceUnitEnum.In,
+    weight: item.weight,
+    massUnit: item.massUnit || WeightUnitEnum.Lb,
+  }));
 
   //  Create shipment object
   const shipment = await shippo.shipments.create({
     addressFrom: ADDRESS_FROM,
-    addressTo: addressTo ,
-    parcels: [parcelRequest],
+    addressTo: addressTo,
+    parcels: parcelRequests,
     async: false,
   });
-
 
   // loop through rates and find provider or default to the first one
   const rate =
