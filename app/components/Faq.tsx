@@ -1,31 +1,32 @@
 const questions = [
   {
     id: 1,
-    q: "How long does a custom piece take?",
+    q: "Place a custom order",
     answer:
-      "Timelines vary depending on complexity, but most custom pieces are completed within 2-4 weeks after approval.",
+      "Submit your custom order inquiry with your idea, references, size preference, and desired timeline.",
   },
 
   {
     id: 2,
-    q: "What's the pricing for custom work?",
+    q: "After submitting your inquiry",
     answer:
-      "Pricing depends on the size, medium, and complexity of the artwork. We'll provide a detailed quote after reviewing your request.",
+      "We'll discuss your vision, pricing, and project details.",
   },
 
   {
     id: 3,
-    q: "Can I request revisions?",
+    q: "Work begins",
     answer:
-      "Pricing depends on the size, medium, and complexity of the artwork. We'll provide a detailed quote after reviewing your request.",
+      "Once approved, work begins after payment confirmation.",
   },
 
   {
     id: 4,
-    q: "SAMPLE QUESTION",
+    q: "Receive your custom piece",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rutrum neque vel luctus.",
+      "Your custom piece is created and shipped upon completion. Please note that custom orders may require additional production time depending on complexity and demand.",
   },
+
 ];
 
 const Faq = () => {
@@ -39,14 +40,14 @@ const Faq = () => {
         "
       >
         <h2 className="text-3xl mb-4 text-kilored text-center">
-          FREQUENTLY ASKED QUESTIONS
+          HOW IT WORKS
         </h2>
 
         {questions.map((question) => (
           <div
             key={question.id}
             className="
-          bg-kilodarkgrey 
+          bg-kiloblack
           rounded-lg border border-[#3a3a41]
           my-8 p-6"
           >

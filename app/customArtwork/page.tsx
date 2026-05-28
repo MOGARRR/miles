@@ -8,7 +8,15 @@ const CustomArtworkPage = () => {
     "/images/custom-artwork1.jpg",
     "/images/custom-artwork2.jpg",
     "/images/custom-artwork3.jpg",
-  ]; 
+  ];
+
+  const customOptionLabels = [
+    "Original Hand-Painted Artwork",
+    "Personalized Portraits",
+    "Custom Canvas Pieces",
+    "Specialty Prints",
+    "Commissioned Concept Artwork",
+  ];
 
   return (
 
@@ -27,25 +35,20 @@ const CustomArtworkPage = () => {
             </h1>
 
             <p className="text-base md:text-lg text-gray-200 max-w-[800px] mx-auto mt-8"> 
-              Bring your vision to life with a personalized KiloBoy piece. Whether it's your favorite athlete, character, or moment — let's create something iconic together.
+    
+            Custom artwork and made-to-order art prints tailored to your vision, in a unique concept brought to life in my signature style. <br/><br/>
+
+            Each custom piece is created with intention, creativity, and close attention to detail to ensure it reflects both your idea and my artistic vision.
             </p>
         </div>
       </div>
       
       
-      {/* CUSTOM FORM */}
-      <div className="
-        max-w-7xl mx-auto
-        px-6 md:px-16 
-        "
-      >
-        <CustomForm />
-
-      </div>
+  
       
 
       {/* CUSTOM WORK INSPIRATION */}
-      <div className="bg-kilodarkgrey" >
+      <div  >
         <div className="
           max-w-7xl mx-auto
           px-6 md:px-16 py-16
@@ -61,10 +64,19 @@ const CustomArtworkPage = () => {
           >
             
             <h2 className="text-3xl mb-10 text-kilored"> 
-              Custom work inspiration
+              Inspiration
             </h2>
-            <p className=" text-base text-kilotextgrey"> 
-              Check out some custom pieces ideas to see what's possible. From NBA legends to comic book heroes, we bring your favorite icons to life.
+            <p className="mx-auto mt-6 flex max-w-2xl flex-wrap items-baseline justify-center gap-x-2 gap-y-1.5 text-sm leading-snug text-kilotextgrey md:text-base md:leading-relaxed">
+              {customOptionLabels.map((label, i) => (
+                <span key={label} className="contents">
+                  {i > 0 && (
+                    <span className="select-none text-kilored/50" aria-hidden>
+                      •
+                    </span>
+                  )}
+                  <span>{label}</span>
+                </span>
+              ))}
             </p>
 
           </div>
@@ -87,9 +99,20 @@ const CustomArtworkPage = () => {
         </div>
       </div>
 
-      <div className="">
+         
+
+      <div className="bg-kilodarkgrey">
         <Faq />
       </div>
+
+       {/* CUSTOM FORM */}
+       <div className="
+            max-w-7xl mx-auto
+            px-6 md:px-16 "
+          >
+            <CustomForm />
+
+          </div>
       
     </section>
   )

@@ -1,6 +1,24 @@
 import { redirect } from "next/navigation";
 
 import { stripe } from "../lib/stripe";
+import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
+
+/** Stripe line description → product title + optional size (inches via formatter). */
+function lineItemMainAndSize(description: string | null | undefined): {
+  main: string;
+  size: string | null;
+} {
+  if (!description) return { main: "", size: null };
+  if (description === "HST (13%)" || description === "Shipping") {
+    return { main: description, size: null };
+  }
+  const m = description.match(/^(.*) \(([^)]+)\)\s*$/);
+  if (!m) return { main: description, size: null };
+  return {
+    main: m[1].trim(),
+    size: formatProductSizeLabel(m[2].trim()),
+  };
+}
 
 export default async function Success({
   searchParams,
@@ -55,24 +73,32 @@ export default async function Success({
             <h3 className="text-xl mb-6">Your items</h3>
 
             <ul className="space-y-4">
-              {lineItems.map((item) => (
+              {lineItems.map((item) => {
+                const { main, size } = lineItemMainAndSize(item.description);
+                return (
                 <li
                   key={item.id}
-                  className="flex justify-between items-center border-b border-gray-700 pb-4"
+                  className="flex justify-between items-start gap-4 border-b border-gray-700 pb-4"
                 >
                   <div>
-                    <p className="font-medium">{item.description}</p>
-                    <p className="text-sm text-kilotextgrey">
+                    <p className="font-medium">{main}</p>
+                    {size && (
+                      <p className="text-sm text-kilotextgrey mt-0.5">
+                        Size: {size}
+                      </p>
+                    )}
+                    <p className="text-sm text-kilotextgrey mt-0.5">
                       Qty: {item.quantity}
                     </p>
                   </div>
 
-                  <p className="text-lg font-semibold">
+                  <p className="text-lg font-semibold shrink-0 tabular-nums">
                     ${(item.price!.unit_amount! / 100).toFixed(2)}{" "}
                     
                   </p>
                 </li>
-              ))}
+              );
+              })}
               {/* TOTAL */}
               <li className="flex justify-between items-center">
                 <span className="text-lg font-semibold">Total</span>
