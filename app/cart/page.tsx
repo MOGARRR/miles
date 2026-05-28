@@ -140,7 +140,7 @@ const CartPage = () => {
     }
 
     try {
-      const parcels = await createParcels(items);
+      const parcels = await createParcels(checkoutCart);
       const rateRes = await fetch("/api/shipping/rates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -184,6 +184,7 @@ const CartPage = () => {
     price_cents: item.price_cents,
     quantity: item.quantity,
     productSizeId: item.product_size.id,
+    sizeLabel: item.product_size.label,
   }));
 
   const handleCheckout = async () => {
