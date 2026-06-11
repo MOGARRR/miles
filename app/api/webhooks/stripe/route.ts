@@ -10,6 +10,7 @@ import {
 import { createOrderProduct } from "@/src/controllers/order_productsControllers";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import { decrementProductSizeStock } from "@/src/controllers/inventoryControllers";
+import createParcels from "@/src/helpers/createParcels";
 
 
 /**
@@ -69,9 +70,11 @@ export async function POST(req: NextRequest) {
 
         // Product size ID (used for inventory decrement)
         productSizeId: product?.metadata?.productSizeId ?? null,
+        sizeLabel: product?.metadata?.sizeLabel ?? null,
         quantity: item.quantity ?? 1,
         amount_total: item.amount_total,
         description: item.description,
+        
       };
     });
 
@@ -172,6 +175,7 @@ export async function POST(req: NextRequest) {
      * Inventory is decremented ONLY after Stripe confirms payment
      * via `checkout.session.completed`.
      */
+
     try {
       await Promise.all(
         filteredOrderItems.map((item) =>
@@ -216,6 +220,9 @@ export async function POST(req: NextRequest) {
     );
 
     try {
+
+      const parcels = await createParcels(filteredOrderItems)
+
       /// Create/Buy Shipping label for owner
       const label = await createShippingLabel({
         addressTo: {
@@ -228,21 +235,15 @@ export async function POST(req: NextRequest) {
           zip: shipping.postal,
           country: shipping.country,
         },
-        /// UPDATE WHEN PARCEL WITH REAL DATA WHEN AVAILABLE
-        parcel: {
-          length: "10",
-          width: "8",
-          height: "4",
-          weight: "2",
-          distanceUnit: DistanceUnitEnum.In,
-          massUnit: WeightUnitEnum.Lb,
-        },
+        parcels,
       });
+
+      
       ///////////////////
       try {
         /// Send Email Receipt to Customer Email
         await sendEmail({
-          to: customerEmail, /// REPLACE WITH customerEmail BEFORE PRODUCTION
+          to: customerEmail,
           subject: "KiloBoy Order Receipt",
           html,
         });

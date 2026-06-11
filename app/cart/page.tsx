@@ -16,6 +16,8 @@ import {
 } from "@/src/helpers/normalizeShipping";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
+import createParcels from "@/src/helpers/createParcels";
+
 const CartPage = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [isStockValid, setIsStockValid] = useState(true);
@@ -139,23 +141,22 @@ const CartPage = () => {
     }
 
     try {
+      const parcels = await createParcels(checkoutCart);
       const rateRes = await fetch("/api/shipping/rates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           addressTo,
-          parcel: {
-            length: "10",
-            width: "8",
-            height: "4",
-            weight: "2",
-            distanceUnit: DistanceUnitEnum.In,
-            massUnit: WeightUnitEnum.Lb,
-          },
+          parcels,
         }),
       });
 
       const data = await rateRes.json();
+      
+      if (!rateRes.ok || !data.rate) {
+        console.error(data);
+        throw new Error(data.error || "No shipping rate returned");
+      }
       setShippingEstimate(parseFloat(data.rate.amount));
       await syncCartStock();
     } catch (err) {
@@ -184,6 +185,7 @@ const CartPage = () => {
     price_cents: item.price_cents,
     quantity: item.quantity,
     productSizeId: item.product_size.id,
+    sizeLabel: item.product_size.label,
   }));
 
   const handleCheckout = async () => {
@@ -427,7 +429,7 @@ const CartPage = () => {
           <SubmitButton
             className="w-full mt-6"
             // disabled={!canProceedToCheckout || !addressValid}
-            onClick={handleCheckout}
+            // onClick={handleCheckout}
             disabled
           >
             PROCEED TO CHECKOUT

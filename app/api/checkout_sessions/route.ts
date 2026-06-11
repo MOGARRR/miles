@@ -17,7 +17,8 @@ export async function POST(req: Request) {
             name: item.title,
             metadata: {
               productId: item.id,
-              productSizeId: item.productSizeId
+              productSizeId: item.productSizeId,
+              sizeLabel: item.sizeLabel,
             },
           },
           unit_amount: item.price_cents,

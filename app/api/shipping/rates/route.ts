@@ -9,7 +9,7 @@ import {
 
 const shippo = new Shippo({ apiKeyHeader: process.env.SHIPPO_API_KEY });
 
-// Form with store owner info 
+// Form with store owner info
 const ADDRESS_FROM: AddressCreateRequest = {
   name: process.env.SHIP_FROM_NAME!,
   company: process.env.SHIP_FROM_COMPANY!,
@@ -25,33 +25,31 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { addressTo, parcel } = body;
+    const { addressTo, parcels } = body;
 
-    if (!addressTo || !parcel) {
+    if (!addressTo || !parcels) {
       return NextResponse.json(
         { error: "Missing required fields: addressTo, parcel." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // Format parcel object correctly
-    const parcelRequest: ParcelCreateRequest = {
-      length: parcel.length,
-      width: parcel.width,
-      height: parcel.height,
-      distanceUnit: parcel.distanceUnit || DistanceUnitEnum.In,
-      weight: parcel.weight,
-      massUnit: parcel.massUnit || WeightUnitEnum.Lb,
-    };
+    const parcelRequests: ParcelCreateRequest[] = parcels.map((item: any) => ({
+      length: item.length,
+      width: item.width,
+      height: item.height,
+      distanceUnit: item.distanceUnit || DistanceUnitEnum.In,
+      weight: item.weight,
+      massUnit: item.massUnit || WeightUnitEnum.Lb,
+    }));
 
-    // Create shipment object 
+    // Create shipment object
     const shipment = await shippo.shipments.create({
       addressFrom: ADDRESS_FROM,
       addressTo: addressTo as AddressCreateRequest,
-      parcels: [parcelRequest],
+      parcels: parcelRequests,
       async: false,
     });
-
 
     // loop through rates and find provider or default to the first one
     const rate =
@@ -60,7 +58,7 @@ export async function POST(request: Request) {
     if (!rate) {
       return NextResponse.json(
         { error: "No rates available for this shipment." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -71,7 +69,7 @@ export async function POST(request: Request) {
     console.error("Shippo full error:", JSON.stringify(err, null, 2));
     return NextResponse.json(
       { error: err?.message ?? "Shippo request failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

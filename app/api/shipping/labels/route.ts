@@ -26,29 +26,30 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { addressTo, parcel, orderInfo} = body;
+    const { addressTo, parcel: parcels, orderInfo} = body;
 
-    if (!addressTo || !parcel || !orderInfo) {
+    if (!addressTo || !parcels || !orderInfo) {
       return NextResponse.json(
         { error: "Missing required fields: addressTo, parcel, orderInfo." },
         { status: 400 }
       );
     }
     // Format parcel object correctly
-    const parcelRequest: ParcelCreateRequest = {
-      length: parcel.length,
-      width: parcel.width,
-      height: parcel.height,
-      distanceUnit: parcel.distanceUnit || DistanceUnitEnum.In,
-      weight: parcel.weight,
-      massUnit: parcel.massUnit || WeightUnitEnum.Lb,
-    };
+       const parcelRequests: ParcelCreateRequest[] = parcels.map((item: any) => ({
+      length: item.length,
+      width: item.width,
+      height: item.height,
+      distanceUnit: item.distanceUnit || DistanceUnitEnum.In,
+      weight: item.weight,
+      massUnit: item.massUnit || WeightUnitEnum.Lb,
+    }));
+
 
     //  Create shipment object
     const shipment = await shippo.shipments.create({
       addressFrom: ADDRESS_FROM,
       addressTo: addressTo as AddressCreateRequest,
-      parcels: [parcelRequest],
+      parcels: parcelRequests,
       async: false,
     });
 
