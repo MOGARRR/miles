@@ -12,11 +12,18 @@ const AdminOrders = async () => {
   const orderData = await orderRes.json();
 
   return (
-    <div>
+        // HEADING
+    <div className="py-12 ">
       <div className="text-center">
-        <h1 className="text-3xl border-b-1">ORDERS ADMIN</h1>
-        <p>Manage Orders</p>
+        <h1 className="text-4xl md:text-5xl font-bold">ORDERS</h1>
+        <p className="
+          max-w-[800px] mx-auto mt-8
+          text-base md:text-lg text-gray-200  text-center"
+        >
+          View and manage customer orders, updates, and fulfillment status.
+        </p>
       </div>
+
       <br /> <br />
       <ul
         className="

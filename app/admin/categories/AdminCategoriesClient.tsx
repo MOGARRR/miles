@@ -15,6 +15,7 @@ import { useState } from "react";
 import type { Category } from "@/src/types/category";
 import CreateCategoryForm from "./CategoryForm";
 import { useRouter } from "next/navigation";
+import Button from "@/app/components/ui/Button";
 
 type Props = {
   categories: Category[];
@@ -62,26 +63,19 @@ const AdminCategoriesClient = ({ categories }: Props) => {
 
   return (
     <div className="flex flex-col">
-      <div className="mb-6 ">
-        <button
+
+      {/* ADD NEW CATEGORY BUTTON  */}
+      <div className="mb-20">
+        <Button
           type="button"
+          variant={isFormOpen ? "secondary" : "primary"}
           onClick={() => {
             setIsFormOpen((prev) => !prev);
             setEditingCategory(null);
           }}
-          id="edit-form"
-          className="
-          bg-gray-500 
-          rounded border 
-          p-2 
-          text-md 
-          cursor-pointer
-          hover:bg-gray-600 
-          "
         >
-          {isFormOpen ? "Close" : "Add New Category"}
-        </button>
-      
+          {isFormOpen ? "Close Form" : "Add New Category"}
+        </Button>
       </div>
 
       {isFormOpen && (
@@ -104,6 +98,8 @@ const AdminCategoriesClient = ({ categories }: Props) => {
         </p>
       )}
 
+
+      {/* CATEGORIES LIST  */}
       <h1 className="text-3xl">All Categories:</h1>
 
       {categories.length === 0 ? (

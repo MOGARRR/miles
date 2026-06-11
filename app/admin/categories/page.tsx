@@ -22,14 +22,18 @@ const AdminCategoriesPage = async () => {
   const categories: Category[] = data.categories ?? [];
 
   return (
-    <div >
+
+    // HEADING
+    <div className="py-12 ">
       <div className="text-center">
-        <h1 className="text-3xl ">CATEGORIES ADMIN</h1>
-        <p className="text-xl">
-          Manage Product Categories
+        <h1 className="text-4xl md:text-5xl font-bold">CATEGORIES</h1>
+        <p className="
+          max-w-[800px] mx-auto mt-8
+          text-base md:text-lg text-gray-200  text-center"
+        >
+          Create, edit, and organize categories. Keep your collection structured and manage how products are grouped and displayed.
         </p>
       </div>
-
 
       <br /> 
 

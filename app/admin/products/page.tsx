@@ -39,11 +39,18 @@ const AdminProductsPage = async () => {
   // console.log(categoryMap);
 
   return (
-    <div>
+        // HEADING
+    <div className="py-12 ">
       <div className="text-center">
-        <h1 className=" text-3xl border-b-1">PRODUCTS ADMIN </h1>
-        <p className="text-xl">Manage Products</p>
+        <h1 className="text-4xl md:text-5xl font-bold">PRODUCTS</h1>
+        <p className="
+          max-w-[800px] mx-auto mt-8
+          text-base md:text-lg text-gray-200  text-center"
+        >
+          Create, update, and manage products in your collection.
+        </p>
       </div>
+
       <br /> <br />
       <AdminProductsClient
         products={products}

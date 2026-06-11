@@ -1,5 +1,5 @@
 import React from "react";
-import SubmitButton from "./ui/SubmitButton";
+import SubmitButton from "./ui/Button";
 
 type ShippingFormProps = {
   shippingForm: any;

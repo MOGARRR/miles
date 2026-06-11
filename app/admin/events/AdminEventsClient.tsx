@@ -6,6 +6,7 @@ import CreateEventsForm from "./EventsForm";
 import { formatDate } from "@/src/helpers/formatDate";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Button from "@/app/components/ui/Button";
 
 // Client wrapper owns all interactive UI for events:
 // - toggling create form
@@ -72,21 +73,13 @@ const AdminEventsClient = ({ events }: Props) => {
   return (
     <div>
       <div className="flex justify-between mb-6">
-        <button
-          id="edit-form"
+        <Button
           type="button"
+          variant={isFormOpen ? "secondary" : "primary"}
           onClick={() => setIsFormOpen((prev) => !prev)}
-          className="
-          bg-gray-500 
-          rounded border 
-          p-2 
-          text-md 
-          cursor-pointer
-          hover:bg-gray-600
-          "
         >
           {isFormOpen ? "Close" : "Add New Event"}
-        </button>
+        </Button>
       </div>
 
       {isFormOpen && (

@@ -12,6 +12,7 @@ import CreateProductForm from "./ProductForm";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
+import Button from "@/app/components/ui/Button";
 
 type Props = {
   products: Product[];
@@ -98,21 +99,13 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
   return (
     <div>
       <div className="flex justify-between mb-6">
-        <button
-          id="edit-form"
+        <Button
           type="button"
+          variant={isFormOpen ? "secondary" : "primary"}
           onClick={() => setIsFormOpen((prev) => !prev)}
-          className="
-          bg-gray-500 
-          rounded border 
-          p-2 
-          text-md 
-          cursor-pointer
-          hover:bg-gray-600
-          "
         >
           {isFormOpen ? "Close" : "Add New Product"}
-        </button>
+        </Button>
       </div>
 
       {isFormOpen && (

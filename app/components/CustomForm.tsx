@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import SubmitButton from "./ui/SubmitButton";
+import SubmitButton from "./ui/Button";
 
 const CustomForm = () => {
   const [name, setName] = useState(""); 

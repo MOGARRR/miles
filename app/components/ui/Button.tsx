@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-type SubmitButtonProps = {
+type ButtonProps = {
   children: React.ReactNode; // Button text or content
   variant?: "primary" | "secondary"; // Visual style of the button 
   isLoading?: boolean;
@@ -12,23 +12,23 @@ type SubmitButtonProps = {
   
 };
 
-const SubmitButton = ({
+const Button = ({
   children,
   variant = "primary",
   isLoading = false,
   loadingText,
-  disabled = true,
+  disabled = false,
   className,
   type = "submit",
   onClick,
   
-}: SubmitButtonProps) => {
+}: ButtonProps) => {
   return (
     <button
       type={type}
       onClick={onClick}
-      // disabled={disabled || isLoading}
-      disabled
+      disabled={disabled || isLoading}
+      // disabled
       className={clsx(
         // base styles (match LinkButton)
         "text-center",
@@ -54,4 +54,4 @@ const SubmitButton = ({
   );
 };
 
-export default SubmitButton;
+export default Button;

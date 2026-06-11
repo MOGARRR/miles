@@ -7,7 +7,7 @@ import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import ShippingForm from "../components/ShippingForm";
 import { Trash2 } from "lucide-react";
 import LinkButton from "../components/ui/LinkButton";
-import SubmitButton from "../components/ui/SubmitButton";
+import SubmitButton from "../components/ui/Button";
 
 import {
   normalizePhone,
