@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 // Import Google Fonts using Next.js built-in font optimization system
 import { Inter, Bebas_Neue } from "next/font/google";
-
 import "./globals.css";
 
 import { CartProvider } from "./components/CartContext";
@@ -23,8 +22,46 @@ const bebas = Bebas_Neue({
 
 // Define metadata for the entire app (SEO and browser tab titles)
 export const metadata: Metadata = {
-  title: "KiloBoy Artwork",
-  description: "Official project site for KiloBoy Artwork",
+  title: {
+    template: "%s | KiloBoy Artwork",
+    default: "KiloBoy Artwork",
+  },
+  description:
+    "Pop culture-inspired artworks that speak to the streets. Original prints by Miles Antwi — bold, expressive, and built to be felt.",
+  metadataBase: new URL("https://kiloboyartworkstudio.com"),
+  openGraph: {
+    title: "KiloBoy Artwork",
+    description:
+      "Pop culture-inspired artworks that speak to the streets. Original prints by Miles Antwi — bold, expressive, and built to be felt.",
+    url: "https://kiloboyartworkstudio.com",
+    siteName: "KiloBoy Artwork",
+    images: [
+      {
+        url: "/new-logo-2.png",
+        width: 1200,
+        height: 630,
+        alt: "KiloBoy Artwork by Miles Antwi",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KiloBoy Artwork",
+    description:
+      "Pop culture-inspired artworks that speak to the streets. Original prints by Miles Antwi — bold, expressive, and built to be felt.",
+    images: ["/new-logo-2.png"],
+  },
+  keywords: [
+    "KiloBoy",
+    "Miles Antwi",
+    "pop culture art",
+    "original art prints",
+    "street art",
+    "character art",
+    "bold artwork",
+    "visual storytelling",
+  ],
 };
 
 // ROOT LAYOUT wraps every page in the app
