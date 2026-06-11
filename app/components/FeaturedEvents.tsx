@@ -58,10 +58,11 @@ const FeaturedEvents = async () => {
       <div>
         {hasEvents && (
           <ul className="
-            grid gap-12
+            grid
             grid-cols-1
-            md:grid-cols-2
-            justify-items-center
+            sm:grid-cols-2
+            gap-8
+            md:px-8
           ">
             {featuredEvents.map((e) => (
               <EventCard key={e.id} event={e} />
