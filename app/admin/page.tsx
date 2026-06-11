@@ -2,16 +2,34 @@ import { logoutUser } from "../actions/logoutUser";
 
 const AdminPage = () => {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-kilored">Dashboard</h1>
-      <form action={logoutUser}>
-        <button
-          type="submit"
-          className="mt-4 rounded-lg bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600"
-        >
-          Log out
-        </button>
-      </form>
+    <div className="max-w-7xl mx-auto px-6 md:px-16 py-24">
+      <div className="border border-zinc-800 rounded-xl bg-zinc-900 p-8">
+        <h1 className="text-4xl font-bold">
+          Admin <span className="text-[#E14747]">Dashboard</span>
+        </h1>
+
+        <p className="mt-2 text-gray-300">
+          Welcome to the KiloBoy admin portal.
+        </p>
+
+        <form action={logoutUser} className="mt-10">
+          <button
+            type="submit"
+            className="
+              rounded-lg
+              bg-[#E14747]
+              px-5
+              py-3
+              font-medium
+              text-white
+              transition
+              hover:opacity-90
+            "
+          >
+            Log Out
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
