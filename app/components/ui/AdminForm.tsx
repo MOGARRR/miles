@@ -1,19 +1,25 @@
 import { ReactNode } from "react";
+import Button from "./Button";
+
 
 type AdminFormProps = {
   title: string;
   description?: string;
   children: ReactNode;
+  onClose?: () => void;
 };
 
 const AdminForm = ({
   title,
   description,
   children,
+  onClose,
+  
 }: AdminFormProps) => {
   return (
     <div
       className="
+        relative
         max-w-[768px]
         mx-auto
         px-6 md:px-16 py-8
@@ -23,18 +29,36 @@ const AdminForm = ({
         bg-kilodarkgrey
       "
     >
-      {/* HEADER */}
-      <div className="mb-8">
-        <h2 className="text-3xl text-kilored mb-2">
-          {title}
-        </h2>
 
-        {description && (
-          <p className="text-sm text-kilotextgrey">
-            {description}
-          </p>
+      {/* CLOSE BUTTON TOP RIGHT */}
+        {onClose && (
+          <div className="absolute top-0 right-6">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+              className="mt-0"
+            >
+              X
+            </Button>
+          </div>
         )}
-      </div>
+        
+   
+        {/* HEADER */}
+        <div className="mb-8">
+          <h2 className="text-3xl text-kilored mb-2">
+            {title}
+          </h2>
+
+          {description && (
+            <p className="text-sm text-kilotextgrey">
+              {description}
+            </p>
+          )}
+        </div>
+
+        
 
       {/* FORM CONTENT */}
       <div>

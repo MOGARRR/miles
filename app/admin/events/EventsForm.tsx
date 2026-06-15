@@ -13,9 +13,10 @@ import { Event } from "@/src/types/event";
 type Props = {
   event?: Event; // present = edit mode
   onSuccess?: () => void;
+  onClose?: () => void;
 };
 
-const EventsForm = ({ event, onSuccess }: Props) => {
+const EventsForm = ({ event, onSuccess, onClose}: Props) => {
   // state for form fields
   const [title, setTitle] = useState(event?.title ?? "");
   const [description, setDescription] = useState(event?.description ?? "");
@@ -167,6 +168,7 @@ const EventsForm = ({ event, onSuccess }: Props) => {
     <AdminForm
       title={isEditMode ? "Edit Event" : "Create Event"}
       description="Add event details, schedule, location, and media."
+      onClose={onClose}
     >
       <form onSubmit={handleSubmit}>
         <fieldset className="space-y-6">

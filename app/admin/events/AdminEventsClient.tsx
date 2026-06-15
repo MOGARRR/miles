@@ -70,6 +70,11 @@ const AdminEventsClient = ({ events }: Props) => {
     }
   };
 
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingEvent(null);
+  };
+
   return (
     <div>
       <div className="flex justify-between mb-6">
@@ -78,17 +83,15 @@ const AdminEventsClient = ({ events }: Props) => {
           variant={isFormOpen ? "secondary" : "primary"}
           onClick={() => setIsFormOpen((prev) => !prev)}
         >
-          {isFormOpen ? "Close" : "Add New Event"}
+          {isFormOpen ? "Cancel" : "Add New Event"}
         </Button>
       </div>
 
       {isFormOpen && (
         <EventsForm
           event={editingEvent ?? undefined}
-          onSuccess={() => {
-            setIsFormOpen(false);
-            setEditingEvent(null);
-          }}
+          onSuccess={closeForm}
+          onClose={closeForm}
         />
       )}
 
@@ -189,19 +192,17 @@ const AdminEventsClient = ({ events }: Props) => {
 
                 {/* ACTIONS BUTTONS */}
                 <div className="mt-auto pt-6 flex gap-3">
-                  <Link href="#edit-form" className="flex-1">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      className="flex-1 mt-0"
-                      onClick={() => {
-                        setEditingEvent(event);
-                        setIsFormOpen(true);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  </Link>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1 mt-0"
+                    onClick={() => {
+                      setEditingEvent(event);
+                      setIsFormOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
 
                   <Button
                     type="button"
