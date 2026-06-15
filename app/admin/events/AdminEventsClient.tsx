@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Event } from "@/src/types/event";
-import CreateEventsForm from "./EventsForm";
+import EventsForm from "./EventsForm";
 import { formatDate } from "@/src/helpers/formatDate";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -83,7 +83,7 @@ const AdminEventsClient = ({ events }: Props) => {
       </div>
 
       {isFormOpen && (
-        <CreateEventsForm
+        <EventsForm
           event={editingEvent ?? undefined}
           onSuccess={() => {
             setIsFormOpen(false);
@@ -114,87 +114,106 @@ const AdminEventsClient = ({ events }: Props) => {
             <li
               key={event.id}
               className="
-            flex flex-col justify-around items-center
-            rounded-xl border
-            bg-gray-800
-            p-4
-            "
+                flex flex-col
+                h-full
+                rounded-xl
+                border border-[#3a3a41]
+                bg-kiloblack
+                overflow-hidden
+              "
             >
-              <div className="flex items-center gap-2">
-                <p className="font-medium text-xl">{event.title}</p>
-
-                {isPastEvent(event.end_date) && (
-                  <span className="text-xs rounded bg-gray-600 px-2 py-0.5">
-                    PAST
-                  </span>
-                )}
-              </div>
-
+              {/* IMAGE */}
               {event.image_url && (
                 <img
                   src={event.image_url}
                   alt={event.title}
                   className="
-                  w-48 h-32 object-cover
-                  rounded border
-                  mt-3 mb-3
+                    w-full
+                    h-48
+                    object-cover
+                    border-b border-[#3a3a41]
                   "
                 />
               )}
 
-              {event.description && (
-                <p className="mt-2 text-md text-center">{event.description}</p>
-              )}
+              {/* CONTENT */}
+              <div className="flex flex-col flex-1 px-6 py-5">
+                {/* TITLE + BADGE */}
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold">{event.title}</h2>
 
-              <p className="mt-2 text-md">
-                📅{" "}
-                {event.start_date === event.end_date
-                  ? formatDate(event.start_date)
-                  : `${formatDate(event.start_date)} - ${formatDate(
-                      event.end_date,
-                    )}`}
-              </p>
+                  {isPastEvent(event.end_date) && (
+                    <span
+                      className="
+                        text-xs
+                        px-2 py-1
+                        rounded-full
+                        bg-kilored
+                        text-gray-200
+                      "
+                    >
+                      Past
+                    </span>
+                  )}
+                </div>
 
-              <p className="mt-2 text-md">{event.hours}</p>
-              <p className="mt-2 text-md">{event.location}</p>
-
-              <div className="flex gap-4 mt-3">
-                <Link href="#edit-form">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditingEvent(event);
-                      setIsFormOpen(true);
-                    }}
+                {/* DESCRIPTION */}
+                {event.description && (
+                  <p
                     className="
-                  w-20
-                  mt-3 text-md  
-                  bg-gray-500 
-                  p-2 
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-gray-600
-                  "
+                      mt-3
+                      text-sm
+                      text-kilotextgrey
+                      line-clamp-3
+                    "
                   >
-                    Edit
-                  </button>
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(event.id)}
-                  className="
-                  w-20
-                  mt-3 ml-4 
-                  text-md  
-                  bg-kilored  
-                  p-2 
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-red-700
-                  "
-                >
-                  Delete
-                </button>
+                    {event.description}
+                  </p>
+                )}
+
+                {/* EVENT DETAILS */}
+                <div className="mt-4 space-y-2 text-sm text-kilotextlight">
+                  <p>
+                    📅{" "}
+                    {event.start_date === event.end_date
+                      ? formatDate(event.start_date)
+                      : `${formatDate(event.start_date)} - ${formatDate(
+                          event.end_date,
+                        )}`}
+                  </p>
+
+                  {event.hours && <p>🕒 {event.hours}</p>}
+
+                  {event.location && <p>📍 {event.location}</p>}
+                </div>
+
+                {/* ACTIONS BUTTONS */}
+                <div className="mt-auto pt-6 flex gap-3">
+                  <Link href="#edit-form" className="flex-1">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="flex-1 mt-0"
+                      onClick={() => {
+                        setEditingEvent(event);
+                        setIsFormOpen(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </Link>
+
+                  <Button
+                    type="button"
+                    variant="primary"
+                    className="flex-1 mt-0"
+                    onClick={() => handleDelete(event.id)}
+                    isLoading={deletingId === event.id}
+                    loadingText="Deleting..."
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
             </li>
           ))}
