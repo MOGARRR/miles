@@ -20,7 +20,9 @@ const AdminForm = ({
     <div
       className="
         relative
-        max-w-[768px]
+        w-full
+        min-w-[420px]
+        max-w-[900px]
         mx-auto
         px-6 md:px-16 py-8
         mb-10

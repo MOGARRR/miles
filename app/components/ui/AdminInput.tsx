@@ -6,6 +6,7 @@ type AdminInputProps = {
   placeholder?: string;
   required?: boolean;
   error?: string;
+  maxLength?: number;
 };
 
 const AdminInput = ({
@@ -16,6 +17,7 @@ const AdminInput = ({
   placeholder,
   required,
   error,
+  maxLength,
 }: AdminInputProps) => {
   return (
     <div>
@@ -29,6 +31,7 @@ const AdminInput = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
+        maxLength={maxLength}
         className="
           w-full
           rounded-lg
@@ -44,6 +47,12 @@ const AdminInput = ({
       {error && (
         <p className="text-sm text-kilored mt-1">
           {error}
+        </p>
+      )}
+
+      {maxLength && (
+        <p className="text-xs text-kilotextgrey mt-1">
+          Max {maxLength} characters
         </p>
       )}
     </div>

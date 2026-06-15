@@ -1,18 +1,24 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import FormAlert from "@/app/components/FormAlert";
+import AdminForm from "@/app/components/ui/AdminForm";
+import AdminFormSection from "@/app/components/ui/AdminFormSection";
+import AdminInput from "@/app/components/ui/AdminInput";
+import AdminTextarea from "@/app/components/ui/AdminTextArea";
+
+import Button from "@/app/components/ui/Button";
 import { Category } from "@/src/types/category";
 
 type Props = {
-  category?: Category;  // present = edit mode
+  category?: Category; // present = edit mode
   onSuccess?: () => void;
+  onClose?: () => void;
 };
 
-const CategoryForm = ({ category, onSuccess }: Props) => {
-
+const CategoryForm = ({ category, onSuccess, onClose }: Props) => {
   // state for form fields [no image upload yet]
   const [title, setTitle] = useState(category?.title ?? "");
   const [description, setDescription] = useState(category?.description ?? "");
@@ -20,11 +26,11 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
 
-  // state for errors 
+  // state for errors
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // define if is in edit or create mode 
+  // define if is in edit or create mode
   const isEditMode = Boolean(category);
 
   useEffect(() => {
@@ -37,12 +43,11 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
     setIsLoading(true);
     setError(null); //clear previous errors
     setSuccessMessage(null);
 
-    // Create a new category 
+    // Create a new category
     try {
       const endpoint = isEditMode
         ? `/api/categories/${category!.id}`
@@ -63,10 +68,9 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
 
       if (!res.ok) {
         throw new Error("Failed to create category");
-
       }
 
-      // Trigger a re-render of the Server Component 
+      // Trigger a re-render of the Server Component
       router.refresh();
 
       // Notify parent (page/client wrapper) that creation succeeded
@@ -74,20 +78,19 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
       setSuccessMessage(
         isEditMode
           ? "Category updated successfully!"
-          : "New category created successfully!"
+          : "New category created successfully!",
       );
       setTimeout(() => {
         onSuccess?.();
       }, 1500);
 
-      // Reset form fields only when creating, not editing 
+      // Reset form fields only when creating, not editing
       if (!isEditMode) {
         setTitle("");
         setDescription("");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.")
-
+      setError("Something went wrong. Please try again.");
 
       // Ensures loading state resets even if something goes wrong
     } finally {
@@ -95,79 +98,57 @@ const CategoryForm = ({ category, onSuccess }: Props) => {
     }
   };
 
-
   return (
-    <div className="
-    w-1/4 
-    bg-gray-800 
-    p-4 mb-6
-    rounded-md border
-    ">
-      <div >
-        <h2 className="
-        text-xl font-medium text-center text-kilored
-        border-b-1 mb-4
-        ">
-          {isEditMode ? "Edit Category" : "Add New Category"}
-        </h2>
-      </div>
 
-      <form onSubmit={handleSubmit} className="text-center">
-        <div className="my-4">
-          <label className="text-md">Title</label>
-          <p className="text-xs">Max Character Limit: 12</p>
-          <input
-            type="text"
-            required
-            maxLength={12}
-            value={title}
-            placeholder="Marvel, Sports, etc."
-            onChange={(e) => setTitle(e.target.value)}
-            className=" 
-            rounded border 
-            w-full  mt-1 p-2 
-            text-sm
-            "
-          />
-        </div>
+    <AdminForm
+      title={isEditMode ? "Edit Category" : "Create Category"}
+      description="Manage product categories"
+      onClose={onClose}
+    >
+      <form onSubmit={handleSubmit}>
+        <fieldset className="space-y-6">
 
-        <div>
-          <label className="text-md">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="
-            rounded border 
-            w-full 
-            mt-1 p-2 
-            text-sm"
-          />
-        </div>
+          {/* BASIC INFO */}
+          <AdminFormSection title="Category Info">
+            <AdminInput
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              maxLength={12}
+              placeholder="Marvel, Sports, etc."
+            />
 
-        {error && (
-          <FormAlert type="error" message={error} />
-        )}
+            {/* DESCRIPTION */}
+            <AdminTextarea
+              label="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Optional description"
+            />
 
-        {successMessage && (
-          <FormAlert type="success" message={successMessage} />
-        )}
+          </AdminFormSection>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="
-          bg-gray-500 
-          rounded border
-          p-3 my-6
-          text-md
-          cursor-pointer
-          hover:bg-gray-600 
-          ">
-          {isLoading ? <LoadingAnimation /> : (isEditMode ? "Save Changes" : "Create Category")}
-        </button>
 
+          {/* SUCCESS AND ERROR MESSAGES */}
+          {error && <FormAlert type="error" message={error} />}
+          {successMessage && (
+            <FormAlert type="success" message={successMessage} />
+          )}
+
+          {/* SUBMIT BUTTON  */}
+          <div className="flex justify-center pt-4">
+            <Button
+              type="submit"
+              isLoading={isLoading}
+              loadingText={isEditMode ? "Saving..." : "Creating..."}
+            >
+              {isEditMode ? "Save Changes" : "Create Category"}
+            </Button>
+          </div>
+        </fieldset>
       </form>
-    </div>
+    </AdminForm>
   );
 };
 

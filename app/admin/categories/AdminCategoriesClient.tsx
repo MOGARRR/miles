@@ -13,7 +13,7 @@
 
 import { useState } from "react";
 import type { Category } from "@/src/types/category";
-import CreateCategoryForm from "./CategoryForm";
+import CategoryForm from "./CategoryForm";
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/ui/Button";
 
@@ -74,14 +74,18 @@ const AdminCategoriesClient = ({ categories }: Props) => {
             setEditingCategory(null);
           }}
         >
-          {isFormOpen ? "Close Form" : "Add New Category"}
+          {isFormOpen ? "Cancel" : "Add New Category"}
         </Button>
       </div>
 
       {isFormOpen && (
-        <CreateCategoryForm
+        <CategoryForm
           category={editingCategory ?? undefined}
           onSuccess={() => {
+            setIsFormOpen(false);
+            setEditingCategory(null);
+          }}
+          onClose={() => {
             setIsFormOpen(false);
             setEditingCategory(null);
           }}
