@@ -212,7 +212,7 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
             <div
               className="
               rounded-lg
-              border border-[#3a3a41]
+              border-2 border-[#55555f]
               bg-kiloblack
               p-4
               space-y-4
@@ -281,7 +281,7 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
                   w-full
                   rounded-lg
                   object-cover
-                  border border-[#3a3a41]
+                  border-2 border-[#55555f]
                 "
                 />
               )}

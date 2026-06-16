@@ -298,7 +298,7 @@ const ProductForm = ({
            <div
             className="
               rounded-lg
-              border border-[#3a3a41]
+              border-2 border-[#55555f]
               bg-kiloblack
               p-6
               grid md:grid-cols-4 gap-4
@@ -316,7 +316,7 @@ const ProductForm = ({
                     flex items-center
                     gap-2
                     rounded-lg
-                    border border-[#3a3a41]
+                    border-2 border-[#55555f]
                     bg-kilodarkgrey
                     px-3 py-2
                     cursor-pointer
@@ -398,7 +398,7 @@ const ProductForm = ({
           <div
             className="
               rounded-lg
-              border border-[#3a3a41]
+              border-2 border-[#55555f]
               bg-kiloblack
               p-4
               space-y-4
@@ -461,7 +461,7 @@ const ProductForm = ({
                   w-full
                   rounded-lg
                   object-cover
-                  border border-[#3a3a41]
+                  border-2 border-[#55555f]
                 "
               />
             )}
@@ -496,14 +496,14 @@ const ProductForm = ({
           </div>
 
           {isEditMode && (
-            <div className="border-t border-[#3a3a41] pt-6 space-y-6">
+            <div className="border-t-2 border-[#55555f] pt-6 space-y-6">
               {product?.image_URL && (
                 <div>
                   <p className="text-sm font-semibold text-kilotextlight mb-2">
                     Main image
                   </p>
 
-                  <div className="relative w-24 h-24 rounded-lg border border-[#3a3a41] overflow-hidden">
+                  <div className="relative w-24 h-24 rounded-lg border-2 border-[#55555f] overflow-hidden">
                     <img
                       src={product.image_URL}
                       alt="Main product image"
@@ -523,7 +523,7 @@ const ProductForm = ({
                     {existingImages.map((img) => (
                       <div
                         key={img.id}
-                        className="relative w-24 h-24 rounded-lg border border-[#3a3a41] overflow-hidden"
+                        className="relative w-24 h-24 rounded-lg border-2 border-[#55555f] overflow-hidden"
                       >
                         <img
                           src={img.image_url}
@@ -534,7 +534,7 @@ const ProductForm = ({
                         <button
                           type="button"
                           onClick={() => handleDeleteGalleryImage(img.id)}
-                          className="absolute top-1 right-1 bg-kiloblack/80 text-white text-xs px-2 py-1 rounded-md border border-[#3a3a41]"
+                          className="absolute top-1 right-1 bg-kiloblack/80 text-white text-xs px-2 py-1 rounded-md border-2 border-[#55555f]"
                         >
                           Delete
                         </button>
@@ -553,7 +553,7 @@ const ProductForm = ({
               inline-flex items-center
               gap-2
               rounded-lg
-              border border-[#3a3a41]
+              border-2 border-[#55555f]
               bg-kilodarkgrey
               px-3 py-2
               cursor-pointer

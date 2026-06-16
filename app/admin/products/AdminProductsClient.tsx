@@ -10,7 +10,6 @@ import type { Product } from "@/src/types/product";
 import type { Category } from "@/src/types/category";
 import CreateProductForm from "./ProductForm";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 import Button from "@/app/components/ui/Button";
 
@@ -123,7 +122,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
       )}
 
       {deleteSuccess && (
-        <p className="text-sm text-green-600 mb-4">{deleteSuccess}</p>
+        <p className="text-sm text-emerald-600 mb-4">{deleteSuccess}</p>
       )}
 
       {deleteError && (
@@ -133,126 +132,131 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
       {products.length === 0 ? (
         <p>No products found.</p>
       ) : (
-        <ul className="
-        space-y-8 mt-6 
-        grid grid-cols-4 
-        gap-6 
-        ">
+        <ul
+          className="
+        space-y-8 mt-6
+        grid grid-cols-4
+        gap-6
+        "
+        >
           {products.map((product) => (
-            <li key={product.id} className="
-            flex flex-col justify-around items-center
-            rounded-xl border
-            bg-gray-800
-            p-4
-            ">
-              <p className="text-xl text-center ">{product.title}</p>
-
-             {product.image_URL && (
+            <li
+              key={product.id}
+              className="
+                flex flex-col
+                h-full
+                rounded-xl
+                border-2 border-[#55555f]
+                bg-kiloblack
+                overflow-hidden
+              "
+            >
+              {product.image_URL && (
                 <img
                   src={product.image_URL}
                   alt={product.title}
                   className="
-                  w-48 h-32 object-cover 
-                  rounded border 
-                  mt-3 mb-3
+                    w-full
+                    h-48
+                    object-cover
+                    border-b-2 border-[#55555f]
                   "
                 />
               )}
 
-              {/* CATEGORIES */}
-              <div className="
-              flex flex-wrap
-              gap-2 mt-2
-              ">
-                {product.categories?.map((cat) => (
-                  <span
-                    key={cat.id}
-                    className="
-                    px-2 py-0.5
-                    h-7
-                    bg-kilored
-                    text-md font-semibold 
-                    rounded border"
-                  >
-                    {cat.title}
-                  </span>
-                ))}
+              <div className="flex flex-col flex-1 px-6 py-5">
+                <h2 className="text-2xl font-bold">{product.title}</h2>
 
-                {(!product.categories || product.categories.length === 0) && (
-                  <span className="text-xs italic text-gray-500">
-                    Uncategorized
-                  </span>
-                )}
-              </div>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {product.categories?.map((cat) => (
+                    <span
+                      key={cat.id}
+                      className="
+                        text-xs
+                        px-2 py-1
+                        rounded-full
+                        bg-kilored
+                        text-gray-200
+                      "
+                    >
+                      {cat.title}
+                    </span>
+                  ))}
 
-              {product.description && (
-                <p className="mt-2 text-md">{product.description}</p>
-              )}
-
-              {/* PRICES AND STOCK COUNT*/}
-              {product.product_sizes && (
-                <div className="mt-2 text-sm">
-                  <p className="font-medium text-center mb-2">Variants</p>
-                  <ul className="ml-4 list-disc space-y-1">
-                    {product.product_sizes.map((size) => (
-                      <li key={size.id}>
-                        {formatProductSizeLabel(size.label)}: ${(size.price_cents / 100).toFixed(2)}
-                        {" · "}
-                        <span
-                          className={
-                            size.stock === 0
-                              ? "text-rose-500"
-                              : size.stock < 5
-                              ? "text-amber-500"
-                              : "text-white"
-                          }
-                        >
-                          Stock: {size.stock}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  {(!product.categories || product.categories.length === 0) && (
+                    <span className="text-xs italic text-kilotextgrey">
+                      Uncategorized
+                    </span>
+                  )}
                 </div>
-              )}
 
-              <p className="mt-2 text-md">
-                Status: {product.is_available ? "Available" : "Not Available"}
-              </p>
+                {product.description && (
+                  <p
+                    className="
+                      mt-3
+                      text-sm
+                      text-kilotextgrey
+                      line-clamp-3
+                    "
+                  >
+                    {product.description}
+                  </p>
+                )}
 
-              <div className="flex gap-4 mt-3">
-                <Link href="#edit-form"  >
-                <button
-                  onClick={() => handleEdit(product.id)}
-                  disabled={isLoadingEdit}
-                  className="
-                  w-20
-                  mt-3 text-md  
-                  bg-gray-500 
-                  p-2 
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-gray-600
-                  "
-                >
-                  {isLoadingEdit ? "Loading…" : "Edit"}
-                </button>
-                </Link>
+                {product.product_sizes && (
+                  <div className="mt-4 space-y-2 text-sm text-kilotextlight">
+                    <p className="font-medium">Variants</p>
+                    <ul className="ml-4 list-disc space-y-1">
+                      {product.product_sizes.map((size) => (
+                        <li key={size.id}>
+                          {formatProductSizeLabel(size.label)}: $
+                          {(size.price_cents / 100).toFixed(2)}
+                          {" · "}
+                          <span
+                            className={
+                              size.stock === 0
+                                ? "text-rose-500"
+                                : size.stock < 5
+                                ? "text-amber-500"
+                                : "text-white"
+                            }
+                          >
+                            Stock: {size.stock}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="
-                  w-20
-                  mt-3 ml-4 
-                  text-md  
-                  bg-kilored  
-                  p-2 
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-red-700
-                  "
-                >
-                  Delete
-                </button>
+                <p className="mt-4 text-sm text-kilotextlight">
+                  Status: {product.is_available ? "Available" : "Not Available"}
+                </p>
+
+                <div className="mt-auto pt-6 flex gap-3">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1 mt-0"
+                    onClick={() => handleEdit(product.id)}
+                    disabled={isLoadingEdit}
+                    isLoading={isLoadingEdit}
+                    loadingText="Loading…"
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="primary"
+                    className="flex-1 mt-0"
+                    onClick={() => handleDelete(product.id)}
+                    isLoading={deletingId === product.id}
+                    loadingText="Deleting..."
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
             </li>
           ))}

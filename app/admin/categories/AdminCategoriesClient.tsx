@@ -93,93 +93,69 @@ const AdminCategoriesClient = ({ categories }: Props) => {
       )}
 
       {deleteError && (
-        <p
-          className="
-        text-sm text-red-400 
-        mb-4"
-        >
-          {deleteError}
-        </p>
+        <p className="text-sm text-rose-500 mb-4">{deleteError}</p>
       )}
-
-
-      {/* CATEGORIES LIST  */}
-      <h1 className="text-3xl">All Categories:</h1>
 
       {categories.length === 0 ? (
         <p>No categories found.</p>
       ) : (
         <ul
           className="
-        space-y-4 mt-6 
-        grid grid-cols-4 gap-6 
-        text-center 
+        space-y-8 mt-6
+        grid grid-cols-4
+        gap-6
         "
         >
           {categories.map((category) => (
             <li
               key={category.id}
               className="
-              rounded-xl border 
-              p-4  
-              flex flex-col items-center 
-              bg-gray-800
+                flex flex-col
+                h-full
+                rounded-xl
+                border-2 border-[#55555f]
+                bg-kiloblack
+                overflow-hidden
               "
             >
-              <p
-                className="
-                 w-1/2 
-                 p-2 
-                 text-lg font-semibold
-                 bg-kilored
-                 rounded-full
-                 "
-              >
-                {category.title}
-              </p>
+              <div className="flex flex-col flex-1 px-6 py-5">
+                <h2 className="text-2xl font-bold">{category.title}</h2>
 
-              <p className="mt-2 text-lg">
-                Description: <br />
-                {!category.description && "Empty"}
-                {category.description}
-              </p>
-
-              <div>
-                <a href="#edit-form">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingCategory(category);
-                    setIsFormOpen(true);
-                  }}
+                <p
                   className="
-                  w-20 
-                  mt-3  p-2 
-                  text-md  
-                  bg-gray-500 
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-gray-600 
+                    mt-3
+                    text-sm
+                    text-kilotextgrey
+                    line-clamp-3
                   "
                 >
-                  Edit
-                </button>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(category.id)}
-                  className="
-                  w-20
-                  mt-3 ml-4 p-2 
-                  text-md  
-                  bg-kilored  
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-red-700
-                  "
-                >
-                  Delete
-                </button>
+                  {category.description || "No description"}
+                </p>
+
+                <div className="mt-auto pt-6 flex gap-3">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="flex-1 mt-0"
+                    onClick={() => {
+                      setEditingCategory(category);
+                      setIsFormOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="primary"
+                    className="flex-1 mt-0"
+                    onClick={() => handleDelete(category.id)}
+                    isLoading={deletingId === category.id}
+                    loadingText="Deleting..."
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
             </li>
           ))}

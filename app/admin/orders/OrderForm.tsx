@@ -91,7 +91,7 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
          w-2/4 
          bg-gray-800 
          p-4 mb-6
-         rounded-md border
+         rounded-md border-2 border-[#55555f]
          "
     >
       <form

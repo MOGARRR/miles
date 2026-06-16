@@ -1,6 +1,6 @@
 import React from "react";
 import { getOrderWithProducts } from "@/src/controllers/orderControllers";
-import Link from "next/link";
+import LinkButton from "@/app/components/ui/LinkButton";
 import AdminOrdersClient from "../AdminOrdersClient";
 
 export default async function OrderDetailsPage({
@@ -13,19 +13,10 @@ export default async function OrderDetailsPage({
 
   return (
     <div>
-      <Link href={"/admin/orders"}>
-        <button className="
-                  w-20
-                  mt-3 text-md  
-                  bg-gray-500 
-                  p-2 
-                  rounded-full border
-                  cursor-pointer
-                  hover:bg-gray-600">Back</button>
-      </Link>{" "}
-      <br />
-      <br />
-      <AdminOrdersClient orderId={ (await params).id} orderInfo={orderData} />
+      <LinkButton href="/admin/orders" variant="secondary" className="mt-0 mb-6">
+        Back
+      </LinkButton>
+      <AdminOrdersClient orderId={(await params).id} orderInfo={orderData} />
     </div>
   );
 }

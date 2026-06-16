@@ -4,6 +4,7 @@ import { orderData } from "@/src/types/orderData";
 import { formatDate } from "@/src/helpers/formatDate";
 import Image from "next/image";
 import OrderForm from "./OrderForm";
+import Button from "@/app/components/ui/Button";
 interface AdminOrderProps {
   orderInfo: orderData;
   orderId: string;
@@ -36,20 +37,15 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
 
   return (
     <div>
-      {/*Update Button and Form*/}
-      <button
-        className="
-        my-3
-        text-md  
-        bg-gray-500 
-        p-2 
-        rounded-full border
-        cursor-pointer
-        hover:bg-gray-600"
+      {/* Update Button and Form */}
+      <Button
+        type="button"
+        variant={updateForm ? "secondary" : "primary"}
+        className="mt-0 mb-6"
         onClick={handleUpdateForm}
       >
         {updateForm ? "Close" : "Update Info"}
-      </button>
+      </Button>
       {updateForm && (
         <OrderForm
           id={orderId}
@@ -57,256 +53,230 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
           onClose={() => setUpdateForm(false)}
         />
       )}
-      {/*  */}
 
-      {/* Order Details*/}
-      <section
-        className="
-        flex-col
-        p-4 mb-6
-        "
-      >
-        {/* Order Info Section */}
-        <div className="flex justify-around">
+      {/* Order Details */}
+      <section className="flex-col mb-6">
+        <div className="flex justify-around gap-6">
+          {/* Order Info Section */}
           <section
             className="
-            flex flex-col justify-between
-             w-2/5 
-             bg-gray-800 
-             p-4 mb-6
-             rounded-md border 
-             "
+            flex flex-col
+            w-2/5
+            rounded-xl
+            border-2 border-[#55555f]
+            bg-kiloblack
+            overflow-hidden
+            mb-6
+            "
           >
-            <h1
-              className="
-              text-2xl text-center text-kilored
-              border-b-1 
-              mb-2
-              "
-            >
-              Order Info:
-            </h1>
+            <div className="flex flex-col flex-1 px-6 py-5">
+              <h2 className="text-kilored text-2xl font-bold">Order Info</h2>
 
-            {/* Order Info Top*/}
-            <section className="flex justify-evenly text-center text-xl my-2">
-              <div>
-                <h2>Order ID :</h2>
-                <p> #{orderInfo.id}</p>
+              <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-kilotextlight">
+                <div>
+                  <p className="font-medium text-kilotextgrey">Order ID</p>
+                  <p>#{orderInfo.id}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Order Status</p>
+                  <p>{orderInfo.status}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Payment Status</p>
+                  <p>{orderInfo.payment_status}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Total Amount</p>
+                  <p>${orderInfo.total_cents / 100}</p>
+                </div>
               </div>
-              <div>
-                <h2>Order Status:</h2>
-                <p>{orderInfo.status}</p>
+
+              <div className="mt-4 text-sm text-kilotextlight">
+                <p className="font-medium text-kilotextgrey">Stripe Session ID</p>
+                <p className="max-w-full break-all overflow-hidden">
+                  {orderInfo.stripe_session_id}
+                </p>
               </div>
-              <div>
-                <h2>Payment Status: </h2>
-                <p>{orderInfo.payment_status}</p>
+
+              <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-kilotextlight">
+                <div>
+                  <p className="font-medium text-kilotextgrey">Order Created</p>
+                  <p>{formatDate(orderInfo.created_at)}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Last Updated</p>
+                  <p>{formatDate(orderInfo.updated_at)}</p>
+                </div>
               </div>
-              <div>
-                <h2>Total Order Amount:</h2>
-                <p>${orderInfo.total_cents / 100}</p>
-              </div>
-            </section>
-            {/* Order Info Middle */}
-            <section className="my-2 self-center">
-              <h2 className="text-xl text-center"> Stripe Session ID :</h2>
-              <p
-                className="
-                    max-w-full 
-                    break-all overflow-hidden 
-                    text-sm text-center
-                    "
-              >
-                {orderInfo.stripe_session_id}
-              </p>
-            </section>
-            {/* Order Info Bottom */}
-            <section className="flex justify-around mt-2">
-              <div>
-                <h2 className="text-xl">Order Created :</h2>
-                <p>{formatDate(orderInfo.created_at)}</p>
-              </div>
-              <div>
-                <h2 className="text-xl">Order Last Updated:</h2>
-                <p> {formatDate(orderInfo.updated_at)}</p>
-              </div>
-            </section>
-            {/*  */}
+            </div>
           </section>
-
           {/* Order Info End */}
 
           {/* Customer Info Section */}
           <section
             className="
-            w-2/5 
-            bg-gray-800 
-            p-4 mb-6
-            rounded-md border
+            w-2/5
+            rounded-xl
+            border-2 border-[#55555f]
+            bg-kiloblack
+            overflow-hidden
+            mb-6
             "
           >
-            <h1
-              className="
-              text-2xl text-center text-kilored
-              border-b-1 
-              mb-2
-            "
-            >
-              Customer Info:
-            </h1>
-            <div className="text-lg text-center flex justify-around">
-              <section>
+            <div className="flex flex-col flex-1 px-6 py-5">
+              <h2 className="text-kilored text-2xl font-bold">Customer Info</h2>
+
+              <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-kilotextlight">
                 <div>
-                  <h2 className="text-xl my-1">Customer Name: </h2>
-                  {orderInfo.full_name}
+                  <p className="font-medium text-kilotextgrey">Customer Name</p>
+                  <p>{orderInfo.full_name}</p>
                 </div>
                 <div>
-                  <h2 className="text-xl my-1">email :</h2> {orderInfo.email}
+                  <p className="font-medium text-kilotextgrey">Email</p>
+                  <p>{orderInfo.email}</p>
                 </div>
                 <div>
-                  <h2 className="text-xl my-1">Phone Number : </h2>
-                  {orderInfo.phone_number}
-                </div>
-              </section>
-              <section>
-                <div>
-                  {" "}
-                  <h2 className="text-xl my-1">Address Line 1:</h2>{" "}
-                  {orderInfo.address_line_1}
+                  <p className="font-medium text-kilotextgrey">Phone Number</p>
+                  <p>{orderInfo.phone_number}</p>
                 </div>
                 <div>
-                  {" "}
-                  <h2 className="text-xl my-1">Address Line 2:</h2>{" "}
-                  {orderInfo.address_line_2 || "N/A"}
+                  <p className="font-medium text-kilotextgrey">Address Line 1</p>
+                  <p>{orderInfo.address_line_1}</p>
                 </div>
                 <div>
-                  {" "}
-                  <h2 className="text-xl my-1">Postal :</h2> {orderInfo.postal}
+                  <p className="font-medium text-kilotextgrey">Address Line 2</p>
+                  <p>{orderInfo.address_line_2 || "N/A"}</p>
                 </div>
                 <div>
-                  {" "}
-                  <h2 className="text-xl my-1">City : </h2>
-                  {orderInfo.city}
+                  <p className="font-medium text-kilotextgrey">Postal</p>
+                  <p>{orderInfo.postal}</p>
                 </div>
-              </section>
+                <div>
+                  <p className="font-medium text-kilotextgrey">City</p>
+                  <p>{orderInfo.city}</p>
+                </div>
+              </div>
             </div>
           </section>
+          {/* Customer Info Section End */}
         </div>
-        {/* Customer Info Section End */}
 
-        {/* Order Items Section */}
-        <div className="flex justify-around">
+        <div className="flex justify-around gap-6">
+          {/* Order Items Section */}
           <section
             className="
-            w-2/5 
-            bg-gray-800 
-            p-4 mb-6
-            rounded-md border
-        "
-          >
-            <h1
-              className="
-              text-2xl text-center text-kilored
-              border-b-1 
-              mb-2
+            w-2/5
+            rounded-xl
+            border-2 border-[#55555f]
+            bg-kiloblack
+            overflow-hidden
+            mb-6
             "
-            >
-              Order Items:{" "}
-            </h1>
-            <section className="grid grid-cols-3">
-              {orderInfo.order_products.map((productData: any) => (
-                <div key={productData.id} className="m-5  text-center">
-                  <Image
+          >
+            <div className="flex flex-col flex-1 px-6 py-5">
+              <h2 className="text-kilored text-2xl font-bold">Order Items</h2>
+
+              <div className="mt-4 grid grid-cols-3 gap-4">
+                {orderInfo.order_products.map((productData: any) => (
+                  <div
+                    key={productData.id}
                     className="
-                    h-30 w-30 
-                    object-cover
-                    rounded-lg 
-                    mb-2 ml-6
+                      rounded-lg
+                      border-2 border-[#55555f]
+                      bg-kilodarkgrey
+                      overflow-hidden
+                      text-center
                     "
-                    src={productData.products.image_URL}
-                    width={100}
-                    height={100}
-                    alt={productData.products.description}
-                  />
-                  <div className="my-1 text-lg ">
-                    <h2>Product ID:</h2> #{productData.products.id}
+                  >
+                    <Image
+                      className="
+                        w-full
+                        h-24
+                        object-cover
+                        border-b-2 border-[#55555f]
+                      "
+                      src={productData.products.image_URL}
+                      width={100}
+                      height={100}
+                      alt={productData.products.description}
+                    />
+                    <div className="px-3 py-3 space-y-1 text-sm text-kilotextlight">
+                      <p>
+                        <span className="text-kilotextgrey">ID:</span> #
+                        {productData.products.id}
+                      </p>
+                      <p>
+                        <span className="text-kilotextgrey">Name:</span>{" "}
+                        {productData.products.title}
+                      </p>
+                      <p>
+                        <span className="text-kilotextgrey">Price:</span> $
+                        {productData.unit_price_cents / 100}
+                      </p>
+                      <p>
+                        <span className="text-kilotextgrey">QTY:</span>{" "}
+                        {productData.quantity}
+                      </p>
+                    </div>
                   </div>
-                  <div className="my-1 text-lg">
-                    <h2>Product Name:</h2>
-                    {productData.products.title}
-                  </div>
-                  <div className="my-1 text-lg">
-                    <h2>Product Price:</h2>${productData.unit_price_cents / 100}
-                  </div>
-                  <div className="my-1 text-lg">
-                    <h2>QTY: </h2>
-                    {productData.quantity}
-                  </div>
-                </div>
-              ))}
-            </section>
+                ))}
+              </div>
+            </div>
           </section>
           {/* Order Items End */}
 
           {/* Shipping Info Section */}
           <section
             className="
-            flex flex-col justify-between
-            w-2/5 max-h-70
-            bg-gray-800 
-            p-4
-            rounded-md border
+            flex flex-col
+            w-2/5
+            rounded-xl
+            border-2 border-[#55555f]
+            bg-kiloblack
+            overflow-hidden
             "
           >
-            <h1
-              className="
-                text-2xl text-center text-kilored
-                border-b-1 
-                "
-            >
-              Shipping Info:
-            </h1>
-            {/* Shipping Info Top */}
-            <section className="flex justify-evenly text-xl text-center">
-              <div>
-                <h2>Shipping Status:</h2>
-                {orderInfo.shipping_status}
-              </div>
-              <div>
-                <h2>Shipping Fee:</h2> $
-                {orderInfo.shipping_fee_cents / 100}{" "}
-              </div>
-              {/* Add formatDate function if real labels need it */}
-              <div>
-                <h2>Estimated Delivery:</h2>
+            <div className="flex flex-col flex-1 px-6 py-5">
+              <h2 className="text-kilored text-2xl font-bold">Shipping Info</h2>
 
-                {!orderInfo.estimated_delivery && " N/A"}
-                {orderInfo.estimated_delivery}
+              <div className="mt-4 grid grid-cols-1 gap-4 text-sm text-kilotextlight">
+                <div>
+                  <p className="font-medium text-kilotextgrey">Shipping Status</p>
+                  <p>{orderInfo.shipping_status}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Shipping Fee</p>
+                  <p>${orderInfo.shipping_fee_cents / 100}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">
+                    Estimated Delivery
+                  </p>
+                  <p>{orderInfo.estimated_delivery || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Tracking Number</p>
+                  <p>{orderInfo.tracking_number}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Label URL</p>
+                  {!orderInfo.label_url && <p>N/A</p>}
+                  {orderInfo.label_url && (
+                    <a
+                      className="text-kilored underline break-all"
+                      target="blank"
+                      href={orderInfo.label_url}
+                    >
+                      {shortenUrl(orderInfo.label_url)}
+                    </a>
+                  )}
+                </div>
               </div>
-            </section>
-
-            {/* Shipping Info Bottom */}
-            <section className="text-center">
-              <div>
-                <h2 className="text-xl">Tracking Number:</h2>{" "}
-                {orderInfo.tracking_number}
-              </div>
-              <div>
-                <h2 className="text-xl">Label URL:</h2>
-
-                {!orderInfo.label_url && " N/A"}
-                <a
-                  className="text-blue-400 underline mb-4"
-                  target="blank"
-                  href={orderInfo.label_url}
-                >
-                  {orderInfo.label_url && shortenUrl(orderInfo.label_url)}
-                </a>
-              </div>
-            </section>
+            </div>
           </section>
+          {/* Shipping Info End */}
         </div>
       </section>
-      {/* Shipping Info End */}
     </div>
   );
 };

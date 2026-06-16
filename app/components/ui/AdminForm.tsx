@@ -27,7 +27,7 @@ const AdminForm = ({
         px-6 md:px-16 py-8
         mb-10
         rounded-lg
-        border border-[#3a3a41]
+        border-2 border-[#55555f]
         bg-kilodarkgrey
       "
     >

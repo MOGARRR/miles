@@ -120,7 +120,7 @@ const AdminEventsClient = ({ events }: Props) => {
                 flex flex-col
                 h-full
                 rounded-xl
-                border border-[#3a3a41]
+                border-2 border-[#55555f]
                 bg-kiloblack
                 overflow-hidden
               "
@@ -134,7 +134,7 @@ const AdminEventsClient = ({ events }: Props) => {
                     w-full
                     h-48
                     object-cover
-                    border-b border-[#3a3a41]
+                    border-b-2 border-[#55555f]
                   "
                 />
               )}

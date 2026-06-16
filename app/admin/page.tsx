@@ -3,7 +3,7 @@ import { logoutUser } from "../actions/logoutUser";
 const AdminPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-16 py-24">
-      <div className="border border-zinc-800 rounded-xl bg-zinc-900 p-8">
+      <div className="border-2 border-[#55555f] rounded-xl bg-zinc-900 p-8">
         <h1 className="text-4xl font-bold">
           Admin <span className="text-[#E14747]">Dashboard</span>
         </h1>
