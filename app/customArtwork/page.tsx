@@ -42,10 +42,7 @@ const CustomArtworkPage = () => {
             </p>
         </div>
       </div>
-      
-      
-  
-      
+         
 
       {/* CUSTOM WORK INSPIRATION */}
       <div  >

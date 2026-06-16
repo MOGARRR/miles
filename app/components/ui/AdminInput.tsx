@@ -7,6 +7,8 @@ type AdminInputProps = {
   required?: boolean;
   error?: string;
   maxLength?: number;
+  step?: string;
+  min?: number;
 };
 
 const AdminInput = ({
@@ -18,6 +20,8 @@ const AdminInput = ({
   required,
   error,
   maxLength,
+  step,
+  min,
 }: AdminInputProps) => {
   return (
     <div>
@@ -32,6 +36,8 @@ const AdminInput = ({
         placeholder={placeholder}
         required={required}
         maxLength={maxLength}
+        step={step}
+        min={min}
         className="
           w-full
           rounded-lg

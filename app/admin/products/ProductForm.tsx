@@ -14,16 +14,27 @@ import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
 import { Product } from "@/src/types/product";
+import AdminForm from "@/app/components/ui/AdminForm";
+import AdminFormSection from "@/app/components/ui/AdminFormSection";
+import AdminInput from "@/app/components/ui/AdminInput";
+import AdminTextarea from "@/app/components/ui/AdminTextArea";
 import FormAlert from "@/app/components/FormAlert";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
+
 
 type Props = {
   product?: Product; // edit mode
   categories: Category[];
   onSuccess?: () => void;
+  onClose?: () => void;
 };
 
-const ProductForm = ({ categories, product, onSuccess }: Props) => {
+const ProductForm = ({ 
+  categories, 
+  product, 
+  onSuccess,
+  onClose,
+ }: Props) => {
   // state for form fields [ no image upload yet ]
   const [title, setTitle] = useState("");
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
@@ -252,65 +263,70 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
     }
   };
 
-  return (
-    <div
-      className=" 
-    w-2/4 
-    bg-gray-800 
-    p-4 mb-6
-    rounded-md border"
-    >
-      <div>
-        <h2
-          className="
-            text-xl font-medium text-center text-kilored
-            border-b-1 
-            mb-4
-            "
-        >
-          {isEditMode ? "Edit Product" : "Add New Product"}
-        </h2>
-      </div>
 
+
+  return (
+    <AdminForm
+      title={isEditMode ? "Edit Product" : "Create Product"}
+      description="Manage product details, pricing, inventory, and images."
+      onClose={onClose}
+    >
+
+      
       <form onSubmit={handleSubmit} className="text-center text-md">
-        <div className="my-2">
-          <label>Title</label>
-          <input
-            type="text"
-            required
+
+        {/* PRODUCT INFO */}
+        <AdminFormSection title="Product Information">
+          <AdminInput
+            label="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className=" rounded border w-full mt-1 p-2 text-sm"
+            required
           />
-        </div>
-        <br />
+
+          <AdminTextarea
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </AdminFormSection>
+
+        <br/><br/>
 
         {/* CATEGORIES */}
-        <div>
-          <label className="block mb-2">Categories</label>
-
-          <div
+        <AdminFormSection
+          title="Categories"
+          description="Select one or more categories."
+        >
+           <div
             className="
-          rounded border 
-          p-6
-          grid grid-cols-5 gap-4
-          "
+              rounded-lg
+              border border-[#3a3a41]
+              bg-kiloblack
+              p-6
+              grid md:grid-cols-4 gap-4
+            "
           >
+  
+
             {categories.map((category) => {
               const checked = categoryIds.includes(category.id);
 
               return (
                 <label
                   key={category.id}
-                  className="
-                  bg-gray-500 
-                  flex items-center
-                  gap-2 p-2 
-                  cursor-pointer 
-                  rounded-full border 
-                  w-4/5
-                  hover:bg-gray-600 
-                  "
+                  className={`
+                    flex items-center
+                    gap-2
+                    rounded-lg
+                    border border-[#3a3a41]
+                    bg-kilodarkgrey
+                    px-3 py-2
+                    cursor-pointer
+                    hover:border-kilored
+                    transition
+                    ${checked ? "border-kilored" : ""}
+                  `}
                 >
                   <input
                     type="checkbox"
@@ -328,81 +344,59 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
               );
             })}
           </div>
-        </div>
+        </AdminFormSection>
 
-        {/* DESCRIPTION */}
-        <div className="my-2">
-          <label>Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className=" rounded border w-full  mt-1 p-2 text-sm"
-          />
-        </div>
+        <br/><br/>
 
-        <div className="my-4">
-          <label className="block mb-2 font-medium border-b-1">Prices</label>
+        {/* PRICE */}
+        <AdminFormSection title="Pricing">
+          <div className="grid md:grid-cols-2 gap-4">
+            
+            <AdminInput
+              label={formatProductSizeLabel("Small")}
+              type="number"
+              step="0.01"
+              value={smallPrice}
+              onChange={(e) => setSmallPrice(e.target.value)}
+              required
+            />
 
-          <div className="flex justify-evenly ">
-            <div className="flex flex-col">
-              <label className="text-md">{formatProductSizeLabel("Small")}</label>
-              <input
-                type="number"
-                step="0.01"
-                value={smallPrice}
-                onChange={(e) => setSmallPrice(e.target.value)}
-                className="border p-2 text-sm"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-md">{formatProductSizeLabel("Large")}</label>
-              <input
-                type="number"
-                step="0.01"
-                value={largePrice}
-                onChange={(e) => setLargePrice(e.target.value)}
-                className="border p-2 text-sm"
-                required
-              />
-            </div>
+            <AdminInput
+              label={formatProductSizeLabel("Large")}
+              type="number"
+              step="0.01"
+              value={largePrice}
+              onChange={(e) => setLargePrice(e.target.value)}
+              required
+            />
           </div>
-        </div>
+        </AdminFormSection>
 
-        <div className="mt-4">
-          <label className="block mb-2 font-medium border-b-1">Inventory</label>
+        <br/><br/>
 
-          <div className="flex justify-evenly">
-            <div className="flex flex-col">
-              <label className="text-sm">
-                {formatProductSizeLabel("Small")} stock
-              </label>
-              <input
+
+        {/* INVENTORY */}
+          <AdminFormSection title="Inventory">
+            <div className="grid md:grid-cols-2 gap-4">
+              <AdminInput
+                label={`${formatProductSizeLabel("Small")} Stock`}
                 type="number"
                 min={0}
                 value={smallStock}
                 onChange={(e) => setSmallStock(e.target.value)}
-                className="border p-2 text-sm"
                 required
               />
-            </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm">
-                {formatProductSizeLabel("Large")} stock
-              </label>
-              <input
+              <AdminInput
+                label={`${formatProductSizeLabel("Large")} Stock`}
                 type="number"
                 min={0}
                 value={largeStock}
                 onChange={(e) => setLargeStock(e.target.value)}
-                className="border p-2 text-sm"
                 required
               />
             </div>
-          </div>
-        </div>
+          </AdminFormSection>
 
         <br />
         <br />
@@ -576,7 +570,7 @@ const ProductForm = ({ categories, product, onSuccess }: Props) => {
           )}
         </button>
       </form>
-    </div>
+    </AdminForm>
   );
 };
 
