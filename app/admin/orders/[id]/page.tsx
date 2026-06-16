@@ -12,9 +12,9 @@ export default async function OrderDetailsPage({
   const orderData = await getOrderWithProducts( (await params).id);
 
   return (
-    <div>
-      <LinkButton href="/admin/orders" variant="secondary" className="mt-0 mb-6">
-        Back
+    <div className="pt-8 px-8">
+      <LinkButton href="/admin/orders" variant="secondary">
+        Back to Orders
       </LinkButton>
       <AdminOrdersClient orderId={(await params).id} orderInfo={orderData} />
     </div>

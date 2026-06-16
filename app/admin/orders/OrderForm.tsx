@@ -3,6 +3,10 @@ import { FC, useState } from "react";
 import { orderFormData } from "@/src/types/orderFormData";
 import { formatUpdateEmail } from "@/src/emails/formatUpdateEmails";
 import { useRouter } from "next/navigation";
+import AdminForm from "@/app/components/ui/AdminForm";
+import AdminFormSection from "@/app/components/ui/AdminFormSection";
+import AdminInput from "@/app/components/ui/AdminInput";
+import Button from "@/app/components/ui/Button";
 
 interface OrderFormProps {
   id: string;
@@ -86,179 +90,191 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
   };
 
   return (
-    <div
-      className="
-         w-2/4 
-         bg-gray-800 
-         p-4 mb-6
-         rounded-md border-2 border-[#55555f]
-         "
+    <AdminForm
+      title="Update Customer Information"
+      description="Edit customer and shipping details for this order."
+      onClose={onClose}
     >
-      <form
-        className="flex flex-col text-center text-md"
-        onSubmit={handleSubmit}
-      >
-        <h2
-          className="
-            text-xl font-medium text-center text-kilored 
-            border-b-1 
-            mb-4 
-            "
-        >
-          Customer Info
-        </h2>
-        <br />
-        <label>Customer Name:</label>
-        <input
-          className="
-          rounded border
-          w-full
-          mt-1 p-2
-          text-sm
-          "
-          name="full_name"
-          value={formData.full_name}
-          onChange={handleChange}
-          placeholder="Customer Name"
-        />
-        <br />
-        <label>Address Line 1:</label>
-        <input
-          className="
-          rounded border 
-          w-full
-          mt-1 p-2
-          text-sm"
-          name="address_line_1"
-          value={formData.address_line_1}
-          onChange={handleChange}
-          placeholder="Address Line 1"
-        />
-        <br />
-        <label>Address Line 2:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="address_line_2"
-          value={formData.address_line_2}
-          onChange={handleChange}
-          placeholder="Address Line 2"
-        />
-        <br />
-        <label>Postal:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="postal"
-          value={formData.postal}
-          onChange={handleChange}
-          placeholder="Postal Code"
-        />
-        <br />
-        <label>City:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          placeholder="City"
-        />
-        <br />
-        <label>Province:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="province"
-          value={formData.province}
-          onChange={handleChange}
-          placeholder="province"
-        />
-        <br />
-        <label>Email:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-        />
-        <br />
-        <label>Phone Number:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="phone_number"
-          value={formData.phone_number}
-          onChange={handleChange}
-          placeholder="Phone Number"
-        />
-        <br />
-        <h2
-          className="
-            text-xl font-medium text-center text-kilored
-            border-b-1
-            "
-        >
-          Shipping Info
-        </h2>
-        <br />
-        <label>Shipping Status:</label>
-        <select
-          className=" rounded border w-1/6  mt-4 p-2 text-md self-center"
-          name="shipping_status"
-          id="shipping_status"
-          value={formData.shipping_status}
-          onChange={handleChange}
-        >
-          <option className="bg-gray-700" value="Pending">
-            Pending
-          </option>
-          <option className="bg-gray-700" value="Shipped">
-            Shipped
-          </option>
-          <option className="bg-gray-700" value="Delivered">
-            Delivered
-          </option>
-        </select>
-        <br />
-        <label>Tracking Number:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="tracking_number"
-          value={formData.tracking_number}
-          onChange={handleChange}
-          placeholder="Tracking Number"
-        />
-        <br />
-        <label>Label URL:</label>
-        <input
-          className=" rounded border w-full  mt-1 p-2 text-sm"
-          name="label_url"
-          value={formData.label_url}
-          onChange={handleChange}
-          placeholder="Label URL"
-        />
-        <br />
-        <label>Estimated Delivery:</label>
-        <input
-          className="
-          rounded border 
-          w-1/6
-          my-2 p-2 
-          text-sm
-          self-center
-          "
-          type="date"
-          name="estimated_delivery"
-          value={formData.estimated_delivery}
-          onChange={handleChange}
-          placeholder="Estimated Delivery Time"
-        />
+      <form onSubmit={handleSubmit}>
+        <fieldset className="space-y-6">
+          {/* Customer Info */}
+          <AdminFormSection title="Customer Info">
+            <div className="grid md:grid-cols-2 gap-4">
+              <AdminInput
+                label="Customer Name"
+                value={formData.full_name}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "full_name", value: e.target.value },
+                  })
+                }
+                placeholder="Customer Name"
+              />
 
-        <button
-          className="bg-gray-400 p-2 rounded-lg w-1/4 self-center mt-5"
-          type="submit"
-        >
-          Update Order
-        </button>
+              <AdminInput
+                label="Email"
+                value={formData.email}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "email", value: e.target.value },
+                  })
+                }
+                placeholder="Email"
+              />
+
+              <AdminInput
+                label="Phone Number"
+                value={formData.phone_number}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "phone_number", value: e.target.value },
+                  })
+                }
+                placeholder="Phone Number"
+              />
+
+              <AdminInput
+                label="Address Line 1"
+                value={formData.address_line_1}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "address_line_1", value: e.target.value },
+                  })
+                }
+                placeholder="Address Line 1"
+              />
+
+              <AdminInput
+                label="Address Line 2"
+                value={formData.address_line_2}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "address_line_2", value: e.target.value },
+                  })
+                }
+                placeholder="Address Line 2"
+              />
+
+              <AdminInput
+                label="Postal"
+                value={formData.postal}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "postal", value: e.target.value },
+                  })
+                }
+                placeholder="Postal Code"
+              />
+
+              <AdminInput
+                label="City"
+                value={formData.city}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "city", value: e.target.value },
+                  })
+                }
+                placeholder="City"
+              />
+
+              <AdminInput
+                label="Province"
+                value={formData.province}
+                onChange={(e) =>
+                  handleChange({
+                    target: { name: "province", value: e.target.value },
+                  })
+                }
+                placeholder="Province"
+              />
+            </div>
+          </AdminFormSection>
+
+          {/* Shipping Info */}
+          <AdminFormSection title="Shipping Info">
+            <div>
+              <label className="block mb-1 font-semibold text-kilotextlight">
+                Shipping Status
+              </label>
+
+              <select
+                className="
+                  w-full
+                  rounded-lg
+                  border border-[#3a3a41]
+                  bg-kiloblack
+                  px-3 py-2
+                  text-sm
+                "
+                name="shipping_status"
+                id="shipping_status"
+                value={formData.shipping_status}
+                onChange={handleChange}
+              >
+                <option className="bg-gray-700" value="Pending">
+                  Pending
+                </option>
+                <option className="bg-gray-700" value="Shipped">
+                  Shipped
+                </option>
+                <option className="bg-gray-700" value="Delivered">
+                  Delivered
+                </option>
+              </select>
+            </div>
+
+            <AdminInput
+              label="Tracking Number"
+              value={formData.tracking_number}
+              onChange={(e) =>
+                handleChange({
+                  target: { name: "tracking_number", value: e.target.value },
+                })
+              }
+              placeholder="Tracking Number"
+            />
+
+            <AdminInput
+              label="Label URL"
+              value={formData.label_url}
+              onChange={(e) =>
+                handleChange({
+                  target: { name: "label_url", value: e.target.value },
+                })
+              }
+              placeholder="Label URL"
+            />
+
+            <div>
+              <label className="block mb-1 font-semibold text-kilotextlight">
+                Estimated Delivery
+              </label>
+
+              <input
+                className="
+                  w-full
+                  rounded-lg
+                  border border-[#3a3a41]
+                  bg-kiloblack
+                  px-3 py-2
+                  text-sm
+                "
+                type="date"
+                name="estimated_delivery"
+                value={formData.estimated_delivery}
+                onChange={handleChange}
+              />
+            </div>
+          </AdminFormSection>
+
+          <div className="flex justify-center pt-4">
+            <Button type="submit" variant="primary">
+              Update Order
+            </Button>
+          </div>
+        </fieldset>
       </form>
-    </div>
+    </AdminForm>
   );
 };
 

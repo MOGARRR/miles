@@ -38,14 +38,19 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
   return (
     <div>
       {/* Update Button and Form */}
-      <Button
-        type="button"
-        variant={updateForm ? "secondary" : "primary"}
-        className="mt-0 mb-6"
-        onClick={handleUpdateForm}
-      >
-        {updateForm ? "Close" : "Update Info"}
-      </Button>
+      <div className="flex justify-around gap-6 mb-6">
+        <div className="w-2/5" />
+        <div className="w-2/5 flex justify-end">
+          <Button
+            type="button"
+            variant={updateForm ? "secondary" : "primary"}
+            className="mt-0"
+            onClick={handleUpdateForm}
+          >
+            {updateForm ? "Close" : "Update Customer Info"}
+          </Button>
+        </div>
+      </div>
       {updateForm && (
         <OrderForm
           id={orderId}
