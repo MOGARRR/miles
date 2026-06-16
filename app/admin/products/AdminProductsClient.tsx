@@ -33,7 +33,12 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
 
   const router = useRouter();
 
-  // HANDLE EDIT PRODUCT 
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingProduct(null);
+  };
+
+  // HANDLE EDIT PRODUCT
   const handleEdit = async (productId: number) => {
     try {
       setEditError(null);
@@ -102,7 +107,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
         <Button
           type="button"
           variant={isFormOpen ? "secondary" : "primary"}
-          onClick={() => setIsFormOpen((prev) => !prev)}
+          onClick={() => (isFormOpen ? closeForm() : setIsFormOpen(true))}
         >
           {isFormOpen ? "Close" : "Add New Product"}
         </Button>
@@ -112,10 +117,8 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
         <CreateProductForm
           product={editingProduct ?? undefined}
           categories={categories}
-          onSuccess={() => {
-            setIsFormOpen(false);
-            setEditingProduct(null);
-          }}
+          onSuccess={closeForm}
+          onClose={closeForm}
         />
       )}
 
