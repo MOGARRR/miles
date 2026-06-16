@@ -11,13 +11,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import LoadingAnimation from "@/app/components/LoadingAnimation";
 import { Category } from "@/src/types/category";
 import { Product } from "@/src/types/product";
 import AdminForm from "@/app/components/ui/AdminForm";
 import AdminFormSection from "@/app/components/ui/AdminFormSection";
 import AdminInput from "@/app/components/ui/AdminInput";
 import AdminTextarea from "@/app/components/ui/AdminTextArea";
+import Button from "@/app/components/ui/Button";
 import FormAlert from "@/app/components/FormAlert";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
@@ -272,9 +272,8 @@ const ProductForm = ({
       onClose={onClose}
     >
 
-      
-      <form onSubmit={handleSubmit} className="text-center text-md">
-
+      <form onSubmit={handleSubmit}>
+        <fieldset className="space-y-6">
         {/* PRODUCT INFO */}
         <AdminFormSection title="Product Information">
           <AdminInput
@@ -290,8 +289,6 @@ const ProductForm = ({
             onChange={(e) => setDescription(e.target.value)}
           />
         </AdminFormSection>
-
-        <br/><br/>
 
         {/* CATEGORIES */}
         <AdminFormSection
@@ -346,8 +343,6 @@ const ProductForm = ({
           </div>
         </AdminFormSection>
 
-        <br/><br/>
-
         {/* PRICE */}
         <AdminFormSection title="Pricing">
           <div className="grid md:grid-cols-2 gap-4">
@@ -372,9 +367,6 @@ const ProductForm = ({
           </div>
         </AdminFormSection>
 
-        <br/><br/>
-
-
         {/* INVENTORY */}
           <AdminFormSection title="Inventory">
             <div className="grid md:grid-cols-2 gap-4">
@@ -398,177 +390,210 @@ const ProductForm = ({
             </div>
           </AdminFormSection>
 
-        <br />
-        <br />
-        <br />
-
         {/* IMAGES */}
-        <div>
-          <label>Main Image URL </label>
-          <input
-            type="text"
-            value={imageUrl}
-            onChange={(e) => {
-              setImageUrl(e.target.value);
-              setImageFile(null); // URL wins
-            }}
-            className=" rounded border w-full  mt-1 p-2 text-sm"
-          />
-        </div>
-
-        <div>
-          <label>OR upload Main image</label>
-          <br />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              if (e.target.files?.[0]) {
-                setImageFile(e.target.files[0]);
-                setImageUrl(""); // file wins
-              }
-            }}
+        <AdminFormSection
+          title="Images"
+          description="Upload a main image, add gallery images, or use an external URL."
+        >
+          <div
             className="
-                  text-md  
-                  bg-gray-500 
-                  p-2 
-                  rounded-md border
-                  cursor-pointer
-                  hover:bg-gray-600"
-          />
-        </div>
-        {imageFile && (
-          <p className="text-sm text-gray-600 mt-1">
-            Selected image: {imageFile.name}
-          </p>
-        )}
+              rounded-lg
+              border border-[#3a3a41]
+              bg-kiloblack
+              p-4
+              space-y-4
+            "
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  setImageFile(e.target.files[0]);
+                  setImageUrl(""); // file wins
+                }
+              }}
+              className="
+                w-full
+                text-sm
+                file:mr-4
+                file:rounded-md
+                file:border-0
+                file:bg-kilored
+                file:px-4
+                file:py-2
+                file:text-white
+                cursor-pointer
+              "
+            />
 
-        <br />
-        <br />
-        <br />
-
-        <div>
-          <label>Gallery images (optional)</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => {
-              if (e.target.files) {
-                setGalleryFiles(Array.from(e.target.files));
-              }
-            }}
-            className="rounded border w-full mt-1 p-2 text-sm"
-          />
-        </div>
-
-        {isEditMode && (
-          <div className="mt-8 border-t pt-6">
-            {/* MAIN IMAGE PREVIEW */}
-            {product?.image_URL && (
-              <div className="mb-6">
-                <p className="text-sm font-medium mb-2">Main image</p>
-
-                <div className="relative w-24 h-24 border rounded overflow-hidden">
-                  <img
-                    src={product.image_URL}
-                    alt="Main product image"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+            {imageFile && (
+              <p className="text-sm text-kilotextgrey">
+                Selected image: {imageFile.name}
+              </p>
             )}
 
-            {/* GALLERY IMAGES */}
-            {existingImages.length > 0 && (
-              <div>
-                <p className="text-sm font-medium mb-2">Gallery images</p>
+            <input
+              type="text"
+              placeholder="https://example.com/image.jpg"
+              value={imageUrl}
+              onChange={(e) => {
+                setImageUrl(e.target.value);
+                setImageFile(null); // URL wins
+              }}
+              className="
+                w-full
+                rounded-lg
+                border border-[#3a3a41]
+                bg-kiloblack
+                px-3 py-2
+                text-sm
+              "
+            />
 
-                <div className="flex flex-wrap gap-4">
-                  {existingImages.map((img) => (
-                    <div
-                      key={img.id}
-                      className="relative w-24 h-24 border rounded overflow-hidden"
-                    >
-                      <img
-                        src={img.image_url}
-                        alt="Gallery image"
-                        className="w-full h-full object-cover"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteGalleryImage(img.id)}
-                        className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {(imageFile || imageUrl) && (
+              <img
+                src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
+                alt="Preview"
+                className="
+                  mt-2
+                  h-48
+                  w-full
+                  rounded-lg
+                  object-cover
+                  border border-[#3a3a41]
+                "
+              />
             )}
           </div>
-        )}
-        <br />
 
-        <div className="my-4">
+          <div>
+            <label className="block mb-1 font-semibold text-kilotextlight">
+              Gallery images (optional)
+            </label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files) {
+                  setGalleryFiles(Array.from(e.target.files));
+                }
+              }}
+              className="
+                w-full
+                text-sm
+                file:mr-4
+                file:rounded-md
+                file:border-0
+                file:bg-kilored
+                file:px-4
+                file:py-2
+                file:text-white
+                cursor-pointer
+              "
+            />
+          </div>
+
+          {isEditMode && (
+            <div className="border-t border-[#3a3a41] pt-6 space-y-6">
+              {product?.image_URL && (
+                <div>
+                  <p className="text-sm font-semibold text-kilotextlight mb-2">
+                    Main image
+                  </p>
+
+                  <div className="relative w-24 h-24 rounded-lg border border-[#3a3a41] overflow-hidden">
+                    <img
+                      src={product.image_URL}
+                      alt="Main product image"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {existingImages.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-kilotextlight mb-2">
+                    Gallery images
+                  </p>
+
+                  <div className="flex flex-wrap gap-4">
+                    {existingImages.map((img) => (
+                      <div
+                        key={img.id}
+                        className="relative w-24 h-24 rounded-lg border border-[#3a3a41] overflow-hidden"
+                      >
+                        <img
+                          src={img.image_url}
+                          alt="Gallery image"
+                          className="w-full h-full object-cover"
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteGalleryImage(img.id)}
+                          className="absolute top-1 right-1 bg-kiloblack/80 text-white text-xs px-2 py-1 rounded-md border border-[#3a3a41]"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </AdminFormSection>
+
+        <AdminFormSection title="Availability">
           <label
             className="
-          w-1/4 
-          p-2 
-          text-md  
-          bg-gray-500 
-          rounded-full border
-          cursor-pointer
-          hover:bg-gray-600"
+              inline-flex items-center
+              gap-2
+              rounded-lg
+              border border-[#3a3a41]
+              bg-kilodarkgrey
+              px-3 py-2
+              cursor-pointer
+              hover:border-kilored
+              transition
+            "
           >
             <input
               type="checkbox"
               checked={isAvailable}
               onChange={(e) => setIsAvailable(e.target.checked)}
             />
-            Available
+            <span className="text-sm text-kilotextlight">Available</span>
           </label>
-        </div>
+        </AdminFormSection>
+
+        {error && <FormAlert type="error" message={error} />}
 
         {successMessage && (
           <FormAlert type="success" message={successMessage} />
         )}
 
-        {error && <FormAlert type="error" message={error} />}
-
-        <button
-          type="submit"
-          disabled={
-            isLoading ||
-            !isImageValid ||
-            isCategoryInvalid ||
-            !hasImage ||
-            smallPriceInvalid ||
-            largePriceInvalid
-          }
-          className="
-          w-1/2 
-          mt-3  p-2 
-          text-md  
-          bg-gray-500 
-          rounded-full border
-          cursor-pointer
-          hover:bg-gray-600 
-          disabled:opacity-50
-          disabled:bg-gray-600 
-          disabled:cursor-not-allowed
-          "
-        >
-          {isLoading ? (
-            <LoadingAnimation />
-          ) : isEditMode ? (
-            "Save Changes"
-          ) : (
-            "Create Product"
-          )}
-        </button>
+        <div className="flex justify-center pt-4">
+          <Button
+            type="submit"
+            variant="primary"
+            isLoading={isLoading}
+            loadingText={isEditMode ? "Saving..." : "Creating..."}
+            disabled={
+              !isImageValid ||
+              isCategoryInvalid ||
+              !hasImage ||
+              smallPriceInvalid ||
+              largePriceInvalid
+            }
+          >
+            {isEditMode ? "Save Changes" : "Create Product"}
+          </Button>
+        </div>
+        </fieldset>
       </form>
     </AdminForm>
   );
