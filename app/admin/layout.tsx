@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 // usePathname gives us the current URL path 
 
 const adminLinks = [
-  { name: "Dashboard", path: "/admin" },
-  { name: "Categories", path: "/admin/categories" },
-  { name: "Products", path: "/admin/products" },
-  { name: "Events", path: "/admin/events" },
-  { name: "Orders", path: "/admin/orders" },
+  { name: "DASHBOARD", path: "/admin" },
+  { name: "CATEGORIES", path: "/admin/categories" },
+  { name: "PRODUCTS", path: "/admin/products" },
+  { name: "EVENTS", path: "/admin/events" },
+  { name: "ORDERS", path: "/admin/orders" },
 ];
 
 // Admin Layout component 
@@ -31,10 +31,10 @@ export default function AdminLayout({
 
       {/* Sidebar navigation */}
       {/* Fixed width so layout is consistent */}
-      <aside className="w-48 border-r p-4">
+      <aside className="fixed top-16 left-0 h-screen w-48 border-r p-4 overflow-y-auto bg-kilodarkgrey">
 
         <nav>
-          <ul className="space-y-2">
+          <ul className="text-lg pt-8 space-y-4">
 
             {/* Loop over adminLinks to generate navigation items */}
             {adminLinks.map((link) => {
@@ -45,7 +45,11 @@ export default function AdminLayout({
                 <li key={link.path}>
                   <Link 
                     href={link.path}
-                    className={`${isActive ? "font-semibold underline" : "hover:underline"}`}
+                    className={`block px-2 py-2 rounded-md text-sm transition-colors ${
+                      isActive
+                        ? "bg-white/10 font-semibold text-white"
+                        : "text-kilotextlight hover:bg-white/5 hover:text-white"
+                    }`}
                   >
                     {link.name}
                   </Link>
@@ -59,7 +63,7 @@ export default function AdminLayout({
       {/* Main content area */}
       {/* `{children}` is where the CURRENT admin page is injected */}
       {/* This content changes when the route changes */}
-      <main className="flex-1 p-6">{children}</main>
+      <main className="ml-48 flex-1 p-10">{children}</main>
     </div>
   );
 }
