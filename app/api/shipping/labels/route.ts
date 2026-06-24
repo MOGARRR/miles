@@ -53,10 +53,16 @@ export async function POST(request: Request) {
       async: false,
     });
 
-    // loop through rates and find provider or default to the first one
-    const rate =
-      shipment.rates.find((r) => r.provider === "UPS") || shipment.rates[0];
+    // default to the first one for baseline
+    let rate = shipment.rates[0];
 
+    // loop through shipments rates and get the lowest rate 
+    for (let i = 0; i < shipment.rates.length; i++){
+      if( shipment.rates[i].amount < rate.amount){
+        rate = shipment.rates[i];
+      }
+    }
+    
     if (!rate) {
       return NextResponse.json(
         { error: "No rates available for this shipment." },
