@@ -3,7 +3,7 @@ import { DistanceUnitEnum, ParcelCreateRequest, WeightUnitEnum } from "shippo";
 const smallPrint = {
   length: "15",
   width: "12",
-  height: "0.5",
+  height: "1",
   weight: "1",
   distanceUnit: DistanceUnitEnum.In,
   massUnit: WeightUnitEnum.Lb,
