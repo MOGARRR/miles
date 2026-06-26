@@ -78,7 +78,6 @@ export async function POST(request: Request) {
       carrierAccount: rate.carrierAccount,
     });
 
-    /// CHANGE MOCK DATA BEFORE PRODUCTION ///
     const orderRecord = {
       status: transaction.status,
       shippingFeeCents: rate.amount,

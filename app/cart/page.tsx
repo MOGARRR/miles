@@ -176,7 +176,7 @@ const CartPage = () => {
   const hstCents = Math.round(subtotalCents * 0.13);
   const shippingCents = Math.round(shippingAmount * 100);
 
-  // const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy && isStockValid;
+  const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy && isStockValid;
 
   // ----- STRIPE PAYLOAD -----
   const checkoutCart = items.map((item) => ({
@@ -428,9 +428,9 @@ const CartPage = () => {
 
           <SubmitButton
             className="w-full mt-6"
-            // disabled={!canProceedToCheckout || !addressValid}
-            // onClick={handleCheckout}
-            disabled
+            disabled={!canProceedToCheckout || !addressValid}
+            onClick={handleCheckout}
+            // disabled
           >
             PROCEED TO CHECKOUT
           </SubmitButton>
