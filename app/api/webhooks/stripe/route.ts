@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { sendEmail } from "@/app/lib/emails/sendEmail";
+import { sendEmail } from "@/src/helpers/emails/sendEmail";
 import { createShippingLabel } from "@/app/lib/shipping/createShippingLabel";
 import {
   createOrder,
@@ -11,6 +11,8 @@ import { createOrderProduct } from "@/src/controllers/order_productsControllers"
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import { decrementProductSizeStock } from "@/src/controllers/inventoryControllers";
 import createParcels from "@/src/helpers/createParcels";
+import { formatCustomerEmail } from "@/src/emails/formatCustomerEmails";
+import { formatOrderEmail } from "@/src/emails/formatOrderEmails";
 
 
 /**
@@ -82,55 +84,6 @@ export async function POST(req: NextRequest) {
     const filteredOrderItems = orderItems.filter(
       (item) => item.productId && item.productSizeId
     );
-
-    
-
-    // /// Email Formatting
-    const html = `
-      <div style="max-width:600px;font-family:Arial,Helvetica,sans-serif;color:#333;">
-      <h1 style="border-bottom:2px solid #eee;padding-bottom:8px;">
-      Kiloboy Artwork Order Receipt
-      </h1>
-      <p style="margin:16px 0 8px;">
-      <strong>Order Items</strong>
-      </p>
-      <table width="100%" cellpadding="6" cellspacing="0" style="border-collapse:collapse;">
-      <thead>
-        <tr style="background:#f7f7f7;">
-          <th align="left" style="border-bottom:1px solid #ddd;">Item</th>
-          <th align="center" style="border-bottom:1px solid #ddd;">Qty</th>
-          <th align="right" style="border-bottom:1px solid #ddd;">Price</th>
-        </tr>
-      </thead>
-      <tbody>
-      ${lineItems.data
-        .map(
-          (item) =>
-            `<tr>
-        <td style="border-bottom:1px solid #eee;">
-        ${item.description}
-        </td>
-        <td align="center" style="border-bottom:1px solid #eee;">
-        ${item.quantity ?? 1}
-        </td>
-        <td align="right" style="border-bottom:1px solid #eee;">
-        $${(item.amount_total! / 100).toFixed(2)}
-        </td>
-        </tr>`,
-        )
-        .join("")}
-      </tbody>
-      </table>
-      <p style="margin-top:16px;font-size:16px;">
-      <strong>Total Paid:</strong>
-      <span style="float:right;">
-      $${(session.amount_total! / 100).toFixed(2)}
-      </span>
-      </p>
-      <p style="margin-top:32px;font-size:12px;color:#777;">
-      Thank you for your purchase! This email was sent automatically. Please do not reply.
-      </p>
-      </div>`;
 
     const shipping = {
       name: session.metadata?.shipping_name,
@@ -219,66 +172,32 @@ export async function POST(req: NextRequest) {
       }),
     );
 
-    try {
-
-      const parcels = await createParcels(filteredOrderItems)
-
-      /// Create/Buy Shipping label for owner
-      const label = await createShippingLabel({
-        addressTo: {
-          name: shipping.name,
-          phone: shipping.phoneNumber,
-          street1: shipping.address1,
-          street2: shipping.address2,
-          city: shipping.city,
-          state: shipping.province,
-          zip: shipping.postal,
-          country: shipping.country,
-        },
-        parcels,
-      });
-
-      
+          
       ///////////////////
       try {
         /// Send Email Receipt to Customer Email
         await sendEmail({
           to: customerEmail,
           subject: "KiloBoy Order Receipt",
-          html,
+          html: formatCustomerEmail(lineItems, session.amount_total),
         });
       } catch (err) {
         console.error("EMAIL FAILED:", err);
       }
       ////////////////////
 
+      ///////////////////
       try {
-        // Update order with shipping label information
-        await updateOrder(order.id, {
-          updated_at: new Date().toISOString(),
-          shipping_fee_cents: Math.round(Number(label.shippingFeeCents) * 100),
-          tracking_number: label.trackingNumber,
-          estimated_delivery: label.estimatedDelivery,
-          shipping_status: "Pending",
-          label_url: label.labelUrl,
+        /// Send Miles New Order Email
+        await sendEmail({
+          to: process.env.CONTACT_TO_EMAIL! ,
+          subject: "New KiloBoy Order Receipt",
+          html: formatOrderEmail(lineItems, session.amount_total),
         });
       } catch (err) {
-        console.error("UPDATING ORDER FAILED:", err);
+        console.error("EMAIL FAILED:", err);
       }
-      /////////////////////
-    } catch {
-      /////////////////////
-
-      try {
-        // Update order shipping status if label creation failed
-        await updateOrder(order.id, {
-          shipping_status: "FAILED",
-        });
-      } catch (err) {
-        console.error("ORDER UPDATE FAILED (LABEL FAILURE):", err);
-      }
-      ///////////////////////
-    }
+      ////////////////////
   }
 
   return NextResponse.json({ received: true });
