@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { stripe } from "../lib/stripe";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
 
+import { getOrderByStripeSessionId } from "@/src/controllers/orderControllers";
+
 /** Stripe line description → product title + optional size (inches via formatter). */
 function lineItemMainAndSize(description: string | null | undefined): {
   main: string;
@@ -33,6 +35,10 @@ export default async function Success({
   const session = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ["customer", "line_items", "payment_intent"],
   });
+
+  const order = await getOrderByStripeSessionId(session.id);
+
+  
 
   const customerEmail = (session.customer_details as { email: string }).email;
   const lineItems = session.line_items?.data || [];
@@ -69,7 +75,7 @@ export default async function Success({
         <div className="max-w-7xl mx-auto px-6 md:px-16 py-20 space-y-8">
           {/* ITEMS CARD */}
           <div className="rounded-lg border border-[#3a3a41] bg-kilodarkgrey p-8">
-            <h2 className="text-3xl mb-6 text-kilored"> ORDER #</h2>
+            <h2 className="text-3xl mb-6 text-kilored"> ORDER #{order?.id}</h2>
             <h3 className="text-xl mb-6">Your items</h3>
 
             <ul className="space-y-4">
@@ -128,10 +134,10 @@ export default async function Success({
             <p className="text-kilotextgrey">
               If you have any questions about your order, contact us at{" "}
               <a
-                href="mailto:orders@example.com"
+                href="mailto:kiloboyartwork@hotmail.com"
                 className="text-kilored underline hover:opacity-80"
               >
-                orders@example.com
+                kiloboyartwork@hotmail.com
               </a>
               .
             </p>
