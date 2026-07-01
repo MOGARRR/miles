@@ -8,6 +8,7 @@ import Button from "@/app/components/ui/Button";
 interface AdminOrderProps {
   orderInfo: orderData;
   orderId: string;
+  itemLabels: Record<string, string>;
 }
 
 const shortenUrl = (url: string) => {
@@ -15,7 +16,11 @@ const shortenUrl = (url: string) => {
   return splitUrl.slice(0, 61);
 };
 
-const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
+const AdminOrdersClient: FC<AdminOrderProps> = ({
+  orderId,
+  orderInfo,
+  itemLabels,
+}) => {
   const [updateForm, setUpdateForm] = useState(false);
 
   const orderFormInfo = {
@@ -129,7 +134,7 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
             "
           >
             <div className="flex flex-col flex-1 px-6 py-5">
-              <h2 className="text-kilored text-2xl font-bold">Customer Info</h2>
+              <h2 className="text-kilored text-2xl font-bold">Customer & Shipping Info</h2>
 
               <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-kilotextlight">
                 <div>
@@ -178,10 +183,10 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
             mb-6
             "
           >
-            <div className="flex flex-col flex-1 px-6 py-5">
+            <div className="px-6 py-5">
               <h2 className="text-kilored text-2xl font-bold">Order Items</h2>
 
-              <div className="mt-4 grid grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-2 gap-4">
                 {orderInfo.order_products.map((productData: any) => (
                   <div
                     key={productData.id}
@@ -196,7 +201,7 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
                     <Image
                       className="
                         w-full
-                        h-24
+                        h-48
                         object-cover
                         border-b-2 border-[#55555f]
                       "
@@ -207,12 +212,8 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
                     />
                     <div className="px-3 py-3 space-y-1 text-sm text-kilotextlight">
                       <p>
-                        <span className="text-kilotextgrey">ID:</span> #
-                        {productData.products.id}
-                      </p>
-                      <p>
-                        <span className="text-kilotextgrey">Name:</span>{" "}
-                        {productData.products.title}
+                        {itemLabels[productData.products.title] ??
+                          productData.products.title}
                       </p>
                       <p>
                         <span className="text-kilotextgrey">Price:</span> $
@@ -230,56 +231,7 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({ orderId, orderInfo }) => {
           </section>
           {/* Order Items End */}
 
-          {/* Shipping Info Section */}
-          <section
-            className="
-            flex flex-col
-            w-2/5
-            rounded-xl
-            border-2 border-[#55555f]
-            bg-kiloblack
-            overflow-hidden
-            "
-          >
-            <div className="flex flex-col flex-1 px-6 py-5">
-              <h2 className="text-kilored text-2xl font-bold">Shipping Info</h2>
 
-              <div className="mt-4 grid grid-cols-1 gap-4 text-sm text-kilotextlight">
-                <div>
-                  <p className="font-medium text-kilotextgrey">Shipping Status</p>
-                  <p>{orderInfo.shipping_status}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-kilotextgrey">Shipping Fee</p>
-                  <p>${orderInfo.shipping_fee_cents / 100}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-kilotextgrey">
-                    Estimated Delivery
-                  </p>
-                  <p>{orderInfo.estimated_delivery || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-kilotextgrey">Tracking Number</p>
-                  <p>{orderInfo.tracking_number}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-kilotextgrey">Label URL</p>
-                  {!orderInfo.label_url && <p>N/A</p>}
-                  {orderInfo.label_url && (
-                    <a
-                      className="text-kilored underline break-all"
-                      target="blank"
-                      href={orderInfo.label_url}
-                    >
-                      {shortenUrl(orderInfo.label_url)}
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-          {/* Shipping Info End */}
         </div>
       </section>
     </div>
