@@ -179,7 +179,12 @@ export async function POST(req: NextRequest) {
         await sendEmail({
           to: customerEmail,
           subject: "KiloBoy Order Receipt",
-          html: formatCustomerEmail(lineItems, session.amount_total),
+          html: formatCustomerEmail(
+            orderItems,
+            session.amount_total,
+            shipping as any,
+            customerEmail
+          ),
         });
       } catch (err) {
         console.error("EMAIL FAILED:", err);
@@ -191,8 +196,13 @@ export async function POST(req: NextRequest) {
         /// Send Miles New Order Email
         await sendEmail({
           to: process.env.CONTACT_TO_EMAIL! ,
-          subject: "New KiloBoy Order Receipt",
-          html: formatOrderEmail(lineItems, session.amount_total),
+          subject: "New KiloBoy Order!",
+          html: formatOrderEmail(
+            orderItems,
+            session.amount_total,
+            shipping as any,
+            customerEmail
+          ),
         });
       } catch (err) {
         console.error("EMAIL FAILED:", err);
