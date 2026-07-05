@@ -1,27 +1,31 @@
 "use client";
 import React, { FC, useState } from "react";
+import { useRouter } from "next/navigation";
 import { orderData } from "@/src/types/orderData";
 import { formatDate } from "@/src/helpers/formatDate";
 import Image from "next/image";
 import OrderForm from "./OrderForm";
 import Button from "@/app/components/ui/Button";
+import AdminInput from "@/app/components/ui/AdminInput";
+
 interface AdminOrderProps {
   orderInfo: orderData;
   orderId: string;
   itemLabels: Record<string, string>;
 }
 
-const shortenUrl = (url: string) => {
-  const splitUrl = url.split("");
-  return splitUrl.slice(0, 61);
-};
-
 const AdminOrdersClient: FC<AdminOrderProps> = ({
   orderId,
   orderInfo,
   itemLabels,
 }) => {
+  const router = useRouter();
   const [updateForm, setUpdateForm] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [error, setError] = useState("");
+
+  // Show the form only if the order has not been shipped yet
+  const alreadyShipped = orderInfo.shipping_status === "Shipped";
 
   const orderFormInfo = {
     customerName: orderInfo.full_name,
@@ -39,6 +43,33 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({
   };
 
   const handleUpdateForm = () => setUpdateForm(!updateForm);
+
+  const handleMarkShipped = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError("");
+
+    if (!trackingNumber.trim()) {
+      setError("Please enter a tracking number.");
+      return;
+    }
+
+    const res = await fetch(`/api/orders/${orderId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        shipping_status: "Shipped",
+        tracking_number: trackingNumber.trim(),
+        send_shipped_emails: true,
+      }),
+    });
+
+    if (!res.ok) {
+      setError("Something went wrong. Please try again.");
+      return;
+    }
+
+    router.refresh();
+  };
 
   return (
     <div>
@@ -231,6 +262,48 @@ const AdminOrdersClient: FC<AdminOrderProps> = ({
           </section>
           {/* Order Items End */}
 
+          {/* Shipping Status Section */}
+          <section
+            className="
+            w-2/5
+            rounded-xl
+            border-2 border-[#55555f]
+            bg-kiloblack
+            overflow-hidden
+            mb-6
+            "
+          >
+            <div className="flex flex-col flex-1 px-6 py-5">
+              <h2 className="text-kilored text-2xl font-bold">Shipping Status</h2>
+
+              <div className="mt-4 grid grid-cols-1 gap-4 text-sm text-kilotextlight">
+                <div>
+                  <p className="font-medium text-kilotextgrey">Status</p>
+                  <p>{orderInfo.shipping_status || "Pending"}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-kilotextgrey">Tracking Number</p>
+                  <p>{orderInfo.tracking_number || "N/A"}</p>
+                </div>
+              </div>
+
+              {!alreadyShipped && (
+                <form onSubmit={handleMarkShipped} className="mt-6 space-y-4">
+                  <AdminInput
+                    label="Tracking Number"
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                    placeholder="Enter tracking number after posting"
+                  />
+                  {error && <p className="text-sm text-red-400">{error}</p>}
+                  <Button type="submit" variant="primary" className="mt-0 w-full">
+                    Mark as Shipped
+                  </Button>
+                </form>
+              )}
+            </div>
+          </section>
+          {/* Shipping Status End */}
 
         </div>
       </section>
