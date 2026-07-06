@@ -3,9 +3,8 @@ import Stripe from "stripe";
 import { sendEmail } from "@/src/helpers/emails/sendEmail";
 import { createShippingLabel } from "@/app/lib/shipping/createShippingLabel";
 import {
-  createOrder,
+  createOrderForStripeSession,
   getOrderByStripeSessionId,
-  updateOrder,
 } from "@/src/controllers/orderControllers";
 import { createOrderProduct } from "@/src/controllers/order_productsControllers";
 import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
@@ -123,6 +122,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
+    /// Create order first so concurrent webhooks can dedupe before side effects
+    const { order, isNew } = await createOrderForStripeSession({
+      stripe_session_id: session.id,
+      email: customerEmail,
+      status: "PAID",
+      payment_status: session.payment_status,
+      total_cents: session.amount_total,
+      full_name: shipping.name,
+      address_line_1: shipping.address1,
+      address_line_2: shipping.address2,
+      city: shipping.city,
+      province: shipping.province,
+      postal: shipping.postal,
+      phone_number: shipping.phoneNumber,
+    });
+
+    if (!isNew) {
+      console.log("Order already processed:", session.id);
+      return NextResponse.json({ received: true });
+    }
+
     /**
      * INVENTORY UPDATE
      * Inventory is decremented ONLY after Stripe confirms payment
@@ -142,23 +162,6 @@ export async function POST(req: NextRequest) {
       console.error("Inventory update error:", err);
       throw err; // Stripe will retry the webhook
     }
-
-
-    /// Create order to DB
-    const order = await createOrder({
-      stripe_session_id: session.id,
-      email: customerEmail,
-      status: "PAID",
-      payment_status: session.payment_status,
-      total_cents: session.amount_total,
-      full_name: shipping.name,
-      address_line_1: shipping.address1,
-      address_line_2: shipping.address2,
-      city: shipping.city,
-      province: shipping.province,
-      postal: shipping.postal,
-      phone_number: shipping.phoneNumber,
-    });
 
     //// Create order products to DB
     await Promise.all(

@@ -44,17 +44,18 @@ export async function getOrderWithProducts(orderId: string) {
   return data;
 }
 
-// GET Order by Stripe Session id
+// GET Order by Stripe Session id (most recent if duplicates exist)
 export async function getOrderByStripeSessionId(sessionId: string) {
   const supabase = supabaseAdmin;
   const { data, error } = await supabase
     .from("orders")
     .select("*")
     .eq("stripe_session_id", sessionId)
-    .maybeSingle();
+    .order("created_at", { ascending: false })
+    .limit(1);
 
   if (error) throw new Error(error.message);
-  return data;
+  return data?.[0] ?? null;
 }
 
 // POST Orders
@@ -67,6 +68,32 @@ export async function createOrder(orderItem: any) {
     .single();
   if (error) throw new Error(error.message);
   return data;
+}
+
+/** Create order once per Stripe session; safe under concurrent webhooks. */
+export async function createOrderForStripeSession(
+  orderItem: Record<string, unknown> & { stripe_session_id: string }
+): Promise<{ order: Awaited<ReturnType<typeof createOrder>>; isNew: boolean }> {
+  const existing = await getOrderByStripeSessionId(orderItem.stripe_session_id);
+  if (existing) return { order: existing, isNew: false };
+
+  const supabase = supabaseAdmin;
+  const { data, error } = await supabase
+    .from("orders")
+    .insert([orderItem])
+    .select()
+    .single();
+
+  if (error) {
+    // Unique constraint on stripe_session_id — another webhook won the race
+    if (error.code === "23505") {
+      const order = await getOrderByStripeSessionId(orderItem.stripe_session_id);
+      if (order) return { order, isNew: false };
+    }
+    throw new Error(error.message);
+  }
+
+  return { order: data, isNew: true };
 }
 
 // PUT Orders
