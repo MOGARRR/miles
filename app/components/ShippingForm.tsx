@@ -7,6 +7,7 @@ type ShippingFormProps = {
   onEstimate: () => void;
   shippingEstimate: number | null;
   addressError: string | null;
+  shippingError: string | null;
 };
 
 const ShippingForm = ({
@@ -15,6 +16,7 @@ const ShippingForm = ({
   onEstimate,
   shippingEstimate,
   addressError,
+  shippingError,
 }: ShippingFormProps) => {
   return (
     <div
@@ -162,6 +164,9 @@ const ShippingForm = ({
             />
             {addressError && (
               <p className="text-sm text-red-500 mt-2">{addressError}</p>
+            )}
+            {shippingError && (
+              <p className="text-sm text-red-500 mt-2">{shippingError}</p>
             )}
             <SubmitButton type="button" variant="primary" onClick={onEstimate}>
               ESTIMATE SHIPPING

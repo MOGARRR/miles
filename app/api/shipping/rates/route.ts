@@ -1,81 +1,114 @@
 import { NextResponse } from "next/server";
 import {
-  AddressCreateRequest,
-  DistanceUnitEnum,
-  ParcelCreateRequest,
-  Shippo,
-  WeightUnitEnum,
-} from "shippo";
+  CanadaPostAuthError,
+  CanadaPostInvalidAddressError,
+  CanadaPostNoServicesError,
+  CanadaPostUnavailableError,
+} from "@/app/lib/canadaPost/errors";
+import { normalizeCanadianPostalCode } from "@/app/lib/canadaPost/env";
+import { getRatesForParcels } from "@/app/lib/canadaPost/getRatesForParcels";
+import { logShippingQuote } from "@/src/controllers/shippingQuoteControllers";
+import createParcels, {
+  type CartParcelItem,
+} from "@/src/helpers/createParcels";
 
-const shippo = new Shippo({ apiKeyHeader: process.env.SHIPPO_API_KEY });
-
-// Form with store owner info
-const ADDRESS_FROM: AddressCreateRequest = {
-  name: process.env.SHIP_FROM_NAME!,
-  company: process.env.SHIP_FROM_COMPANY!,
-  street1: process.env.SHIP_FROM_STREET1!,
-  street2: process.env.SHIP_FROM_STREET2 || "",
-  city: process.env.SHIP_FROM_CITY!,
-  state: process.env.SHIP_FROM_STATE!,
-  zip: process.env.SHIP_FROM_ZIP!,
-  country: "CA",
+type RatesRequestBody = {
+  addressTo?: { zip?: string };
+  cart?: Array<{
+    sizeLabel: string;
+    quantity: number;
+  }>;
 };
+
+function shippingUnavailableResponse(message: string, status = 503) {
+  return NextResponse.json(
+    {
+      error: message,
+      code: "SHIPPING_UNAVAILABLE",
+    },
+    { status },
+  );
+}
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as RatesRequestBody;
+    const { addressTo, cart } = body;
 
-    const { addressTo, parcels } = body;
-
-    if (!addressTo || !parcels) {
+    if (!addressTo?.zip || !cart?.length) {
       return NextResponse.json(
-        { error: "Missing required fields: addressTo, parcel." },
+        { error: "Missing required fields: addressTo.zip and cart." },
         { status: 400 },
       );
     }
 
-    const parcelRequests: ParcelCreateRequest[] = parcels.map((item: any) => ({
-      length: item.length,
-      width: item.width,
-      height: item.height,
-      distanceUnit: item.distanceUnit || DistanceUnitEnum.In,
-      weight: item.weight,
-      massUnit: item.massUnit || WeightUnitEnum.Lb,
+    const destinationPostalCode = normalizeCanadianPostalCode(addressTo.zip);
+    const cartItems: CartParcelItem[] = cart.map((item) => ({
+      sizeLabel: item.sizeLabel,
+      quantity: item.quantity,
     }));
+    const parcels = await createParcels(cartItems);
 
-    // Create shipment object
-    const shipment = await shippo.shipments.create({
-      addressFrom: ADDRESS_FROM,
-      addressTo: addressTo as AddressCreateRequest,
-      parcels: parcelRequests,
-      async: false,
+    const quoteResult = await getRatesForParcels({
+      destinationPostalCode,
+      parcels,
     });
 
-    // default to the first one for baseline
-    let rate = shipment.rates[0];
+    const { selectedQuote, allOptions, perParcelRawResponses } = quoteResult;
 
-    // loop through shipments rates and get the lowest rate 
-    for (let i = 0; i < shipment.rates.length; i++){
-      if( shipment.rates[i].amount < rate.amount){
-        rate = shipment.rates[i];
-      }
-    }
-    
-    if (!rate) {
-      return NextResponse.json(
-        { error: "No rates available for this shipment." },
-        { status: 400 },
-      );
-    }
+    void logShippingQuote({
+      destinationPostal: destinationPostalCode,
+      parcelCount: parcels.length,
+      parcelsJson: parcels,
+      rawResponseJson: {
+        allOptions,
+        perParcelRawResponses,
+      },
+      selectedServiceCode: selectedQuote.serviceCode,
+      totalCents: selectedQuote.priceCents,
+    });
 
     return NextResponse.json({
-      rate,
+      rate: {
+        amountCents: selectedQuote.priceCents,
+        serviceCode: selectedQuote.serviceCode,
+        serviceName: selectedQuote.serviceName,
+        expectedDeliveryDate: selectedQuote.expectedDeliveryDate,
+      },
+      quotes: allOptions,
     });
-  } catch (err: any) {
-    console.error("Shippo full error:", JSON.stringify(err, null, 2));
-    return NextResponse.json(
-      { error: err?.message ?? "Shippo request failed" },
-      { status: 500 },
+  } catch (error) {
+    if (error instanceof CanadaPostInvalidAddressError) {
+      return NextResponse.json(
+        { error: error.message, code: "INVALID_ADDRESS" },
+        { status: 400 },
+      );
+    }
+
+    if (error instanceof CanadaPostNoServicesError) {
+      return shippingUnavailableResponse(
+        "No shipping services are available for this address and parcel size. Please check your postal code and try again.",
+        400,
+      );
+    }
+
+    if (error instanceof CanadaPostAuthError) {
+      console.error("[shipping] Canada Post auth error:", error.message);
+      return shippingUnavailableResponse(
+        "Shipping is temporarily unavailable. Please try again later.",
+      );
+    }
+
+    if (error instanceof CanadaPostUnavailableError) {
+      console.error("[shipping] Canada Post unavailable:", error.message);
+      return shippingUnavailableResponse(
+        "Shipping is temporarily unavailable. Please try again later.",
+      );
+    }
+
+    console.error("[shipping] unexpected rates error:", error);
+    return shippingUnavailableResponse(
+      "Shipping is temporarily unavailable. Please try again later.",
     );
   }
 }

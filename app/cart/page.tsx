@@ -3,7 +3,6 @@
 import { useCart } from "../components/CartContext";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { DistanceUnitEnum, WeightUnitEnum } from "shippo";
 import ShippingForm from "../components/ShippingForm";
 import { Trash2 } from "lucide-react";
 import LinkButton from "../components/ui/LinkButton";
@@ -15,8 +14,6 @@ import {
   getNormalizedShipping,
 } from "@/src/helpers/normalizeShipping";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
-
-import createParcels from "@/src/helpers/createParcels";
 
 const CartPage = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
@@ -96,11 +93,33 @@ const CartPage = () => {
   });
 
   const [shippingEstimate, setShippingEstimate] = useState<number | null>(null);
+  const [shippingServiceName, setShippingServiceName] = useState<string | null>(
+    null,
+  );
+  const [shippingError, setShippingError] = useState<string | null>(null);
   const shippingAmount = shippingEstimate ?? 0;
+
+  const checkoutCart = items.map((item) => ({
+    id: item.id,
+    title: `${item.title} (${formatProductSizeLabel(item.product_size.label)})`,
+    price_cents: item.price_cents,
+    quantity: item.quantity,
+    productSizeId: item.product_size.id,
+    sizeLabel: item.product_size.label,
+  }));
 
   const handleShippingChange = (event: any) => {
     const { name, value } = event.target;
     setShippingForm((prev) => ({ ...prev, [name]: value }));
+
+    // Stale rate if the address changes after a successful estimate.
+    const addressFields = ["zip", "street1", "address2", "city", "state"];
+    if (addressFields.includes(name)) {
+      setShippingEstimate(null);
+      setShippingServiceName(null);
+      setShippingError(null);
+      setAddressValid(false);
+    }
   };
 
   const [addressError, setAddressError] = useState<string | null>(null);
@@ -138,29 +157,43 @@ const CartPage = () => {
       setAddressError(null);
     } catch (err) {
       console.error("Shipping validation error:", err);
+      setAddressError("Could not validate your address. Please try again.");
+      return;
     }
 
     try {
-      const parcels = await createParcels(checkoutCart);
       const rateRes = await fetch("/api/shipping/rates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           addressTo,
-          parcels,
+          cart: checkoutCart,
         }),
       });
 
       const data = await rateRes.json();
-      
+
       if (!rateRes.ok || !data.rate) {
-        console.error(data);
-        throw new Error(data.error || "No shipping rate returned");
+        setShippingEstimate(null);
+        setShippingServiceName(null);
+        setShippingError(
+          data.error ??
+            "Shipping is temporarily unavailable. Please try again.",
+        );
+        return;
       }
-      setShippingEstimate(parseFloat(data.rate.amount));
+
+      setShippingEstimate(data.rate.amountCents / 100);
+      setShippingServiceName(data.rate.serviceName ?? null);
+      setShippingError(null);
       await syncCartStock();
     } catch (err) {
       console.error("Shipping estimate error:", err);
+      setShippingEstimate(null);
+      setShippingServiceName(null);
+      setShippingError(
+        "Shipping is temporarily unavailable. Please try again.",
+      );
     }
   };
 
@@ -176,18 +209,13 @@ const CartPage = () => {
   const hstCents = Math.round(subtotalCents * 0.13);
   const shippingCents = Math.round(shippingAmount * 100);
 
-  const canProceedToCheckout = shippingEstimate !== null && agreedToPrivacy && isStockValid;
+  const canProceedToCheckout =
+    shippingEstimate !== null &&
+    !shippingError &&
+    agreedToPrivacy &&
+    isStockValid;
 
   // ----- STRIPE PAYLOAD -----
-  const checkoutCart = items.map((item) => ({
-    id: item.id,
-    title: `${item.title} (${formatProductSizeLabel(item.product_size.label)})`,
-    price_cents: item.price_cents,
-    quantity: item.quantity,
-    productSizeId: item.product_size.id,
-    sizeLabel: item.product_size.label,
-  }));
-
   const handleCheckout = async () => {
     const normalizedShipping = getNormalizedShipping(shippingForm);
 
@@ -372,6 +400,7 @@ const CartPage = () => {
             onEstimate={handleShippingEstimate}
             shippingEstimate={shippingEstimate}
             addressError={addressError}
+            shippingError={shippingError}
           />
         </div>
 
@@ -398,9 +427,16 @@ const CartPage = () => {
 
           {shippingEstimate !== null && (
             <div className="flex justify-between my-2">
-              <p>Shipping:</p>
+              <p>
+                Shipping
+                {shippingServiceName ? ` (${shippingServiceName})` : ""}:
+              </p>
               <p>${shippingAmount.toFixed(2)}</p>
             </div>
+          )}
+
+          {shippingError && (
+            <p className="text-sm text-red-500 my-2">{shippingError}</p>
           )}
 
           <div className="flex justify-between my-4 text-xl">
@@ -423,6 +459,13 @@ const CartPage = () => {
             <p className="text-sm text-amber-400 mb-2">
               Some items were adjusted due to limited stock. Please review your
               cart.
+            </p>
+          )}
+
+          {!canProceedToCheckout && addressValid && shippingError && (
+            <p className="text-sm text-amber-400 mb-2">
+              Checkout is blocked until shipping can be calculated. Click
+              &quot;Estimate Shipping&quot; to retry.
             </p>
           )}
 
