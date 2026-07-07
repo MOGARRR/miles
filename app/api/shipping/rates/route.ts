@@ -7,7 +7,6 @@ import {
 } from "@/app/lib/canadaPost/errors";
 import { normalizeCanadianPostalCode } from "@/app/lib/canadaPost/env";
 import { getRatesForParcels } from "@/app/lib/canadaPost/getRatesForParcels";
-import { logShippingQuote } from "@/src/controllers/shippingQuoteControllers";
 import createParcels, {
   type CartParcelItem,
 } from "@/src/helpers/createParcels";
@@ -54,19 +53,7 @@ export async function POST(request: Request) {
       parcels,
     });
 
-    const { selectedQuote, allOptions, perParcelRawResponses } = quoteResult;
-
-    void logShippingQuote({
-      destinationPostal: destinationPostalCode,
-      parcelCount: parcels.length,
-      parcelsJson: parcels,
-      rawResponseJson: {
-        allOptions,
-        perParcelRawResponses,
-      },
-      selectedServiceCode: selectedQuote.serviceCode,
-      totalCents: selectedQuote.priceCents,
-    });
+    const { selectedQuote, allOptions } = quoteResult;
 
     return NextResponse.json({
       rate: {

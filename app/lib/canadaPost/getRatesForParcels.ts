@@ -43,21 +43,24 @@ export async function getRatesForParcels(input: {
   >();
   const perParcelRawResponses: { parcelIndex: number; rawJson: unknown }[] = [];
 
-  for (let parcelIndex = 0; parcelIndex < input.parcels.length; parcelIndex++) {
-    const parcel = input.parcels[parcelIndex];
-    const { quotes, rawJson } = await getRates({
-      originPostalCode,
-      destinationPostalCode: input.destinationPostalCode,
-      parcel: {
-        weightKg: parcel.weightKg,
-        lengthCm: parcel.lengthCm,
-        widthCm: parcel.widthCm,
-        heightCm: parcel.heightCm,
-        mailingTube: parcel.mailingTube,
-      },
-      serviceCodes,
-    });
+  const parcelResults = await Promise.all(
+    input.parcels.map((parcel, parcelIndex) =>
+      getRates({
+        originPostalCode,
+        destinationPostalCode: input.destinationPostalCode,
+        parcel: {
+          weightKg: parcel.weightKg,
+          lengthCm: parcel.lengthCm,
+          widthCm: parcel.widthCm,
+          heightCm: parcel.heightCm,
+          mailingTube: parcel.mailingTube,
+        },
+        serviceCodes,
+      }).then((result) => ({ parcelIndex, ...result })),
+    ),
+  );
 
+  for (const { parcelIndex, quotes, rawJson } of parcelResults) {
     perParcelRawResponses.push({ parcelIndex, rawJson });
 
     for (const quote of quotes) {

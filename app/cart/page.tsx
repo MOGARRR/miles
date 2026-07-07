@@ -186,7 +186,6 @@ const CartPage = () => {
       setShippingEstimate(data.rate.amountCents / 100);
       setShippingServiceName(data.rate.serviceName ?? null);
       setShippingError(null);
-      await syncCartStock();
     } catch (err) {
       console.error("Shipping estimate error:", err);
       setShippingEstimate(null);

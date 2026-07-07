@@ -7,10 +7,12 @@ type CachedToken = {
 };
 
 let cachedToken: CachedToken | null = null;
+let tokenFetchPromise: Promise<string> | null = null;
 
 /** Clears the in-memory OAuth token (useful for tests). */
 export function resetCanadaPostTokenCache(): void {
   cachedToken = null;
+  tokenFetchPromise = null;
 }
 
 /**
@@ -24,6 +26,18 @@ export async function getCanadaPostAccessToken(): Promise<string> {
     return cachedToken.accessToken;
   }
 
+  if (tokenFetchPromise) {
+    return tokenFetchPromise;
+  }
+
+  tokenFetchPromise = fetchCanadaPostAccessToken().finally(() => {
+    tokenFetchPromise = null;
+  });
+
+  return tokenFetchPromise;
+}
+
+async function fetchCanadaPostAccessToken(): Promise<string> {
   const config = getCanadaPostConfig();
   const basicCredentials = Buffer.from(
     `${config.clientId}:${config.clientSecret}`,
