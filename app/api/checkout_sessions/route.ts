@@ -1,14 +1,10 @@
-import { isFreeShippingEnabled } from "@/app/lib/shipping/freeShipping";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "../../lib/stripe";
 
-export const dynamic = "force-dynamic";
-
 export async function POST(req: Request) {
   try {
     const { cart, shippingCents, hstCents, shipping } = await req.json();
-    const effectiveShippingCents = isFreeShippingEnabled() ? 0 : shippingCents;
     const headersList = await headers();
     const origin = headersList.get("origin");
     // Create Checkout Sessions from body params.
@@ -37,18 +33,14 @@ export async function POST(req: Request) {
         },
         quantity: 1,
       },
-      ...(effectiveShippingCents > 0
-        ? [
-            {
-              price_data: {
-                currency: "cad",
-                product_data: { name: "Shipping" },
-                unit_amount: effectiveShippingCents,
-              },
-              quantity: 1,
-            },
-          ]
-        : []),
+      {
+        price_data: {
+          currency: "cad",
+          product_data: { name: "Shipping" },
+          unit_amount: shippingCents,
+        },
+        quantity: 1,
+      },
     ];
 
     const session = await stripe.checkout.sessions.create({

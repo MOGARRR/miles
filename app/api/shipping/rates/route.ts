@@ -7,16 +7,10 @@ import {
 } from "@/app/lib/canadaPost/errors";
 import { normalizeCanadianPostalCode } from "@/app/lib/canadaPost/env";
 import { getRatesForParcels } from "@/app/lib/canadaPost/getRatesForParcels";
-import {
-  FREE_SHIPPING_RATE,
-  isFreeShippingEnabled,
-} from "@/app/lib/shipping/freeShipping";
 import { logShippingQuote } from "@/src/controllers/shippingQuoteControllers";
 import createParcels, {
   type CartParcelItem,
 } from "@/src/helpers/createParcels";
-
-export const dynamic = "force-dynamic";
 
 type RatesRequestBody = {
   addressTo?: { zip?: string };
@@ -46,13 +40,6 @@ export async function POST(request: Request) {
         { error: "Missing required fields: addressTo.zip and cart." },
         { status: 400 },
       );
-    }
-
-    if (isFreeShippingEnabled()) {
-      return NextResponse.json({
-        rate: FREE_SHIPPING_RATE,
-        quotes: [],
-      });
     }
 
     const destinationPostalCode = normalizeCanadianPostalCode(addressTo.zip);
