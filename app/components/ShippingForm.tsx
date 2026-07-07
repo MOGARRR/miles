@@ -8,6 +8,7 @@ type ShippingFormProps = {
   shippingEstimate: number | null;
   addressError: string | null;
   shippingError: string | null;
+  isEstimatingShipping: boolean;
 };
 
 const ShippingForm = ({
@@ -17,6 +18,7 @@ const ShippingForm = ({
   shippingEstimate,
   addressError,
   shippingError,
+  isEstimatingShipping,
 }: ShippingFormProps) => {
   return (
     <div
@@ -168,7 +170,13 @@ const ShippingForm = ({
             {shippingError && (
               <p className="text-sm text-red-500 mt-2">{shippingError}</p>
             )}
-            <SubmitButton type="button" variant="primary" onClick={onEstimate}>
+            <SubmitButton
+              type="button"
+              variant="primary"
+              onClick={onEstimate}
+              isLoading={isEstimatingShipping}
+              loadingText="Calculating shipping…"
+            >
               ESTIMATE SHIPPING
             </SubmitButton>
           </fieldset>

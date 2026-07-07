@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { Loader2 } from "lucide-react";
 
 type ButtonProps = {
   children: React.ReactNode; // Button text or content
@@ -49,7 +50,14 @@ const Button = ({
           "bg-kiloblack text-white hover:bg-[#0f0f11]" //black button 
       )}
     >
-      {isLoading ? loadingText ?? "Submitting…" : children}
+      {isLoading ? (
+        <span className="inline-flex items-center justify-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          {loadingText ?? "Submitting…"}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 };

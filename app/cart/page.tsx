@@ -97,6 +97,7 @@ const CartPage = () => {
     null,
   );
   const [shippingError, setShippingError] = useState<string | null>(null);
+  const [isEstimatingShipping, setIsEstimatingShipping] = useState(false);
   const shippingAmount = shippingEstimate ?? 0;
 
   const checkoutCart = items.map((item) => ({
@@ -126,6 +127,9 @@ const CartPage = () => {
   const [addressValid, setAddressValid] = useState(false);
 
   const handleShippingEstimate = async () => {
+    setIsEstimatingShipping(true);
+    setShippingError(null);
+
     const addressTo = {
       name: shippingForm.name,
       phone: normalizePhone(shippingForm.phoneNumber),
@@ -155,13 +159,7 @@ const CartPage = () => {
 
       setAddressValid(true);
       setAddressError(null);
-    } catch (err) {
-      console.error("Shipping validation error:", err);
-      setAddressError("Could not validate your address. Please try again.");
-      return;
-    }
 
-    try {
       const rateRes = await fetch("/api/shipping/rates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -193,6 +191,8 @@ const CartPage = () => {
       setShippingError(
         "Shipping is temporarily unavailable. Please try again.",
       );
+    } finally {
+      setIsEstimatingShipping(false);
     }
   };
 
@@ -400,6 +400,7 @@ const CartPage = () => {
             shippingEstimate={shippingEstimate}
             addressError={addressError}
             shippingError={shippingError}
+            isEstimatingShipping={isEstimatingShipping}
           />
         </div>
 
