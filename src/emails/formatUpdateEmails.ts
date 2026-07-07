@@ -3,10 +3,10 @@ import { updateEmail } from "../types/updateEmail";
 export const formatUpdateEmail = (id: string, emailInfo: updateEmail) => {
   const tracking = emailInfo.tracking_number || "N/A";
   const isShipped = emailInfo.shipping_status === "Shipped";
-  const upsTrackUrl = `https://www.ups.com/track?loc=en_CA&requester=ST&tracknum=${tracking}`;
+  const canadaPostTrackUrl = `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${encodeURIComponent(tracking)}`;
   const title = isShipped ? "Your Order Has Shipped!" : "Order Update";
   const message = isShipped
-    ? `Great news — your <strong>Kiloboy</strong> order is on its way. <a href="${upsTrackUrl}" style="color:#333;">Track your package at UPS</a> using the tracking number below.`
+    ? `Great news — your <strong>Kiloboy</strong> order is on its way. <a href="${canadaPostTrackUrl}" style="color:#333;">Track your package at Canada Post</a> using the tracking number below.`
     : "Your <strong>Kiloboy</strong> order information has been updated. Here are the latest details:";
 
   return `
@@ -34,7 +34,7 @@ export const formatUpdateEmail = (id: string, emailInfo: updateEmail) => {
           <td>
             ${
               isShipped && emailInfo.tracking_number
-                ? `<a href="${upsTrackUrl}" style="color:#333;">${tracking}</a>`
+                ? `<a href="${canadaPostTrackUrl}" style="color:#333;">${tracking}</a>`
                 : tracking
             }
           </td>
