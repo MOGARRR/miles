@@ -2,13 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import LoadingAnimation from "@/app/components/LoadingAnimation";
 import AdminForm from "@/app/components/ui/AdminForm";
 import AdminInput from "@/app/components/ui/AdminInput";
 import AdminFormSection from "@/app/components/ui/AdminFormSection";
 import Button from "@/app/components/ui/Button";
 import FormAlert from "@/app/components/FormAlert";
 import { Event } from "@/src/types/event";
+import {
+  addDaysToDateInput,
+  formatHoursRange,
+  getDefaultEventDates,
+  parseHoursRange,
+} from "@/src/helpers/formatEventSchedule";
 
 type Props = {
   event?: Event; // present = edit mode
@@ -16,40 +21,60 @@ type Props = {
   onClose?: () => void;
 };
 
-const EventsForm = ({ event, onSuccess, onClose}: Props) => {
-  // state for form fields
+const dateInputClassName = `
+  w-full
+  rounded-lg
+  border border-[#3a3a41]
+  bg-kiloblack
+  px-3 py-2
+  text-sm
+  text-kilotextlight
+  [color-scheme:dark]
+`;
+
+const isFutureDate = (eventDate: string) => new Date() < new Date(eventDate);
+
+const EventsForm = ({ event, onSuccess, onClose }: Props) => {
+  const defaults = getDefaultEventDates();
+  const initialHours = parseHoursRange(event?.hours ?? "");
+
   const [title, setTitle] = useState(event?.title ?? "");
   const [description, setDescription] = useState(event?.description ?? "");
-  const [startDate, setStartDate] = useState(event?.start_date ?? "");
-  const [endDate, setEndDate] = useState(event?.end_date ?? "");
+  const [startDate, setStartDate] = useState(
+    event?.start_date ?? defaults.startDate,
+  );
+  const [endDate, setEndDate] = useState(event?.end_date ?? defaults.endDate);
   const [location, setLocation] = useState(event?.location ?? "");
-  const [hours, setHours] = useState(event?.hours ?? "");
+  const [startTime, setStartTime] = useState(initialHours.startTime || "10:00");
+  const [endTime, setEndTime] = useState(initialHours.endTime || "18:00");
   const [imageUrl, setImageUrl] = useState(event?.image_url ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isActive, setIsActive] = useState(event?.is_active ?? false);
+  const [isActive, setIsActive] = useState(
+    event?.is_active ?? isFutureDate(defaults.endDate),
+  );
 
-  // Check and set event Date validation
-  const eventDateValidation = (eventDate: string) =>
-    new Date() < new Date(eventDate);
+  const syncActiveFromEndDate = (nextEndDate: string) => {
+    setIsActive(isFutureDate(nextEndDate));
+  };
 
-  const handleDateValidation = (endDate: string) => {
-    const isValidDate = eventDateValidation(endDate);
-    setIsActive(isValidDate);
-    setEndDate(endDate);
+  const handleStartDateChange = (nextStartDate: string) => {
+    setStartDate(nextStartDate);
+    const nextEndDate = addDaysToDateInput(nextStartDate, 1);
+    setEndDate(nextEndDate);
+    syncActiveFromEndDate(nextEndDate);
+  };
+
+  const handleEndDateChange = (nextEndDate: string) => {
+    setEndDate(nextEndDate);
+    syncActiveFromEndDate(nextEndDate);
   };
 
   const [isLoading, setIsLoading] = useState(false);
-
-  // prevent the form from starting with errors later
   const [hasSubmitted, setHasSubmitted] = useState(false);
-
-  //error and success messages
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Detect edit vs create
   const isEditMode = Boolean(event);
-
   const router = useRouter();
 
   const isImageValid =
@@ -57,20 +82,39 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
     imageUrl.startsWith("/") ||
     imageUrl.startsWith("http");
 
-  // Sync when switching which event is being edited
+  const hours = formatHoursRange(startTime, endTime);
+
   useEffect(() => {
     if (!event) return;
+
+    const parsedHours = parseHoursRange(event.hours);
 
     setTitle(event.title);
     setDescription(event.description ?? "");
     setStartDate(event.start_date);
     setEndDate(event.end_date);
     setLocation(event.location);
-    setHours(event.hours);
+    setStartTime(parsedHours.startTime || "10:00");
+    setEndTime(parsedHours.endTime || "18:00");
     setImageUrl(event.image_url ?? "");
     setImageFile(null);
     setIsActive(event.is_active ?? false);
   }, [event]);
+
+  const resetCreateForm = () => {
+    const nextDefaults = getDefaultEventDates();
+    setTitle("");
+    setDescription("");
+    setStartDate(nextDefaults.startDate);
+    setEndDate(nextDefaults.endDate);
+    setStartTime("10:00");
+    setEndTime("18:00");
+    setLocation("");
+    setImageUrl("");
+    setImageFile(null);
+    setHasSubmitted(false);
+    syncActiveFromEndDate(nextDefaults.endDate);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,11 +126,10 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
     }
 
     setIsLoading(true);
-    setError(null); // clear previous errors
+    setError(null);
     setSuccessMessage(null);
 
     try {
-      //RESOLVE FINAL IMAGE UPLOAD VS URL
       let finalImageUrl = imageUrl;
 
       if (imageFile) {
@@ -107,10 +150,8 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
       }
 
       const endpoint = isEditMode ? `/api/events/${event!.id}` : "/api/events";
-
       const method = isEditMode ? "PUT" : "POST";
 
-      //CREATE EVENT
       const res = await fetch(endpoint, {
         method,
         headers: {
@@ -132,7 +173,6 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
         throw new Error("Failed to create event");
       }
 
-      // Trigger a re-render of the Server Component
       router.refresh();
 
       setSuccessMessage(
@@ -144,17 +184,8 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
         onSuccess?.();
       }, 1500);
 
-      // Reset form if NOT in edit mode
       if (!isEditMode) {
-        setTitle("");
-        setDescription("");
-        setStartDate("");
-        setEndDate("");
-        setHours("");
-        setLocation("");
-        setImageUrl("");
-        setImageFile(null);
-        setHasSubmitted(false);
+        resetCreateForm();
       }
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -162,7 +193,6 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <AdminForm
@@ -172,7 +202,6 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
     >
       <form onSubmit={handleSubmit}>
         <fieldset className="space-y-6">
-          {/* EVENT INFO */}
           <AdminFormSection title="Event Information">
             <AdminInput
               label="Title"
@@ -203,12 +232,10 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
             </div>
           </AdminFormSection>
 
-          {/* MEDIA */}
           <AdminFormSection
             title="Media"
             description="Upload an image or use an external URL."
           >
-            {/* IMAGE PREVIEW  */}
             <div
               className="
               rounded-lg
@@ -288,7 +315,6 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
             </div>
           </AdminFormSection>
 
-          {/* SCHEDULE */}
           <AdminFormSection title="Schedule">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
@@ -300,15 +326,8 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
                   type="date"
                   required
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="
-                  w-full
-                  rounded-lg
-                  border border-[#3a3a41]
-                  bg-kiloblack
-                  px-3 py-2
-                  text-sm
-                "
+                  onChange={(e) => handleStartDateChange(e.target.value)}
+                  className={dateInputClassName}
                 />
               </div>
 
@@ -320,40 +339,49 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
                 <input
                   type="date"
                   required
+                  min={startDate}
                   value={endDate}
-                  onChange={(e) => handleDateValidation(e.target.value)}
-                  className="
-                  w-full
-                  rounded-lg
-                  border border-[#3a3a41]
-                  bg-kiloblack
-                  px-3 py-2
-                  text-sm
-                "
+                  onChange={(e) => handleEndDateChange(e.target.value)}
+                  className={dateInputClassName}
                 />
               </div>
             </div>
 
-            <div className="mt-4">
-              <label className="block mb-1 font-semibold text-kilotextlight">
-                Hours
-              </label>
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block mb-1 font-semibold text-kilotextlight">
+                  Opens
+                </label>
 
-              <input
-                type="text"
-                required
-                value={hours}
-                onChange={(e) => setHours(e.target.value)}
-                className="
-                w-full
-                rounded-lg
-                border border-[#3a3a41]
-                bg-kiloblack
-                px-3 py-2
-                text-sm
-              "
-              />
+                <input
+                  type="time"
+                  required
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className={dateInputClassName}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-semibold text-kilotextlight">
+                  Closes
+                </label>
+
+                <input
+                  type="time"
+                  required
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className={dateInputClassName}
+                />
+              </div>
             </div>
+
+            {hours && (
+              <p className="text-sm text-kilotextgrey mt-2">
+                Displayed as: {hours}
+              </p>
+            )}
           </AdminFormSection>
 
           <AdminFormSection title="Location">
@@ -362,17 +390,15 @@ const EventsForm = ({ event, onSuccess, onClose}: Props) => {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               required
-            ></AdminInput>
+            />
           </AdminFormSection>
 
-          {/* ALERTS */}
           {error && <FormAlert type="error" message={error} />}
 
           {successMessage && (
             <FormAlert type="success" message={successMessage} />
           )}
 
-          {/* SUBMIT BUTTON  */}
           <div className="flex justify-center pt-4">
             <Button
               type="submit"

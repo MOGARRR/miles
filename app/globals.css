@@ -72,8 +72,19 @@ select:-webkit-autofill {
 }
 
 /* =====================
-       Animations
+   Make date/time picker icons visible on dark inputs
    ===================== */
+input[type="date"],
+input[type="time"] {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+  filter: invert(1) brightness(1.4);
+}
 
 .filter{
   transition: transform .5s ease, opacity .5s ease;
