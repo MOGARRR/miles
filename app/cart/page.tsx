@@ -100,6 +100,8 @@ const CartPage = () => {
   );
   const [shippingError, setShippingError] = useState<string | null>(null);
   const [isEstimatingShipping, setIsEstimatingShipping] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [addressValid, setAddressValid] = useState(false);
   const shippingAmount = shippingEstimate ?? 0;
 
   const checkoutCart = items.map((item) => ({
@@ -110,6 +112,19 @@ const CartPage = () => {
     productSizeId: item.product_size.id,
     sizeLabel: item.product_size.label,
   }));
+
+  // Cart qty/item changes invalidate a prior shipping quote.
+  const cartSignature = items
+    .map((item) => `${item.id}:${item.product_size.id}:${item.quantity}`)
+    .sort()
+    .join("|");
+
+  useEffect(() => {
+    setShippingEstimate(null);
+    setShippingServiceName(null);
+    setShippingError(null);
+    setAddressValid(false);
+  }, [cartSignature]);
 
   const handleShippingChange = (event: any) => {
     const { name, value } = event.target;
@@ -132,9 +147,6 @@ const CartPage = () => {
       setAddressValid(false);
     }
   };
-
-  const [addressError, setAddressError] = useState<string | null>(null);
-  const [addressValid, setAddressValid] = useState(false);
 
   const handleShippingEstimate = async () => {
     setIsEstimatingShipping(true);
