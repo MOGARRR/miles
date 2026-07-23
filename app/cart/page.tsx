@@ -139,6 +139,40 @@ const CartPage = () => {
   const handleShippingEstimate = async () => {
     setIsEstimatingShipping(true);
     setShippingError(null);
+    setAddressError(null);
+
+    const requiredFields = [
+      { key: "name", label: "full name" },
+      { key: "phoneNumber", label: "phone number" },
+      { key: "zip", label: "postal code" },
+      { key: "city", label: "city" },
+      { key: "street1", label: "address" },
+      { key: "state", label: "province" },
+    ] as const;
+
+    const missingFields = requiredFields.filter(
+      ({ key }) => !shippingForm[key].trim(),
+    );
+
+    if (missingFields.length > 0) {
+      const labels = missingFields.map(({ label }) => label);
+      const fieldList =
+        labels.length === 1
+          ? labels[0]
+          : labels.length === 2
+            ? `${labels[0]} and ${labels[1]}`
+            : `${labels.slice(0, -1).join(", ")}, and ${labels[labels.length - 1]}`;
+
+      setAddressError(`Please enter your ${fieldList} to estimate shipping.`);
+      setIsEstimatingShipping(false);
+      return;
+    }
+
+    if (checkoutCart.length === 0) {
+      setShippingError("Add items to your cart before estimating shipping.");
+      setIsEstimatingShipping(false);
+      return;
+    }
 
     const addressTo = {
       name: shippingForm.name,
@@ -184,9 +218,14 @@ const CartPage = () => {
       if (!rateRes.ok || !data.rate) {
         setShippingEstimate(null);
         setShippingServiceName(null);
+        const isMissingFieldsError =
+          typeof data.error === "string" &&
+          data.error.includes("Missing required fields");
         setShippingError(
-          data.error ??
-            "Shipping is temporarily unavailable. Please try again.",
+          isMissingFieldsError
+            ? "Please complete your shipping details and make sure your cart has items."
+            : (data.error ??
+              "Shipping is temporarily unavailable. Please try again."),
         );
         return;
       }
