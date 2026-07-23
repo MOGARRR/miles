@@ -56,32 +56,36 @@ export async function updateCategoriesProducts(
   return data;
 }
 
-// DELETE Categories products
+// DELETE category — detach from products first, then remove the category
 export async function deleteCategoriesProducts(id: string) {
   const supabase = supabaseAdmin;
 
-  // 1. Check if there are products associated with this category
-  const { count, error: countError } = await supabase
-    .from("products")
-    .select("*", { count: "exact", head: true })
+  // 1. Remove this category from all products (many-to-many join)
+  const { error: junctionError } = await supabase
+    .from("products_categories")
+    .delete()
     .eq("category_id", id);
 
-  if (countError) {
-    throw new Error(countError.message);
+  if (junctionError) {
+    throw new Error(junctionError.message);
   }
 
-  // 2. Block deletion if products exist
-  if (count && count > 0) {
-    throw new Error(
-      "This category cannot be deleted because it is associated with one or more products.",
-    );
+  // 2. Clear legacy single category_id on products, if any still point here
+  const { error: clearLegacyError } = await supabase
+    .from("products")
+    .update({ category_id: null })
+    .eq("category_id", id);
+
+  if (clearLegacyError) {
+    throw new Error(clearLegacyError.message);
   }
 
-  // 3. Safe to delete
+  // 3. Delete the category itself
   const { data, error } = await supabase
     .from("categories")
     .delete()
     .eq("id", id)
+    .select()
     .single();
 
   if (error) throw new Error(error.message);

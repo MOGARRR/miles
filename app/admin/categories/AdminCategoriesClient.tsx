@@ -32,7 +32,7 @@ const AdminCategoriesClient = ({ categories }: Props) => {
 
   const handleDelete = async (categoryId: number) => {
     const confirmed = confirm(
-      "Are you sure you want to delete this category? This action cannot be undone.",
+      "Delete this category? It will be removed from any products that use it. This cannot be undone.",
     );
 
     if (!confirmed) return;
