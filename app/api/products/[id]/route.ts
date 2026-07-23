@@ -3,13 +3,12 @@ import {
   getProductById,
   updateProductWithCategories,
   deleteProduct,
+  restoreProduct,
 } from "@/src/controllers/productControllers";
 import { RouteContext } from "@/src/types/routeContext";
 
 // GET
-export async function GET(
- request: NextRequest, context: RouteContext
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
     const product = await getProductById(id);
@@ -17,37 +16,58 @@ export async function GET(
     return NextResponse.json({ product }, { status: 200 });
   } catch (error: any) {
     console.error("GET /api/products/[id] error:", error.message);
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 // PUT
-export async function PUT(
-  req: NextRequest, context: RouteContext
-) {
+export async function PUT(req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
     const updatedProductItem = await req.json();
 
-    const result = await updateProductWithCategories(Number(id), updatedProductItem)
+    const result = await updateProductWithCategories(
+      Number(id),
+      updatedProductItem,
+    );
 
     return NextResponse.json({ product: result });
   } catch (error: any) {
     console.error("PUT /api/products/[id] error:", error);
     return NextResponse.json(
       { error: error.message ?? "Unexpected error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-// DELETE
-export async function DELETE(
-  req: NextRequest, context: RouteContext
-) {
+// POST — restore soft-deleted product
+export async function POST(req: NextRequest, context: RouteContext) {
+  try {
+    const { id } = await context.params;
+    const body = await req.json().catch(() => ({}));
+
+    if (body?.action !== "restore") {
+      return NextResponse.json(
+        { error: 'Unsupported action. Use { "action": "restore" }.' },
+        { status: 400 },
+      );
+    }
+
+    const result = await restoreProduct(id);
+
+    return NextResponse.json({ product: result });
+  } catch (error: any) {
+    console.error("POST /api/products/[id] restore error:", error);
+    return NextResponse.json(
+      { error: error.message ?? "Unexpected error" },
+      { status: 500 },
+    );
+  }
+}
+
+// DELETE — soft-delete (mark unavailable)
+export async function DELETE(req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
 
@@ -58,7 +78,7 @@ export async function DELETE(
     console.error("DELETE /api/products/[id] error:", error);
     return NextResponse.json(
       { error: error.message ?? "Unexpected error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -40,7 +40,6 @@ const ProductForm = ({
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [description, setDescription] = useState("");
 
-  const [isAvailable, setIsAvailable] = useState(true);
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -89,7 +88,6 @@ const ProductForm = ({
     setDescription(product.description ?? "");
     setImageUrl(product.image_URL ?? "");
     setImageFile(null);
-    setIsAvailable(product.is_available);
 
     setExistingImages(product.product_images ?? []);
 
@@ -166,7 +164,8 @@ const ProductForm = ({
           category_ids: categoryIds,
           description,
           image_URL: finalImageUrl,
-          is_available: isAvailable,
+          // Availability is controlled by Delete / Restore on the admin list
+          is_available: isEditMode ? product!.is_available : true,
           product_sizes: [
             {
               label: "Small",
@@ -224,7 +223,6 @@ const ProductForm = ({
         setDescription("");
         setImageUrl("");
         setImageFile(null);
-        setIsAvailable(true);
         setHasSubmitted(false);
         setSmallPrice("");
         setLargePrice("");
@@ -545,29 +543,6 @@ const ProductForm = ({
               )}
             </div>
           )}
-        </AdminFormSection>
-
-        <AdminFormSection title="Availability">
-          <label
-            className="
-              inline-flex items-center
-              gap-2
-              rounded-lg
-              border-2 border-[#55555f]
-              bg-kilodarkgrey
-              px-3 py-2
-              cursor-pointer
-              hover:border-kilored
-              transition
-            "
-          >
-            <input
-              type="checkbox"
-              checked={isAvailable}
-              onChange={(e) => setIsAvailable(e.target.checked)}
-            />
-            <span className="text-sm text-kilotextlight">Available</span>
-          </label>
         </AdminFormSection>
 
         {error && <FormAlert type="error" message={error} />}

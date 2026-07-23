@@ -2,8 +2,8 @@
 
 // Client wrapper owns all interactive UI for products:
 // - toggling create form
-// - rendering the product list
-// - future edit/delete actions
+// - Available / Deleted tabs
+// - soft-delete and restore
 
 import { useState } from "react";
 import type { Product } from "@/src/types/product";
@@ -19,25 +19,40 @@ type Props = {
   categoryMap: Record<number, string>;
 };
 
+type ProductTab = "available" | "deleted";
+
 const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [activeTab, setActiveTab] = useState<ProductTab>("available");
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [restoringId, setRestoringId] = useState<number | null>(null);
 
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
 
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   const router = useRouter();
+
+  const availableProducts = products.filter((product) => product.is_available);
+  const deletedProducts = products.filter((product) => !product.is_available);
+  const visibleProducts =
+    activeTab === "available" ? availableProducts : deletedProducts;
 
   const closeForm = () => {
     setIsFormOpen(false);
     setEditingProduct(null);
   };
 
-  // HANDLE EDIT PRODUCT
+  const showSuccess = (message: string) => {
+    setActionSuccess(message);
+    setTimeout(() => {
+      setActionSuccess(null);
+    }, 3000);
+  };
+
   const handleEdit = async (productId: number) => {
     try {
       setEditError(null);
@@ -51,7 +66,6 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
 
       const data = await res.json();
 
-      // This is the FULL product (includes product_images)
       setEditingProduct(data.product);
       setIsFormOpen(true);
     } catch (err: any) {
@@ -61,18 +75,16 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
     }
   };
 
-
-  // HANDLE DELETE PRODUCT
   const handleDelete = async (productId: number) => {
     const confirmed = confirm(
-      "Are you sure you want to delete this product? This action cannot be undone.",
+      "Are you sure you want to delete this product? It will not be available in the store, but it will be kept for order history.",
     );
 
     if (!confirmed) return;
 
     try {
-      setDeleteError(null);
-      setDeleteSuccess(null);
+      setActionError(null);
+      setActionSuccess(null);
       setDeletingId(productId);
 
       const res = await fetch(`/api/products/${productId}`, {
@@ -82,21 +94,48 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error);
+        throw new Error(data.error || "Failed to delete product");
       }
 
-      setDeleteSuccess("Product deleted successfully");
-
+      showSuccess("Product deleted successfully");
       router.refresh();
-
-      // auto-hide success message
-      setTimeout(() => {
-        setDeleteSuccess(null);
-      }, 3000);
     } catch (err: any) {
-      setDeleteError(err.message);
+      setActionError(err.message);
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleRestore = async (productId: number) => {
+    const confirmed = confirm(
+      "Are you sure you want to restore this product? It will be available in the store again.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setActionError(null);
+      setActionSuccess(null);
+      setRestoringId(productId);
+
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "restore" }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to restore product");
+      }
+
+      showSuccess("Product restored successfully");
+      router.refresh();
+    } catch (err: any) {
+      setActionError(err.message);
+    } finally {
+      setRestoringId(null);
     }
   };
 
@@ -121,16 +160,41 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
         />
       )}
 
-      {deleteSuccess && (
-        <p className="text-sm text-emerald-600 mb-4">{deleteSuccess}</p>
+      {actionSuccess && (
+        <p className="text-sm text-emerald-600 mb-4">{actionSuccess}</p>
       )}
 
-      {deleteError && (
-        <p className="text-sm text-rose-500 mb-4">{deleteError}</p>
+      {(actionError || editError) && (
+        <p className="text-sm text-rose-500 mb-4">
+          {actionError || editError}
+        </p>
       )}
 
-      {products.length === 0 ? (
-        <p>No products found.</p>
+      <div className="flex gap-2 mb-6">
+        <Button
+          type="button"
+          variant={activeTab === "available" ? "primary" : "secondary"}
+          className="mt-0"
+          onClick={() => setActiveTab("available")}
+        >
+          Available ({availableProducts.length})
+        </Button>
+        <Button
+          type="button"
+          variant={activeTab === "deleted" ? "primary" : "secondary"}
+          className="mt-0"
+          onClick={() => setActiveTab("deleted")}
+        >
+          Deleted ({deletedProducts.length})
+        </Button>
+      </div>
+
+      {visibleProducts.length === 0 ? (
+        <p>
+          {activeTab === "available"
+            ? "No available products."
+            : "No deleted products."}
+        </p>
       ) : (
         <ul
           className="
@@ -139,7 +203,7 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
         gap-6
         "
         >
-          {products.map((product) => (
+          {visibleProducts.map((product) => (
             <li
               key={product.id}
               className="
@@ -165,7 +229,22 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
               )}
 
               <div className="flex flex-col flex-1 px-6 py-5">
-                <h2 className="text-2xl font-bold">{product.title}</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-2xl font-bold">{product.title}</h2>
+                  {activeTab === "deleted" && (
+                    <span
+                      className="
+                        text-xs
+                        px-2 py-1
+                        rounded-full
+                        bg-kilored
+                        text-gray-200
+                      "
+                    >
+                      Deleted
+                    </span>
+                  )}
+                </div>
 
                 <div className="flex flex-wrap gap-2 mt-3">
                   {product.categories?.map((cat) => (
@@ -217,8 +296,8 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
                               size.stock === 0
                                 ? "text-rose-500"
                                 : size.stock < 5
-                                ? "text-amber-500"
-                                : "text-white"
+                                  ? "text-amber-500"
+                                  : "text-white"
                             }
                           >
                             Stock: {size.stock}
@@ -228,10 +307,6 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
                     </ul>
                   </div>
                 )}
-
-                <p className="mt-4 text-sm text-kilotextlight">
-                  Status: {product.is_available ? "Available" : "Not Available"}
-                </p>
 
                 <div className="mt-auto pt-6 flex gap-3">
                   <Button
@@ -246,16 +321,29 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
                     Edit
                   </Button>
 
-                  <Button
-                    type="button"
-                    variant="primary"
-                    className="flex-1 mt-0"
-                    onClick={() => handleDelete(product.id)}
-                    isLoading={deletingId === product.id}
-                    loadingText="Deleting..."
-                  >
-                    Delete
-                  </Button>
+                  {activeTab === "available" ? (
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="flex-1 mt-0"
+                      onClick={() => handleDelete(product.id)}
+                      isLoading={deletingId === product.id}
+                      loadingText="Deleting..."
+                    >
+                      Delete
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="flex-1 mt-0"
+                      onClick={() => handleRestore(product.id)}
+                      isLoading={restoringId === product.id}
+                      loadingText="Restoring..."
+                    >
+                      Restore
+                    </Button>
+                  )}
                 </div>
               </div>
             </li>

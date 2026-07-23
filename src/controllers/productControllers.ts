@@ -157,30 +157,31 @@ export async function getProductById(id: string) {
   };
 }
 
-// DELETE Product
+// Soft-delete product (keeps row for order history)
 export async function deleteProduct(id: string) {
   const supabase = supabaseAdmin;
 
-  // 1. Check if product is associated with any order
-  const { data: orderRefs, error: refError } = await supabase
-    .from("order_products")
-    .select("id")
-    .eq("product_id", id)
-    .limit(1);
-
-  if (refError) throw new Error(refError.message);
-
-  if (orderRefs && orderRefs.length > 0) {
-    throw new Error(
-      "Product cannot be deleted because it is associated with an order.",
-    );
-  }
-
-  // 2. Safe to delete
   const { data, error } = await supabase
     .from("products")
-    .delete()
+    .update({ is_available: false })
     .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+// Restore a soft-deleted product to the store
+export async function restoreProduct(id: string) {
+  const supabase = supabaseAdmin;
+
+  const { data, error } = await supabase
+    .from("products")
+    .update({ is_available: true })
+    .eq("id", id)
+    .select()
     .single();
 
   if (error) throw new Error(error.message);

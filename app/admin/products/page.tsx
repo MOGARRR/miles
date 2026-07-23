@@ -6,8 +6,8 @@ import AdminProductsClient from "./AdminProductsClient";
 const AdminProductsPage = async () => {
   const baseUrl = await getBaseUrl();
 
-  // fetch products
-  const productsRes = await fetch(`${baseUrl}/api/products`, {
+  // fetch products (high limit so Available + Deleted tabs are complete)
+  const productsRes = await fetch(`${baseUrl}/api/products?limit=500`, {
     cache: "no-store",
   });
 
