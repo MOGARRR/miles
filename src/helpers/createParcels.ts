@@ -1,14 +1,8 @@
 import {
-  LEGACY_HARDCODED_PARCELS,
   SHIPPING_PARCEL_PROFILES,
   type ParcelProfile,
 } from "@/src/config/shippingParcelProfiles";
-import {
-  auditParcelWeight,
-  inchesToCm,
-  poundsToKg,
-  type ParcelWeightAudit,
-} from "@/src/helpers/calculateDimWeight";
+import { inchesToCm, poundsToKg } from "@/src/helpers/calculateDimWeight";
 
 export type CartParcelItem = {
   sizeLabel: string;
@@ -43,38 +37,11 @@ function buildShippingParcel(profile: ParcelProfile): ShippingParcel {
   };
 }
 
-/**
- * Logs a before/after comparison so we can verify parcel config changes
- * against the old hardcoded Shippo values and see dimensional weight impact.
- */
-function logParcelWeightComparison(currentAudit: ParcelWeightAudit): void {
-  const legacyProfile =
-    LEGACY_HARDCODED_PARCELS[
-      currentAudit.sizeLabel as keyof typeof LEGACY_HARDCODED_PARCELS
-    ];
-
-  const legacyAudit = auditParcelWeight({
-    sizeLabel: currentAudit.sizeLabel,
-    lengthIn: legacyProfile.lengthIn,
-    widthIn: legacyProfile.widthIn,
-    heightIn: legacyProfile.heightIn,
-    totalWeightLb: legacyProfile.totalWeightLb,
-    mailingTube: legacyProfile.mailingTube,
-  });
-
-  console.info("[shipping] parcel weight audit", {
-    sizeLabel: currentAudit.sizeLabel,
-    before: legacyAudit,
-    after: currentAudit,
-  });
-}
-
 const createParcels = async (
   cart: CartParcelItem[],
 ): Promise<ShippingParcel[]> => {
   let smallPrintCount = 0;
   const parcels: ShippingParcel[] = [];
-  const loggedSizeLabels = new Set<string>();
 
   for (const item of cart) {
     if (item.sizeLabel === "Large") {
@@ -94,14 +61,6 @@ const createParcels = async (
 
   for (let i = 0; i < sleevesNeeded; i++) {
     parcels.push(buildShippingParcel(smallProfile));
-  }
-
-  for (const parcel of parcels) {
-    if (loggedSizeLabels.has(parcel.sizeLabel)) {
-      continue;
-    }
-    loggedSizeLabels.add(parcel.sizeLabel);
-    logParcelWeightComparison(auditParcelWeight(parcel));
   }
 
   return parcels;

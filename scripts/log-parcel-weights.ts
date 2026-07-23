@@ -1,6 +1,6 @@
 /**
  * Run with: npx tsx scripts/log-parcel-weights.ts
- * Exercises createParcels with a mixed cart and prints the weight audit logs.
+ * Exercises createParcels with a mixed cart and prints the built parcels.
  */
 import createParcels from "../src/helpers/createParcels";
 
