@@ -11,6 +11,9 @@ import createParcels, {
   type CartParcelItem,
 } from "@/src/helpers/createParcels";
 
+/** Extra amount added on top of the Canada Post quote for packing/rate variance. */
+const SHIPPING_PRICE_BUFFER_CENTS = 500;
+
 type RatesRequestBody = {
   addressTo?: { zip?: string };
   cart?: Array<{
@@ -57,7 +60,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       rate: {
-        amountCents: selectedQuote.priceCents,
+        amountCents: selectedQuote.priceCents + SHIPPING_PRICE_BUFFER_CENTS,
         serviceCode: selectedQuote.serviceCode,
         serviceName: selectedQuote.serviceName,
         expectedDeliveryDate: selectedQuote.expectedDeliveryDate,
