@@ -11,7 +11,7 @@
 // interactive state across server and client boundaries and makes the UI
 // easier to reason about as it grows.
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Category } from "@/src/types/category";
 import CategoryForm from "./CategoryForm";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,22 @@ const AdminCategoriesClient = ({ categories }: Props) => {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  const formSectionRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isFormOpen) return;
+
+    formSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [isFormOpen, editingCategory]);
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingCategory(null);
+  };
 
   const handleDelete = async (categoryId: number) => {
     const confirmed = confirm(
@@ -59,8 +74,6 @@ const AdminCategoriesClient = ({ categories }: Props) => {
     }
   };
 
-  
-
   return (
     <div className="flex flex-col">
 
@@ -69,27 +82,20 @@ const AdminCategoriesClient = ({ categories }: Props) => {
         <Button
           type="button"
           variant={isFormOpen ? "secondary" : "primary"}
-          onClick={() => {
-            setIsFormOpen((prev) => !prev);
-            setEditingCategory(null);
-          }}
+          onClick={() => (isFormOpen ? closeForm() : setIsFormOpen(true))}
         >
           {isFormOpen ? "Cancel" : "Add New Category"}
         </Button>
       </div>
 
       {isFormOpen && (
-        <CategoryForm
-          category={editingCategory ?? undefined}
-          onSuccess={() => {
-            setIsFormOpen(false);
-            setEditingCategory(null);
-          }}
-          onClose={() => {
-            setIsFormOpen(false);
-            setEditingCategory(null);
-          }}
-        />
+        <div ref={formSectionRef} className="scroll-mt-6 mb-8">
+          <CategoryForm
+            category={editingCategory ?? undefined}
+            onSuccess={closeForm}
+            onClose={closeForm}
+          />
+        </div>
       )}
 
       {deleteError && (

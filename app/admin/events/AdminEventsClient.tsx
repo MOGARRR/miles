@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Event } from "@/src/types/event";
 import EventsForm from "./EventsForm";
 import { formatDate } from "@/src/helpers/formatDate";
@@ -34,7 +34,17 @@ const AdminEventsClient = ({ events }: Props) => {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
 
+  const formSectionRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isFormOpen) return;
+
+    formSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [isFormOpen, editingEvent]);
 
   const handleDelete = async (eventId: number) => {
     const confirmed = confirm("Are you sure you want to delete this event?");
@@ -81,18 +91,22 @@ const AdminEventsClient = ({ events }: Props) => {
         <Button
           type="button"
           variant={isFormOpen ? "secondary" : "primary"}
-          onClick={() => setIsFormOpen((prev) => !prev)}
+          onClick={() =>
+            isFormOpen ? closeForm() : setIsFormOpen(true)
+          }
         >
           {isFormOpen ? "Cancel" : "Add New Event"}
         </Button>
       </div>
 
       {isFormOpen && (
-        <EventsForm
-          event={editingEvent ?? undefined}
-          onSuccess={closeForm}
-          onClose={closeForm}
-        />
+        <div ref={formSectionRef} className="scroll-mt-6 mb-8">
+          <EventsForm
+            event={editingEvent ?? undefined}
+            onSuccess={closeForm}
+            onClose={closeForm}
+          />
+        </div>
       )}
 
       {deleteSuccess && (
