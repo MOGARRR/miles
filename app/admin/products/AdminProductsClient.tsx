@@ -5,7 +5,7 @@
 // - Available / Deleted tabs
 // - soft-delete and restore
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Product } from "@/src/types/product";
 import type { Category } from "@/src/types/category";
 import CreateProductForm from "./ProductForm";
@@ -34,12 +34,22 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
+  const formSectionRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const availableProducts = products.filter((product) => product.is_available);
   const deletedProducts = products.filter((product) => !product.is_available);
   const visibleProducts =
     activeTab === "available" ? availableProducts : deletedProducts;
+
+  useEffect(() => {
+    if (!isFormOpen) return;
+
+    formSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [isFormOpen, editingProduct]);
 
   const closeForm = () => {
     setIsFormOpen(false);
@@ -152,12 +162,14 @@ const AdminProductsClient = ({ products, categories, categoryMap }: Props) => {
       </div>
 
       {isFormOpen && (
-        <CreateProductForm
-          product={editingProduct ?? undefined}
-          categories={categories}
-          onSuccess={closeForm}
-          onClose={closeForm}
-        />
+        <div ref={formSectionRef} className="scroll-mt-6 mb-8">
+          <CreateProductForm
+            product={editingProduct ?? undefined}
+            categories={categories}
+            onSuccess={closeForm}
+            onClose={closeForm}
+          />
+        </div>
       )}
 
       {actionSuccess && (
