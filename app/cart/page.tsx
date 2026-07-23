@@ -11,6 +11,8 @@ import SubmitButton from "../components/ui/Button";
 import {
   normalizePhone,
   normalizePostal,
+  formatPhone,
+  formatPostal,
   getNormalizedShipping,
 } from "@/src/helpers/normalizeShipping";
 import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
@@ -111,7 +113,15 @@ const CartPage = () => {
 
   const handleShippingChange = (event: any) => {
     const { name, value } = event.target;
-    setShippingForm((prev) => ({ ...prev, [name]: value }));
+
+    const formattedValue =
+      name === "phoneNumber"
+        ? formatPhone(value)
+        : name === "zip"
+          ? formatPostal(value)
+          : value;
+
+    setShippingForm((prev) => ({ ...prev, [name]: formattedValue }));
 
     // Stale rate if the address changes after a successful estimate.
     const addressFields = ["zip", "street1", "address2", "city", "state"];
