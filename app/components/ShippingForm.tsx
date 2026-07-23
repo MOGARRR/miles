@@ -170,10 +170,32 @@ const ShippingForm = ({
                   "
             />
             {addressError && (
-              <p className="text-sm text-red-500 mt-2">{addressError}</p>
+              <div
+                className="
+                  mt-2 mb-2
+                  rounded-lg
+                  border border-kilored/60
+                  bg-kilored/15
+                  px-3 py-2.5
+                "
+                role="alert"
+              >
+                <p className="text-sm text-white">{addressError}</p>
+              </div>
             )}
             {shippingError && (
-              <p className="text-sm text-red-500 mt-2">{shippingError}</p>
+              <div
+                className="
+                  mt-2 mb-2
+                  rounded-lg
+                  border border-kilored/60
+                  bg-kilored/15
+                  px-3 py-2.5
+                "
+                role="alert"
+              >
+                <p className="text-sm text-white">{shippingError}</p>
+              </div>
             )}
             <SubmitButton
               type="button"

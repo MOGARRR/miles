@@ -142,28 +142,22 @@ const CartPage = () => {
     setAddressError(null);
 
     const requiredFields = [
-      { key: "name", label: "full name" },
-      { key: "phoneNumber", label: "phone number" },
-      { key: "zip", label: "postal code" },
-      { key: "city", label: "city" },
-      { key: "street1", label: "address" },
-      { key: "state", label: "province" },
+      "name",
+      "phoneNumber",
+      "zip",
+      "city",
+      "street1",
+      "state",
     ] as const;
 
-    const missingFields = requiredFields.filter(
-      ({ key }) => !shippingForm[key].trim(),
+    const hasMissingFields = requiredFields.some(
+      (key) => !shippingForm[key].trim(),
     );
 
-    if (missingFields.length > 0) {
-      const labels = missingFields.map(({ label }) => label);
-      const fieldList =
-        labels.length === 1
-          ? labels[0]
-          : labels.length === 2
-            ? `${labels[0]} and ${labels[1]}`
-            : `${labels.slice(0, -1).join(", ")}, and ${labels[labels.length - 1]}`;
-
-      setAddressError(`Please enter your ${fieldList} to estimate shipping.`);
+    if (hasMissingFields) {
+      setAddressError(
+        "Please enter your full name, phone number, and address to estimate shipping.",
+      );
       setIsEstimatingShipping(false);
       return;
     }
