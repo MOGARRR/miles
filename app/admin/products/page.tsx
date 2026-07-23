@@ -30,14 +30,6 @@ const AdminProductsPage = async () => {
   const categoriesData = await categoriesRes.json();
   const categories: Category[] = categoriesData.categories ?? [];
 
-  // cretate category map to look at the title
-  const categoryMap: Record<number, string> = {};
-
-  categories.forEach((category) => {
-    categoryMap[category.id] = category.title;
-  });
-  // console.log(categoryMap);
-
   return (
         // HEADING
     <div className="py-12 ">
@@ -55,7 +47,6 @@ const AdminProductsPage = async () => {
       <AdminProductsClient
         products={products}
         categories={categories}
-        categoryMap={categoryMap}
       />
     </div>
   );

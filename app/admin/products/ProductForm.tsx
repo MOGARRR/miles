@@ -642,45 +642,50 @@ const ProductForm = ({
           </div>
         </AdminFormSection>
 
-        {/* PRICE */}
-        <AdminFormSection title="Pricing">
+        {/* PRICING + INVENTORY */}
+        <AdminFormSection
+          title="Pricing & Inventory"
+          description="Set price and stock for each print size."
+        >
           <div className="grid md:grid-cols-2 gap-4">
-            <AdminInput
-              label={formatProductSizeLabel("Small")}
-              type="text"
-              inputMode="numeric"
-              placeholder="$0.00"
-              value={smallPrice}
-              onChange={(e) => setSmallPrice(formatPriceInput(e.target.value))}
-              required
-            />
-
-            <AdminInput
-              label={formatProductSizeLabel("Large")}
-              type="text"
-              inputMode="numeric"
-              placeholder="$0.00"
-              value={largePrice}
-              onChange={(e) => setLargePrice(formatPriceInput(e.target.value))}
-              required
-            />
-          </div>
-        </AdminFormSection>
-
-        {/* INVENTORY */}
-          <AdminFormSection title="Inventory">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
+              <p className="text-sm font-semibold text-kilotextlight">
+                {formatProductSizeLabel("Small")}
+              </p>
               <AdminInput
-                label={`${formatProductSizeLabel("Small")} Stock`}
+                label="Price"
+                type="text"
+                inputMode="numeric"
+                placeholder="$0.00"
+                value={smallPrice}
+                onChange={(e) => setSmallPrice(formatPriceInput(e.target.value))}
+                required
+              />
+              <AdminInput
+                label="Stock"
                 type="number"
                 min={0}
                 value={smallStock}
                 onChange={(e) => setSmallStock(e.target.value)}
                 required
               />
+            </div>
 
+            <div className="space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
+              <p className="text-sm font-semibold text-kilotextlight">
+                {formatProductSizeLabel("Large")}
+              </p>
               <AdminInput
-                label={`${formatProductSizeLabel("Large")} Stock`}
+                label="Price"
+                type="text"
+                inputMode="numeric"
+                placeholder="$0.00"
+                value={largePrice}
+                onChange={(e) => setLargePrice(formatPriceInput(e.target.value))}
+                required
+              />
+              <AdminInput
+                label="Stock"
                 type="number"
                 min={0}
                 value={largeStock}
@@ -688,7 +693,8 @@ const ProductForm = ({
                 required
               />
             </div>
-          </AdminFormSection>
+          </div>
+        </AdminFormSection>
 
         {error && <FormAlert type="error" message={error} />}
 
