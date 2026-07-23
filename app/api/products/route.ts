@@ -23,6 +23,9 @@ export async function GET(req: Request) {
     const categoriesParam = searchParams.get("categories") || "";
     // Converts params into array and gaurds against NaN Errors ex. ?categories=1,2,3 = [1, 2, 3]
     const categoryIds = categoriesParam ? categoriesParam.split(",").map((id) => Number(id)).filter((id) => !isNaN(id)) : [];
+    const availableOnly =
+      searchParams.get("available") === "true" ||
+      searchParams.get("available") === "1";
 
     // Convert page to offset for database queries
     // page 1 -> offset 0
@@ -30,7 +33,13 @@ export async function GET(req: Request) {
     const offset = (page - 1) * limit;
 
     // Fetch paginated products from the controller
-    const products = await getAllProducts({ limit, offset, search, categoryIds });
+    const products = await getAllProducts({
+      limit,
+      offset,
+      search,
+      categoryIds,
+      availableOnly,
+    });
 
     return NextResponse.json({ products }, { status: 200 });
   } catch (error: any) {

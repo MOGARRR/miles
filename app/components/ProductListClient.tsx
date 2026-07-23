@@ -40,7 +40,7 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
 
     try {
       const res = await fetch(
-        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}&search=${encodeURIComponent(
+        `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}&available=true&search=${encodeURIComponent(
           finalSearch,
         )}&categories=${categoryParam}`,
       );

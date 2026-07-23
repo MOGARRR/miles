@@ -30,7 +30,9 @@ const FeaturedProducts = async () => {
 
   //fetch PRODUCTS from the api route
   // "no-store" ensures we always get fresh data (no caching)
-  const res = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
+  const res = await fetch(`${baseUrl}/api/products?available=true`, {
+    cache: "no-store",
+  });
   const data: { products: Product[] } = await res.json();
 
   // SELECT FEATURED PRODUCTS

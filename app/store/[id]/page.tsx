@@ -26,6 +26,12 @@ export default function StoreItemPage() {
 
       const product = data.product;
 
+      if (!product || product.is_available === false) {
+        setProduct(null);
+        setLoading(false);
+        return;
+      }
+
       setProduct(product);
       setActiveImage(product.image_URL); // main image first
 

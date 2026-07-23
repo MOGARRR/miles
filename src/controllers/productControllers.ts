@@ -15,6 +15,8 @@ type GetAllProductsOptions = {
   offset: number;
   search?: string;
   categoryIds?: number[];
+  /** When true, only return products marked available in the store. */
+  availableOnly?: boolean;
 };
 
 // GET all Products PAGINATED
@@ -23,6 +25,7 @@ export async function getAllProducts({
   offset,
   categoryIds = [],
   search = "",
+  availableOnly = false,
 }: GetAllProductsOptions) {
   const supabase = supabasePublic;
 
@@ -66,6 +69,10 @@ export async function getAllProducts({
     
     // Stable ordering is required for pagination / infinite scroll
     .order("created_at", { ascending: false });
+
+  if (availableOnly) {
+    query = query.eq("is_available", true);
+  }
 
   // Apply search if provided
   // Conditional queries for product or category filtering
