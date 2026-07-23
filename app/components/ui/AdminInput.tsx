@@ -9,6 +9,7 @@ type AdminInputProps = {
   maxLength?: number;
   step?: string;
   min?: number;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
 };
 
 const AdminInput = ({
@@ -22,6 +23,7 @@ const AdminInput = ({
   maxLength,
   step,
   min,
+  inputMode,
 }: AdminInputProps) => {
   return (
     <div>
@@ -38,6 +40,7 @@ const AdminInput = ({
         maxLength={maxLength}
         step={step}
         min={min}
+        inputMode={inputMode}
         className="
           w-full
           rounded-lg
