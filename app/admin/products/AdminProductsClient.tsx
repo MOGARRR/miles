@@ -22,7 +22,7 @@ type Props = {
 
 type ProductTab = "available" | "deleted";
 
-const SIZE_ORDER = ["Small", "Large"] as const;
+const SIZE_ORDER = ["Small", "Large", "Original"] as const;
 
 function sortProductSizes<T extends { label: string }>(sizes: T[]): T[] {
   return [...sizes].sort((a, b) => {
@@ -328,6 +328,22 @@ const AdminProductsClient = ({ products, categories }: Props) => {
                 <div className="flex flex-col flex-1 px-6 py-5">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-2xl font-bold">{product.title}</h2>
+                    {product.product_type === "original" && (
+                      <span
+                        className="
+                        text-xs
+                        px-2 py-1
+                        rounded-full
+                        border border-[#55555f]
+                        text-kilotextlight
+                      "
+                      >
+                        Original
+                        {product.original_size?.trim()
+                          ? ` · ${product.original_size.trim()}`
+                          : ""}
+                      </span>
+                    )}
                     {activeTab === "deleted" && (
                       <span
                         className="

@@ -9,6 +9,8 @@ type ShippingFormProps = {
   addressError: string | null;
   shippingError: string | null;
   isEstimatingShipping: boolean;
+  /** When true, shipping is included — button validates address only. */
+  shippingIncluded?: boolean;
 };
 
 const ShippingForm = ({
@@ -19,6 +21,7 @@ const ShippingForm = ({
   addressError,
   shippingError,
   isEstimatingShipping,
+  shippingIncluded = false,
 }: ShippingFormProps) => {
   return (
     <div
@@ -32,8 +35,9 @@ const ShippingForm = ({
       <div className="mb-6">
         <h3 className="text-xl mb-4">Shipping Information (Within Canada)</h3>
         <p className="text-base text-kilotextgrey ">
-          Add your address to calculate shipping and make sure your order
-          arrives smoothly.
+          {shippingIncluded
+            ? "Shipping is included in the artwork price. Add your address so we can deliver your order."
+            : "Add your address to calculate shipping and make sure your order arrives smoothly."}
         </p>
       </div>
 
@@ -202,9 +206,13 @@ const ShippingForm = ({
               variant="primary"
               onClick={onEstimate}
               isLoading={isEstimatingShipping}
-              loadingText="Calculating shipping…"
+              loadingText={
+                shippingIncluded
+                  ? "Validating address…"
+                  : "Calculating shipping…"
+              }
             >
-              ESTIMATE SHIPPING
+              {shippingIncluded ? "CONFIRM ADDRESS" : "ESTIMATE SHIPPING"}
             </SubmitButton>
           </fieldset>
 

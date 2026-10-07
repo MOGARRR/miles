@@ -37,6 +37,8 @@ export async function getAllProducts({
         title,
         description,
         image_URL,
+        product_type,
+        original_size,
         is_available,
         created_at,
         updated_at,
@@ -114,6 +116,8 @@ export async function getProductById(id: string) {
       title,
       description,
       image_URL,
+      product_type,
+      original_size,
       is_available,
       created_at,
       updated_at,
@@ -193,11 +197,14 @@ export async function createProductWithCategories(payload: {
   title: string;
   description?: string;
   image_URL: string;
+  product_type: "print" | "original";
+  original_size?: string | null;
   is_available: boolean;
   category_ids: number[];
   product_sizes: {
     label: string;
     price_cents: number;
+    stock: number;
   }[];
 }) {
   const { category_ids, product_sizes, ...productData } = payload;
@@ -244,11 +251,14 @@ export async function updateProductWithCategories(
     title: string;
     description?: string;
     image_URL: string;
+    product_type: "print" | "original";
+    original_size?: string | null;
     is_available: boolean;
     category_ids: number[];
     product_sizes: {
       label: string;
       price_cents: number;
+      stock: number;
     }[];
   },
 ) {

@@ -106,7 +106,10 @@ const CartPopup = () => {
                       {item.title}
                     </p>
                     <p className="text-xs leading-snug text-kilotextgrey break-words">
-                      Size: {formatProductSizeLabel(item.product_size.label)}
+                      {item.product_size.label === "Original" ||
+                      item.product_type === "original"
+                        ? `Size: ${item.original_size?.trim() || "Original"} · Shipping included`
+                        : `Size: ${formatProductSizeLabel(item.product_size.label)}`}
                     </p>
                     <p className="text-xs tabular-nums">
                       ${((item.price_cents * item.quantity) / 100).toFixed(2)}
@@ -138,6 +141,8 @@ const CartPopup = () => {
                             description: item.description,
                             image_URL: item.image_URL,
                             category_id: item.category_id,
+                            product_type: item.product_type,
+                            original_size: item.original_size,
                             price_cents: item.price_cents,
                             product_size: item.product_size,
                           })

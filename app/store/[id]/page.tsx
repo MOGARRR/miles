@@ -54,7 +54,7 @@ export default function StoreItemPage() {
   if (!product) return <p className="p-10">Product not found</p>;
 
   const displayedPrice = selectedSize?.price_cents ?? product.price_cents ?? 0;
-
+  const isOriginal = product.product_type === "original";
   const canAddToCart = selectedSize && selectedSize.stock > 0;
 
   return (
@@ -117,24 +117,30 @@ export default function StoreItemPage() {
           </p>
         )}
 
-        {/* PRICE */}
-        <p className="text-xl font-semibold text-kilored">
-          ${(displayedPrice / 100).toFixed(2)}
-        </p>
+        {/* SIZE — prints: picker; originals: read-only custom size */}
+        {isOriginal ? (
+          <div className="mt-2">
+            <p className="text-sm font-medium mb-1">Size</p>
+            <p className="text-sm text-kilotextlight">
+              {product.original_size?.trim() || "Original"}
+            </p>
+            {!canAddToCart && (
+              <p className="text-sm text-rose-500 mt-2">Sold out</p>
+            )}
+          </div>
+        ) : (
+          <div className="mt-2">
+            <p className="text-sm font-medium mb-2">Size</p>
 
-        {/* SIZE SELECTOR */}
-        <div className="mt-4">
-          <p className="text-sm font-medium mb-2">Size</p>
+            <div className="flex flex-col gap-2">
+              {product.product_sizes.map((size: any) => {
+                const isSoldOut = size.stock === 0;
+                const isSelected = selectedSize?.id === size.id;
 
-          <div className="flex flex-col gap-2">
-            {product.product_sizes.map((size: any) => {
-              const isSoldOut = size.stock === 0;
-              const isSelected = selectedSize?.id === size.id;
-
-              return (
-                <label
-                  key={size.id}
-                  className={`
+                return (
+                  <label
+                    key={size.id}
+                    className={`
                   flex items-center gap-3
                   px-4 py-3 rounded-md border cursor-pointer
                   ${
@@ -145,30 +151,36 @@ export default function StoreItemPage() {
                         : "border-gray-300 hover:border-kilored"
                   }
                 `}
-                >
-                  <input
-                    type="radio"
-                    name="product-size"
-                    disabled={isSoldOut}
-                    checked={isSelected}
-                    onChange={() => setSelectedSize(size)}
-                    className="accent-kilored"
-                  />
+                  >
+                    <input
+                      type="radio"
+                      name="product-size"
+                      disabled={isSoldOut}
+                      checked={isSelected}
+                      onChange={() => setSelectedSize(size)}
+                      className="accent-kilored"
+                    />
 
-                  <span className="text-sm font-medium">
-                    {formatProductSizeLabel(size.label)}
-                  </span>
-
-                  {isSoldOut && (
-                    <span className="text-xs text-rose-500 ml-auto">
-                      Sold out
+                    <span className="text-sm font-medium">
+                      {formatProductSizeLabel(size.label)}
                     </span>
-                  )}
-                </label>
-              );
-            })}
+
+                    {isSoldOut && (
+                      <span className="text-xs text-rose-500 ml-auto">
+                        Sold out
+                      </span>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* PRICE — after size so it updates with the selected print option */}
+        <p className="text-xl font-semibold text-kilored">
+          ${(displayedPrice / 100).toFixed(2)}
+        </p>
 
         {/* ADD TO CART */}
         <button
@@ -182,6 +194,8 @@ export default function StoreItemPage() {
               description: product.description,
               image_URL: product.image_URL,
               category_id: product.category_id,
+              product_type: product.product_type ?? "print",
+              original_size: product.original_size ?? null,
               price_cents: selectedSize.price_cents,
               product_size: {
                 id: selectedSize.id,

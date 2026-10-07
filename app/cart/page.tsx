@@ -15,7 +15,11 @@ import {
   formatPostal,
   getNormalizedShipping,
 } from "@/src/helpers/normalizeShipping";
-import { formatProductSizeLabel } from "@/src/helpers/formatProductSizeLabel";
+import {
+  formatCheckoutLineTitle,
+  formatProductSizeLabel,
+  isOriginalProduct,
+} from "@/src/helpers/formatProductSizeLabel";
 
 const CartPage = () => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
@@ -106,12 +110,34 @@ const CartPage = () => {
 
   const checkoutCart = items.map((item) => ({
     id: item.id,
-    title: `${item.title} (${formatProductSizeLabel(item.product_size.label)})`,
+    title: formatCheckoutLineTitle(
+      item.title,
+      item.product_size.label,
+      item.original_size,
+    ),
     price_cents: item.price_cents,
     quantity: item.quantity,
     productSizeId: item.product_size.id,
     sizeLabel: item.product_size.label,
+    product_type: item.product_type,
   }));
+
+  const printCheckoutCart = checkoutCart.filter(
+    (item) =>
+      !isOriginalProduct({
+        product_type: item.product_type,
+        sizeLabel: item.sizeLabel,
+      }),
+  );
+  const cartHasPrints = printCheckoutCart.length > 0;
+  const cartHasOnlyOriginals =
+    items.length > 0 &&
+    items.every((item) =>
+      isOriginalProduct({
+        product_type: item.product_type,
+        sizeLabel: item.product_size.label,
+      }),
+    );
 
   // Cart qty/item changes invalidate a prior shipping quote.
   const cartSignature = items
@@ -210,12 +236,20 @@ const CartPage = () => {
       setAddressValid(true);
       setAddressError(null);
 
+      // Originals include shipping in the price — skip Canada Post when no prints.
+      if (!cartHasPrints) {
+        setShippingEstimate(0);
+        setShippingServiceName("Shipping included");
+        setShippingError(null);
+        return;
+      }
+
       const rateRes = await fetch("/api/shipping/rates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           addressTo,
-          cart: checkoutCart,
+          cart: printCheckoutCart,
         }),
       });
 
@@ -341,9 +375,19 @@ const CartPage = () => {
                       <p className="text-sm md:text-base leading-snug">
                         {item.title}
                       </p>
-                      <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
-                        Size: {formatProductSizeLabel(item.product_size.label)}
-                      </p>
+                      {item.product_size.label === "Original" ||
+                      item.product_type === "original" ? (
+                        <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
+                          Size:{" "}
+                          {item.original_size?.trim() || "Original"} · Shipping
+                          included
+                        </p>
+                      ) : (
+                        <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
+                          Size:{" "}
+                          {formatProductSizeLabel(item.product_size.label)}
+                        </p>
+                      )}
                       <p className="text-xs text-kilotextgrey tabular-nums mt-0.5 md:hidden">
                         ${(item.price_cents / 100).toFixed(2)} each
                       </p>
@@ -386,6 +430,8 @@ const CartPage = () => {
                             description: item.description,
                             image_URL: item.image_URL,
                             category_id: item.category_id,
+                            product_type: item.product_type,
+                            original_size: item.original_size,
                             price_cents: item.price_cents,
                             product_size: item.product_size,
                           })
@@ -456,6 +502,7 @@ const CartPage = () => {
             addressError={addressError}
             shippingError={shippingError}
             isEstimatingShipping={isEstimatingShipping}
+            shippingIncluded={cartHasOnlyOriginals}
           />
         </div>
 
@@ -486,7 +533,12 @@ const CartPage = () => {
                 Shipping
                 {shippingServiceName ? ` (${shippingServiceName})` : ""}:
               </p>
-              <p>${shippingAmount.toFixed(2)}</p>
+              <p>
+                {shippingAmount === 0 &&
+                (cartHasOnlyOriginals || shippingServiceName === "Shipping included")
+                  ? "Included"
+                  : `$${shippingAmount.toFixed(2)}`}
+              </p>
             </div>
           )}
 

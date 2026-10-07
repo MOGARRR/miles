@@ -44,6 +44,11 @@ const createParcels = async (
   const parcels: ShippingParcel[] = [];
 
   for (const item of cart) {
+    // Originals ship with price-included delivery — no Canada Post parcels.
+    if (item.sizeLabel !== "Small" && item.sizeLabel !== "Large") {
+      continue;
+    }
+
     if (item.sizeLabel === "Large") {
       const largeProfile = SHIPPING_PARCEL_PROFILES.Large;
       for (let i = 0; i < item.quantity; i++) {

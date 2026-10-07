@@ -1,9 +1,9 @@
 /**
  * Product Type Definition
  * -----------------------
- * This interface describes the exact shape of a Product object returned 
- * by our `/api/products` endpoint and stored in our database. 
- * 
+ * This interface describes the exact shape of a Product object returned
+ * by our `/api/products` endpoint and stored in our database.
+ *
  * Having this type helps us get autocomplete, avoid typos,
  * and keep our product data consistent across the project.
  */
@@ -12,9 +12,13 @@ export type ProductCategory = {
   title: string;
 };
 
+export type ProductType = "print" | "original";
+
+export type ProductSizeLabel = "Small" | "Large" | "Original";
+
 export type ProductSize = {
   id: number;
-  label: "Small" | "Large";
+  label: ProductSizeLabel;
   price_cents: number;
   stock: number;
 };
@@ -31,10 +35,16 @@ export interface Product {
   description: string;
 
   // -- primary / cover image
-  image_URL: string; 
+  image_URL: string;
+
+  // print = Small/Large sizes; original = single SKU, shipping included
+  product_type: ProductType;
+
+  /** Display size for originals only (e.g. "16 × 20"). Null for prints. */
+  original_size?: string | null;
 
   // legacy — keep for now so nothing breaks
-  category_id?: number | null; 
+  category_id?: number | null;
 
   sold_out: boolean;
   is_available: boolean;
@@ -45,6 +55,6 @@ export interface Product {
 
   product_sizes?: ProductSize[];
 
-   // -- gallery images (optional)
+  // -- gallery images (optional)
   product_images?: ProductImages[];
 }

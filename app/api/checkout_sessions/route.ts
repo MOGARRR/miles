@@ -33,14 +33,18 @@ export async function POST(req: Request) {
         },
         quantity: 1,
       },
-      {
-        price_data: {
-          currency: "cad",
-          product_data: { name: "Shipping" },
-          unit_amount: shippingCents,
-        },
-        quantity: 1,
-      },
+      ...(shippingCents > 0
+        ? [
+            {
+              price_data: {
+                currency: "cad",
+                product_data: { name: "Shipping" },
+                unit_amount: shippingCents,
+              },
+              quantity: 1,
+            },
+          ]
+        : []),
     ];
 
     const session = await stripe.checkout.sessions.create({

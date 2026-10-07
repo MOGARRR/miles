@@ -11,6 +11,8 @@ interface ProductListItemProps {
   id: number;
   title: string;
   starting_price_cents?: number;
+  /** When true, show a flat price (no "Starting at"). */
+  is_original?: boolean;
   categories?: ProductCategory[];
 
   image_URL: string;
@@ -26,6 +28,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
   id,
   title,
   starting_price_cents,
+  is_original = false,
   categories,
   image_URL,
   sold_out,
@@ -96,7 +99,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
       >
         {starting_price_cents !== undefined && (
           <div className="text-kilored">
-            <p className="text-xs text-gray-400 uppercase">Starting at</p>
+            {!is_original && (
+              <p className="text-xs text-gray-400 uppercase">Starting at</p>
+            )}
             <p className="text-lg font-semibold">
               ${(starting_price_cents / 100).toFixed(2)}
             </p>

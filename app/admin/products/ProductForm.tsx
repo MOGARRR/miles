@@ -12,7 +12,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Category } from "@/src/types/category";
-import { Product } from "@/src/types/product";
+import { Product, ProductType } from "@/src/types/product";
 import AdminForm from "@/app/components/ui/AdminForm";
 import AdminFormSection from "@/app/components/ui/AdminFormSection";
 import AdminInput from "@/app/components/ui/AdminInput";
@@ -44,6 +44,7 @@ const ProductForm = ({
   const [title, setTitle] = useState("");
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [description, setDescription] = useState("");
+  const [productType, setProductType] = useState<ProductType>("print");
 
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -57,6 +58,9 @@ const ProductForm = ({
   const [largePrice, setLargePrice] = useState("");
   const [smallStock, setSmallStock] = useState("");
   const [largeStock, setLargeStock] = useState("");
+  const [originalPrice, setOriginalPrice] = useState("");
+  const [originalStock, setOriginalStock] = useState("");
+  const [originalSize, setOriginalSize] = useState("");
 
   // state for loading page
   const [isLoading, setIsLoading] = useState(false);
@@ -69,11 +73,18 @@ const ProductForm = ({
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const isOriginal = productType === "original";
+
   // guards for empty price, title, image or category
   const isCategoryInvalid = categoryIds.length === 0;
   const hasImage = imageUrl !== "" || imageFile !== null;
   const smallPriceInvalid = parsePriceToCents(smallPrice) <= 0;
   const largePriceInvalid = parsePriceToCents(largePrice) <= 0;
+  const originalPriceInvalid = parsePriceToCents(originalPrice) <= 0;
+  const originalSizeInvalid = isOriginal && originalSize.trim() === "";
+  const pricingInvalid = isOriginal
+    ? originalPriceInvalid || originalSizeInvalid
+    : smallPriceInvalid || largePriceInvalid;
 
   // guard to prevent invalid image URL (would crash next image)
   const isImageValid =
@@ -111,6 +122,8 @@ const ProductForm = ({
     setTitle(product.title);
     setCategoryIds(product.categories?.map((c) => c.id) ?? []);
     setDescription(product.description ?? "");
+    setProductType(product.product_type ?? "print");
+    setOriginalSize(product.original_size ?? "");
     setImageUrl(product.image_URL ?? "");
     setImageFile(null);
 
@@ -118,9 +131,16 @@ const ProductForm = ({
 
     const small = product.product_sizes?.find((s) => s.label === "Small");
     const large = product.product_sizes?.find((s) => s.label === "Large");
+    const original = product.product_sizes?.find((s) => s.label === "Original");
 
     setSmallPrice(small ? formatPriceFromCents(small.price_cents) : "");
     setLargePrice(large ? formatPriceFromCents(large.price_cents) : "");
+    // Prefill original fields from Original size, or fall back to print sizes
+    // so converting a print (e.g. A SONDER YES) to original is one toggle.
+    const seedSize = original ?? large ?? small;
+    setOriginalPrice(
+      seedSize ? formatPriceFromCents(seedSize.price_cents) : "",
+    );
 
     setSmallStock(
       typeof small?.stock === "number" ? small.stock.toString() : "",
@@ -128,6 +148,10 @@ const ProductForm = ({
 
     setLargeStock(
       typeof large?.stock === "number" ? large.stock.toString() : "",
+    );
+
+    setOriginalStock(
+      typeof seedSize?.stock === "number" ? seedSize.stock.toString() : "",
     );
   }, [product]);
 
@@ -137,13 +161,7 @@ const ProductForm = ({
 
     setHasSubmitted(true);
 
-    if (
-      !isImageValid ||
-      isCategoryInvalid ||
-      !hasImage ||
-      smallPriceInvalid ||
-      largePriceInvalid
-    ) {
+    if (!isImageValid || isCategoryInvalid || !hasImage || pricingInvalid) {
       return;
     }
 
@@ -189,20 +207,30 @@ const ProductForm = ({
           category_ids: categoryIds,
           description,
           image_URL: finalImageUrl,
+          product_type: productType,
+          original_size: isOriginal ? originalSize.trim() : null,
           // Availability is controlled by Delete / Restore on the admin list
           is_available: isEditMode ? product!.is_available : true,
-          product_sizes: [
-            {
-              label: "Small",
-              price_cents: parsePriceToCents(smallPrice),
-              stock: Number(smallStock),
-            },
-            {
-              label: "Large",
-              price_cents: parsePriceToCents(largePrice),
-              stock: Number(largeStock),
-            },
-          ],
+          product_sizes: isOriginal
+            ? [
+                {
+                  label: "Original",
+                  price_cents: parsePriceToCents(originalPrice),
+                  stock: Number(originalStock),
+                },
+              ]
+            : [
+                {
+                  label: "Small",
+                  price_cents: parsePriceToCents(smallPrice),
+                  stock: Number(smallStock),
+                },
+                {
+                  label: "Large",
+                  price_cents: parsePriceToCents(largePrice),
+                  stock: Number(largeStock),
+                },
+              ],
         }),
       });
 
@@ -246,14 +274,18 @@ const ProductForm = ({
         setTitle("");
         setCategoryIds([]);
         setDescription("");
+        setProductType("print");
         setImageUrl("");
         setImageFile(null);
         setHasSubmitted(false);
         setSmallPrice("");
         setLargePrice("");
+        setOriginalPrice("");
+        setOriginalSize("");
         setGalleryFiles([]);
         setSmallStock("");
         setLargeStock("");
+        setOriginalStock("");
       }
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -306,14 +338,72 @@ const ProductForm = ({
             required
           />
 
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-kilotextgrey">
+              Product type
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {(
+                [
+                  {
+                    value: "print" as const,
+                    label: "Print",
+                    hint: "11 × 14″ and 24 × 36″",
+                  },
+                  {
+                    value: "original" as const,
+                    label: "Original",
+                    hint: "One custom size; shipping included",
+                  },
+                ] as const
+              ).map((option) => {
+                const selected = productType === option.value;
+                return (
+                  <label
+                    key={option.value}
+                    className={`
+                      cursor-pointer rounded-lg border-2 px-3 py-3
+                      bg-kilodarkgrey transition
+                      ${selected ? "border-kilored" : "border-[#55555f] hover:border-kilored"}
+                    `}
+                  >
+                    <input
+                      type="radio"
+                      name="product-type"
+                      className="sr-only"
+                      checked={selected}
+                      onChange={() => setProductType(option.value)}
+                    />
+                    <span className="block text-sm font-semibold text-kilotextlight">
+                      {option.label}
+                    </span>
+                    <span className="mt-1 block text-xs text-kilotextgrey">
+                      {option.hint}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+            {isOriginal && (
+              <p className="mt-2 text-xs text-kilotextgrey">
+                Enter the artwork size below. The store page will show that size
+                with no print size picker.
+              </p>
+            )}
+          </div>
+
           <AdminTextarea
             label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={10}
             showCount
-            placeholder="Write the full story for this print. Line breaks are kept on the product page."
-            hint="Shown on the product page after someone opens the print—not on the gallery cards."
+            placeholder={
+              isOriginal
+                ? "Write the full story for this original. Include size if it is not in the title."
+                : "Write the full story for this print. Line breaks are kept on the product page."
+            }
+            hint="Shown on the product page after someone opens the piece—not on the gallery cards."
           />
         </AdminFormSection>
 
@@ -649,55 +739,102 @@ const ProductForm = ({
         {/* PRICING + INVENTORY */}
         <AdminFormSection
           title="Pricing & Inventory"
-          description="Set price and stock for each print size."
+          description={
+            isOriginal
+              ? "Single price and stock for this original. Shipping is included in the price."
+              : "Set price and stock for each print size."
+          }
         >
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
+          {isOriginal ? (
+            <div className="max-w-md space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
               <p className="text-sm font-semibold text-kilotextlight">
-                {formatProductSizeLabel("Small")}
+                Original
               </p>
+              <AdminInput
+                label="Size"
+                type="text"
+                value={originalSize}
+                onChange={(e) => setOriginalSize(e.target.value)}
+                required
+              />
+              {hasSubmitted && originalSizeInvalid && (
+                <p className="text-xs text-kilored -mt-1">
+                  Enter the artwork size (e.g. 16 × 20)
+                </p>
+              )}
               <AdminInput
                 label="Price"
                 type="text"
                 inputMode="numeric"
                 placeholder="$0.00"
-                value={smallPrice}
-                onChange={(e) => setSmallPrice(formatPriceInput(e.target.value))}
+                value={originalPrice}
+                onChange={(e) =>
+                  setOriginalPrice(formatPriceInput(e.target.value))
+                }
                 required
               />
               <AdminInput
                 label="Stock"
                 type="number"
                 min={0}
-                value={smallStock}
-                onChange={(e) => setSmallStock(e.target.value)}
+                value={originalStock}
+                onChange={(e) => setOriginalStock(e.target.value)}
                 required
               />
             </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
+                <p className="text-sm font-semibold text-kilotextlight">
+                  {formatProductSizeLabel("Small")}
+                </p>
+                <AdminInput
+                  label="Price"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="$0.00"
+                  value={smallPrice}
+                  onChange={(e) =>
+                    setSmallPrice(formatPriceInput(e.target.value))
+                  }
+                  required
+                />
+                <AdminInput
+                  label="Stock"
+                  type="number"
+                  min={0}
+                  value={smallStock}
+                  onChange={(e) => setSmallStock(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
-              <p className="text-sm font-semibold text-kilotextlight">
-                {formatProductSizeLabel("Large")}
-              </p>
-              <AdminInput
-                label="Price"
-                type="text"
-                inputMode="numeric"
-                placeholder="$0.00"
-                value={largePrice}
-                onChange={(e) => setLargePrice(formatPriceInput(e.target.value))}
-                required
-              />
-              <AdminInput
-                label="Stock"
-                type="number"
-                min={0}
-                value={largeStock}
-                onChange={(e) => setLargeStock(e.target.value)}
-                required
-              />
+              <div className="space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
+                <p className="text-sm font-semibold text-kilotextlight">
+                  {formatProductSizeLabel("Large")}
+                </p>
+                <AdminInput
+                  label="Price"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="$0.00"
+                  value={largePrice}
+                  onChange={(e) =>
+                    setLargePrice(formatPriceInput(e.target.value))
+                  }
+                  required
+                />
+                <AdminInput
+                  label="Stock"
+                  type="number"
+                  min={0}
+                  value={largeStock}
+                  onChange={(e) => setLargeStock(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-          </div>
+          )}
         </AdminFormSection>
 
         {error && <FormAlert type="error" message={error} />}
@@ -713,11 +850,7 @@ const ProductForm = ({
             isLoading={isLoading}
             loadingText={isEditMode ? "Saving..." : "Creating..."}
             disabled={
-              !isImageValid ||
-              isCategoryInvalid ||
-              !hasImage ||
-              smallPriceInvalid ||
-              largePriceInvalid
+              !isImageValid || isCategoryInvalid || !hasImage || pricingInvalid
             }
           >
             {isEditMode ? "Save Changes" : "Create Product"}
