@@ -10,7 +10,6 @@ import { ProductCategory } from "@/src/types/product";
 interface ProductListItemProps {
   id: number;
   title: string;
-  description: string;
   starting_price_cents?: number;
   categories?: ProductCategory[];
 
@@ -26,7 +25,6 @@ interface ProductListItemProps {
 const ProductListItem: React.FC<ProductListItemProps> = ({
   id,
   title,
-  description,
   starting_price_cents,
   categories,
   image_URL,
@@ -82,13 +80,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
             </div>
           )}
 
-          <h1 className="mt-2 mb-2 text-lg md:text-xl font-bold">
+          <h1 className="mt-2 text-lg md:text-xl font-bold">
             {title}
           </h1>
-
-          <p className="text-xs md:text-sm text-kilotextgrey">
-            {description}
-          </p>
         </div>
       </Link>
 

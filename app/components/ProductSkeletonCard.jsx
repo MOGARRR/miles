@@ -23,10 +23,6 @@ const ProductSkeletonCard = () => {
 
         {/* Title */}
         <div className="w-3/4 h-5 rounded bg-[#52525B]" />
-
-        {/* Description lines */}
-        <div className="w-full h-3 rounded bg-[#3F3F46]" />
-        <div className="w-5/6 h-3 rounded bg-[#3F3F46]" />
       </div>
 
       {/* PRICE + BUTTON ROW */}

@@ -111,7 +111,11 @@ export default function StoreItemPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">{product.title}</h1>
 
-        <p className="text-sm text-kilotextgrey">{product.description}</p>
+        {product.description && (
+          <p className="text-sm leading-relaxed text-kilotextgrey whitespace-pre-wrap">
+            {product.description}
+          </p>
+        )}
 
         {/* PRICE */}
         <p className="text-xl font-semibold text-kilored">

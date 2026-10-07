@@ -47,7 +47,6 @@ const FeaturedProductsClient = ({
             key={product.id}
             id={product.id}
             title={product.title}
-            description={product.description}
             image_URL={product.image_URL}
             starting_price_cents={startingPriceCents}
             sold_out={isSoldOut}
