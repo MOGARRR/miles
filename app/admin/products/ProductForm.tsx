@@ -310,6 +310,10 @@ const ProductForm = ({
             label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            rows={10}
+            showCount
+            placeholder="Write the full story for this print. Line breaks are kept on the product page."
+            hint="Shown on the product page after someone opens the print—not on the gallery cards."
           />
         </AdminFormSection>
 
