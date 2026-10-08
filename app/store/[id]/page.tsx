@@ -55,6 +55,8 @@ export default function StoreItemPage() {
 
   const displayedPrice = selectedSize?.price_cents ?? product.price_cents ?? 0;
   const isOriginal = product.product_type === "original";
+  const isCollection = product.product_type === "collection";
+  const isSingleSku = isOriginal || isCollection;
   const canAddToCart = selectedSize && selectedSize.stock > 0;
 
   return (
@@ -117,12 +119,16 @@ export default function StoreItemPage() {
           </p>
         )}
 
-        {/* SIZE — prints: picker; originals: read-only custom size */}
-        {isOriginal ? (
+        {/* SIZE — prints: picker; originals/collections: read-only */}
+        {isSingleSku ? (
           <div className="mt-2">
-            <p className="text-sm font-medium mb-1">Size</p>
+            <p className="text-sm font-medium mb-1">
+              {isCollection ? "Set" : "Size"}
+            </p>
             <p className="text-sm text-kilotextlight">
-              {product.original_size?.trim() || "Original"}
+              {isCollection
+                ? "Collection · Shipping within Canada included"
+                : product.original_size?.trim() || "Original"}
             </p>
             {!canAddToCart && (
               <p className="text-sm text-rose-500 mt-2">Sold out</p>

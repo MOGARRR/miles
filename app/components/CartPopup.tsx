@@ -106,10 +106,13 @@ const CartPopup = () => {
                       {item.title}
                     </p>
                     <p className="text-xs leading-snug text-kilotextgrey break-words">
-                      {item.product_size.label === "Original" ||
-                      item.product_type === "original"
-                        ? `Size: ${item.original_size?.trim() || "Original"} · Shipping included`
-                        : `Size: ${formatProductSizeLabel(item.product_size.label)}`}
+                      {item.product_type === "collection" ||
+                      item.product_size.label === "Collection"
+                        ? "Collection · Shipping within Canada included"
+                        : item.product_size.label === "Original" ||
+                            item.product_type === "original"
+                          ? `Size: ${item.original_size?.trim() || "Original"} · Shipping within Canada included`
+                          : `Size: ${formatProductSizeLabel(item.product_size.label)}`}
                     </p>
                     <p className="text-xs tabular-nums">
                       ${((item.price_cents * item.quantity) / 100).toFixed(2)}

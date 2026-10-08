@@ -26,6 +26,13 @@ export async function GET(req: Request) {
     const availableOnly =
       searchParams.get("available") === "true" ||
       searchParams.get("available") === "1";
+    const productTypeParam = searchParams.get("product_type") || "";
+    const productType =
+      productTypeParam === "print" ||
+      productTypeParam === "original" ||
+      productTypeParam === "collection"
+        ? productTypeParam
+        : undefined;
 
     // Convert page to offset for database queries
     // page 1 -> offset 0
@@ -39,6 +46,7 @@ export async function GET(req: Request) {
       search,
       categoryIds,
       availableOnly,
+      productType,
     });
 
     return NextResponse.json({ products }, { status: 200 });

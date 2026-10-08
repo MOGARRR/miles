@@ -9,7 +9,7 @@ type ShippingFormProps = {
   addressError: string | null;
   shippingError: string | null;
   isEstimatingShipping: boolean;
-  /** When true, shipping is included — button validates address only. */
+  /** When true, shipping within Canada is included — button validates address only. */
   shippingIncluded?: boolean;
 };
 
@@ -36,7 +36,7 @@ const ShippingForm = ({
         <h3 className="text-xl mb-4">Shipping Information (Within Canada)</h3>
         <p className="text-base text-kilotextgrey ">
           {shippingIncluded
-            ? "Shipping is included in the artwork price. Add your address so we can deliver your order."
+            ? "Shipping within Canada is included in the artwork price. Add your address so we can deliver your order."
             : "Add your address to calculate shipping and make sure your order arrives smoothly."}
         </p>
       </div>

@@ -9,7 +9,7 @@ export type CartProduct = {
   description: string;
   image_URL: string;
   category_id: number | null;
-  product_type?: "print" | "original";
+  product_type?: "print" | "original" | "collection";
   original_size?: string | null;
 
   price_cents: number; // price of the selected size

@@ -51,13 +51,13 @@ export async function POST(request: Request) {
     }));
     const parcels = await createParcels(cartItems);
 
-    // Originals-only (or empty print parcels): shipping included in artwork price.
+    // Originals-only (or empty print parcels): shipping within Canada included in artwork price.
     if (parcels.length === 0) {
       return NextResponse.json({
         rate: {
           amountCents: 0,
           serviceCode: "INCLUDED",
-          serviceName: "Shipping included",
+          serviceName: "Shipping within Canada included",
           expectedDeliveryDate: null,
         },
         quotes: [],

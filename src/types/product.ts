@@ -12,9 +12,9 @@ export type ProductCategory = {
   title: string;
 };
 
-export type ProductType = "print" | "original";
+export type ProductType = "print" | "original" | "collection";
 
-export type ProductSizeLabel = "Small" | "Large" | "Original";
+export type ProductSizeLabel = "Small" | "Large" | "Original" | "Collection";
 
 export type ProductSize = {
   id: number;
@@ -37,7 +37,7 @@ export interface Product {
   // -- primary / cover image
   image_URL: string;
 
-  // print = Small/Large sizes; original = single SKU, shipping included
+  // print = Small/Large; original/collection = single SKU, shipping within Canada included
   product_type: ProductType;
 
   /** Display size for originals only (e.g. "16 × 20"). Null for prints. */

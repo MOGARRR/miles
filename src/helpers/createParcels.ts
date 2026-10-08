@@ -44,7 +44,7 @@ const createParcels = async (
   const parcels: ShippingParcel[] = [];
 
   for (const item of cart) {
-    // Originals ship with price-included delivery — no Canada Post parcels.
+    // Originals / collections ship with price-included delivery — no Canada Post parcels.
     if (item.sizeLabel !== "Small" && item.sizeLabel !== "Large") {
       continue;
     }

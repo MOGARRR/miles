@@ -1,5 +1,6 @@
 import { supabasePublic } from "@/utils/supabase/supabasePublic";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
+import type { ProductType } from "@/src/types/product";
 
 /**
  * Fetch products with pagination support.
@@ -17,6 +18,8 @@ type GetAllProductsOptions = {
   categoryIds?: number[];
   /** When true, only return products marked available in the store. */
   availableOnly?: boolean;
+  /** Filter by product_type when set (gallery tabs). */
+  productType?: ProductType;
 };
 
 // GET all Products PAGINATED
@@ -26,6 +29,7 @@ export async function getAllProducts({
   categoryIds = [],
   search = "",
   availableOnly = false,
+  productType,
 }: GetAllProductsOptions) {
   const supabase = supabasePublic;
 
@@ -74,6 +78,10 @@ export async function getAllProducts({
 
   if (availableOnly) {
     query = query.eq("is_available", true);
+  }
+
+  if (productType) {
+    query = query.eq("product_type", productType);
   }
 
   // Apply search if provided
@@ -197,7 +205,7 @@ export async function createProductWithCategories(payload: {
   title: string;
   description?: string;
   image_URL: string;
-  product_type: "print" | "original";
+  product_type: ProductType;
   original_size?: string | null;
   is_available: boolean;
   category_ids: number[];
@@ -251,7 +259,7 @@ export async function updateProductWithCategories(
     title: string;
     description?: string;
     image_URL: string;
-    product_type: "print" | "original";
+    product_type: ProductType;
     original_size?: string | null;
     is_available: boolean;
     category_ids: number[];

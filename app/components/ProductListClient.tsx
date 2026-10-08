@@ -2,13 +2,22 @@
 
 import React, { useState, useEffect } from "react";
 import ProductListItem from "./ProductListItem";
-import { Product } from "@/src/types/product";
+import { Product, ProductType } from "@/src/types/product";
 import { Category } from "@/src/types/category";
 import SearchBar from "./ui/SearchBar";
 import FilterMenu from "./FilterMenu";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import ProductSkeletonCard from "./ProductSkeletonCard";
-import { Funnel, Check } from "lucide-react";
+import { Funnel } from "lucide-react";
+
+type GalleryTab = "all" | ProductType;
+
+const GALLERY_TABS: { id: GalleryTab; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "print", label: "Prints" },
+  { id: "original", label: "Specials" },
+  { id: "collection", label: "Collections" },
+];
 
 // defines the type of props
 type ProductListClientProps = {};
@@ -23,6 +32,7 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
   const [filterMenu, setFilterMenu] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [activeTab, setActiveTab] = useState<GalleryTab>("all");
 
   const [searchInput, setSearchInput] = useState("");
   const debouncedSearch = useDebounce(searchInput, 300);
@@ -32,17 +42,21 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
     pageToLoad: number,
     searchTerm?: string,
     categoryOverride?: number[],
+    tabOverride?: GalleryTab,
   ) => {
     setIsLoading(true);
     const finalSearch = searchTerm ?? debouncedSearch;
     const finalCategories = categoryOverride ?? selectedCategories;
+    const finalTab = tabOverride ?? activeTab;
     const categoryParam = finalCategories.join(",");
+    const typeParam =
+      finalTab === "all" ? "" : `&product_type=${encodeURIComponent(finalTab)}`;
 
     try {
       const res = await fetch(
         `/api/products?page=${pageToLoad}&limit=${PAGE_SIZE}&available=true&search=${encodeURIComponent(
           finalSearch,
-        )}&categories=${categoryParam}`,
+        )}&categories=${categoryParam}${typeParam}`,
       );
       const data = await res.json();
 
@@ -81,16 +95,56 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
   useEffect(() => {
     setPage(1);
     setProducts([]);
-    fetchProducts(1, debouncedSearch, selectedCategories);
-  }, [debouncedSearch, selectedCategories]);
+    fetchProducts(1, debouncedSearch, selectedCategories, activeTab);
+  }, [debouncedSearch, selectedCategories, activeTab]);
 
   const noResults =
-    !isLoading && debouncedSearch.length > 0 && products.length === 0;
+    !isLoading &&
+    products.length === 0 &&
+    (debouncedSearch.length > 0 ||
+      selectedCategories.length > 0 ||
+      activeTab !== "all");
 
   const handleFilterMenu = () => setFilterMenu(!filterMenu);
 
   return (
     <section className="mt-20">
+      {/* TYPE TABS */}
+      <div className="px-4 sm:px-6 md:px-10 mb-6">
+        <div
+          className="
+            flex flex-wrap gap-2
+            border-b border-[#3a3a41]
+            pb-4"
+          role="tablist"
+          aria-label="Gallery product types"
+        >
+          {GALLERY_TABS.map((tab) => {
+            const selected = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                onClick={() => setActiveTab(tab.id)}
+                className={`
+                  px-4 py-2 text-sm font-semibold tracking-wide
+                  rounded-lg transition
+                  ${
+                    selected
+                      ? "bg-kilored text-white"
+                      : "text-kilotextlight hover:text-white hover:bg-black/30"
+                  }
+                `}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* SEARCH BAR + FILTERS */}
       <div className="px-4 sm:px-6 md:px-10 mb-6">
         <div
@@ -151,8 +205,14 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
       {noResults && (
         <div className="px-4 sm:px-6 md:px-10 mt-6 text-center">
           <p className="text-sm text-kilotextlight">
-            No results found for{" "}
-            <span className="italic">“{debouncedSearch}”</span>
+            {debouncedSearch.length > 0 ? (
+              <>
+                No results found for{" "}
+                <span className="italic">“{debouncedSearch}”</span>
+              </>
+            ) : (
+              "No products in this view yet."
+            )}
           </p>
         </div>
       )}
@@ -182,7 +242,10 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
               title={product.title}
               image_URL={product.image_URL}
               starting_price_cents={startingPriceCents}
-              is_original={product.product_type === "original"}
+              is_original={
+                product.product_type === "original" ||
+                product.product_type === "collection"
+              }
               sold_out={isSoldOut}
               is_available={product.is_available}
               created_at={product.created_at}

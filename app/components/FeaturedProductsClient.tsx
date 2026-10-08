@@ -49,7 +49,10 @@ const FeaturedProductsClient = ({
             title={product.title}
             image_URL={product.image_URL}
             starting_price_cents={startingPriceCents}
-            is_original={product.product_type === "original"}
+            is_original={
+              product.product_type === "original" ||
+              product.product_type === "collection"
+            }
             sold_out={isSoldOut}
             is_available={product.is_available}
             created_at={product.created_at}

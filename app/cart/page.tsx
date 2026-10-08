@@ -18,7 +18,7 @@ import {
 import {
   formatCheckoutLineTitle,
   formatProductSizeLabel,
-  isOriginalProduct,
+  isShippingIncludedProduct,
 } from "@/src/helpers/formatProductSizeLabel";
 
 const CartPage = () => {
@@ -124,16 +124,16 @@ const CartPage = () => {
 
   const printCheckoutCart = checkoutCart.filter(
     (item) =>
-      !isOriginalProduct({
+      !isShippingIncludedProduct({
         product_type: item.product_type,
         sizeLabel: item.sizeLabel,
       }),
   );
   const cartHasPrints = printCheckoutCart.length > 0;
-  const cartHasOnlyOriginals =
+  const cartHasOnlyShippingIncluded =
     items.length > 0 &&
     items.every((item) =>
-      isOriginalProduct({
+      isShippingIncludedProduct({
         product_type: item.product_type,
         sizeLabel: item.product_size.label,
       }),
@@ -239,7 +239,7 @@ const CartPage = () => {
       // Originals include shipping in the price — skip Canada Post when no prints.
       if (!cartHasPrints) {
         setShippingEstimate(0);
-        setShippingServiceName("Shipping included");
+        setShippingServiceName("Shipping within Canada included");
         setShippingError(null);
         return;
       }
@@ -375,12 +375,15 @@ const CartPage = () => {
                       <p className="text-sm md:text-base leading-snug">
                         {item.title}
                       </p>
-                      {item.product_size.label === "Original" ||
-                      item.product_type === "original" ? (
+                      {isShippingIncludedProduct({
+                        product_type: item.product_type,
+                        sizeLabel: item.product_size.label,
+                      }) ? (
                         <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
-                          Size:{" "}
-                          {item.original_size?.trim() || "Original"} · Shipping
-                          included
+                          {item.product_type === "collection" ||
+                          item.product_size.label === "Collection"
+                            ? "Collection · Shipping within Canada included"
+                            : `Size: ${item.original_size?.trim() || "Original"} · Shipping within Canada included`}
                         </p>
                       ) : (
                         <p className="text-xs md:text-sm text-kilotextgrey mt-0.5">
@@ -502,7 +505,7 @@ const CartPage = () => {
             addressError={addressError}
             shippingError={shippingError}
             isEstimatingShipping={isEstimatingShipping}
-            shippingIncluded={cartHasOnlyOriginals}
+            shippingIncluded={cartHasOnlyShippingIncluded}
           />
         </div>
 
@@ -535,7 +538,7 @@ const CartPage = () => {
               </p>
               <p>
                 {shippingAmount === 0 &&
-                (cartHasOnlyOriginals || shippingServiceName === "Shipping included")
+                (cartHasOnlyShippingIncluded || shippingServiceName === "Shipping within Canada included")
                   ? "Included"
                   : `$${shippingAmount.toFixed(2)}`}
               </p>

@@ -74,6 +74,8 @@ const ProductForm = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const isOriginal = productType === "original";
+  const isCollection = productType === "collection";
+  const isSingleSku = isOriginal || isCollection;
 
   // guards for empty price, title, image or category
   const isCategoryInvalid = categoryIds.length === 0;
@@ -82,7 +84,7 @@ const ProductForm = ({
   const largePriceInvalid = parsePriceToCents(largePrice) <= 0;
   const originalPriceInvalid = parsePriceToCents(originalPrice) <= 0;
   const originalSizeInvalid = isOriginal && originalSize.trim() === "";
-  const pricingInvalid = isOriginal
+  const pricingInvalid = isSingleSku
     ? originalPriceInvalid || originalSizeInvalid
     : smallPriceInvalid || largePriceInvalid;
 
@@ -132,12 +134,15 @@ const ProductForm = ({
     const small = product.product_sizes?.find((s) => s.label === "Small");
     const large = product.product_sizes?.find((s) => s.label === "Large");
     const original = product.product_sizes?.find((s) => s.label === "Original");
+    const collection = product.product_sizes?.find(
+      (s) => s.label === "Collection",
+    );
 
     setSmallPrice(small ? formatPriceFromCents(small.price_cents) : "");
     setLargePrice(large ? formatPriceFromCents(large.price_cents) : "");
-    // Prefill original fields from Original size, or fall back to print sizes
-    // so converting a print (e.g. A SONDER YES) to original is one toggle.
-    const seedSize = original ?? large ?? small;
+    // Prefill single-SKU fields from Collection/Original, or fall back to print sizes
+    // so converting a print to original/collection is one toggle.
+    const seedSize = collection ?? original ?? large ?? small;
     setOriginalPrice(
       seedSize ? formatPriceFromCents(seedSize.price_cents) : "",
     );
@@ -211,10 +216,10 @@ const ProductForm = ({
           original_size: isOriginal ? originalSize.trim() : null,
           // Availability is controlled by Delete / Restore on the admin list
           is_available: isEditMode ? product!.is_available : true,
-          product_sizes: isOriginal
+          product_sizes: isSingleSku
             ? [
                 {
-                  label: "Original",
+                  label: isCollection ? "Collection" : "Original",
                   price_cents: parsePriceToCents(originalPrice),
                   stock: Number(originalStock),
                 },
@@ -342,7 +347,7 @@ const ProductForm = ({
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-kilotextgrey">
               Product type
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {(
                 [
                   {
@@ -353,7 +358,12 @@ const ProductForm = ({
                   {
                     value: "original" as const,
                     label: "Original",
-                    hint: "One custom size; shipping included",
+                    hint: "One custom size; shipping within Canada included",
+                  },
+                  {
+                    value: "collection" as const,
+                    label: "Collection",
+                    hint: "Set SKU; shipping within Canada included",
                   },
                 ] as const
               ).map((option) => {
@@ -390,6 +400,12 @@ const ProductForm = ({
                 with no print size picker.
               </p>
             )}
+            {isCollection && (
+              <p className="mt-2 text-xs text-kilotextgrey">
+                Use the description and gallery images to show what’s in the set.
+                Shipping within Canada is included in the price.
+              </p>
+            )}
           </div>
 
           <AdminTextarea
@@ -399,9 +415,11 @@ const ProductForm = ({
             rows={10}
             showCount
             placeholder={
-              isOriginal
-                ? "Write the full story for this original. Include size if it is not in the title."
-                : "Write the full story for this print. Line breaks are kept on the product page."
+              isCollection
+                ? "Describe the set — how many pieces, sizes, and what’s included."
+                : isOriginal
+                  ? "Write the full story for this original. Include size if it is not in the title."
+                  : "Write the full story for this print. Line breaks are kept on the product page."
             }
             hint="Shown on the product page after someone opens the piece—not on the gallery cards."
           />
@@ -740,27 +758,33 @@ const ProductForm = ({
         <AdminFormSection
           title="Pricing & Inventory"
           description={
-            isOriginal
-              ? "Single price and stock for this original. Shipping is included in the price."
-              : "Set price and stock for each print size."
+            isCollection
+              ? "Single price and stock for this collection. Shipping within Canada is included in the price."
+              : isOriginal
+                ? "Single price and stock for this original. Shipping within Canada is included in the price."
+                : "Set price and stock for each print size."
           }
         >
-          {isOriginal ? (
+          {isSingleSku ? (
             <div className="max-w-md space-y-3 rounded-lg border border-[#3a3a41] bg-kiloblack p-4">
               <p className="text-sm font-semibold text-kilotextlight">
-                Original
+                {isCollection ? "Collection" : "Original"}
               </p>
-              <AdminInput
-                label="Size"
-                type="text"
-                value={originalSize}
-                onChange={(e) => setOriginalSize(e.target.value)}
-                required
-              />
-              {hasSubmitted && originalSizeInvalid && (
-                <p className="text-xs text-kilored -mt-1">
-                  Enter the artwork size (e.g. 16 × 20)
-                </p>
+              {isOriginal && (
+                <>
+                  <AdminInput
+                    label="Size"
+                    type="text"
+                    value={originalSize}
+                    onChange={(e) => setOriginalSize(e.target.value)}
+                    required
+                  />
+                  {hasSubmitted && originalSizeInvalid && (
+                    <p className="text-xs text-kilored -mt-1">
+                      Enter the artwork size (e.g. 16 × 20)
+                    </p>
+                  )}
+                </>
               )}
               <AdminInput
                 label="Price"
