@@ -37,10 +37,10 @@ export const metadata: Metadata = {
     siteName: "KiloBoy Artwork",
     images: [
       {
-        url: "/new-logo-2.png",
+        url: "/images/og-share.jpg",
         width: 1200,
         height: 630,
-        alt: "KiloBoy Artwork by Miles Antwi",
+        alt: "KiloBoy Artwork — bold pop culture portrait by Miles Antwi",
       },
     ],
     type: "website",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     title: "KiloBoy Artwork",
     description:
       "Pop culture-inspired artworks that speak to the streets. Original prints by Miles Antwi — bold, expressive, and built to be felt.",
-    images: ["/new-logo-2.png"],
+    images: ["/images/og-share.jpg"],
   },
   keywords: [
     "KiloBoy",
