@@ -19,6 +19,24 @@ const GALLERY_TABS: { id: GalleryTab; label: string }[] = [
   { id: "collection", label: "Collections" },
 ];
 
+const EMPTY_TAB_COPY: Record<
+  Exclude<GalleryTab, "all">,
+  { title: string; body: string }
+> = {
+  print: {
+    title: "No prints here yet",
+    body: "Check back soon — new prints land in the gallery regularly.",
+  },
+  original: {
+    title: "No specials here yet",
+    body: "One-of-a-kind pieces will show up in this tab when they’re available.",
+  },
+  collection: {
+    title: "Collections coming soon",
+    body: "Browse Prints or Specials in the meantime.",
+  },
+};
+
 // defines the type of props
 type ProductListClientProps = {};
 
@@ -98,12 +116,11 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
     fetchProducts(1, debouncedSearch, selectedCategories, activeTab);
   }, [debouncedSearch, selectedCategories, activeTab]);
 
-  const noResults =
-    !isLoading &&
-    products.length === 0 &&
-    (debouncedSearch.length > 0 ||
-      selectedCategories.length > 0 ||
-      activeTab !== "all");
+  const noResults = !isLoading && products.length === 0;
+  const isSearchOrFilterEmpty =
+    debouncedSearch.length > 0 || selectedCategories.length > 0;
+  const emptyTabCopy =
+    activeTab !== "all" ? EMPTY_TAB_COPY[activeTab] : null;
 
   const handleFilterMenu = () => setFilterMenu(!filterMenu);
 
@@ -201,89 +218,163 @@ const ProductListClient: React.FC<ProductListClientProps> = () => {
         )}
       </div>
 
-      {/* No results */}
+      {/* Empty state */}
       {noResults && (
-        <div className="px-4 sm:px-6 md:px-10 mt-6 text-center">
-          <p className="text-sm text-kilotextlight">
-            {debouncedSearch.length > 0 ? (
+        <div className="px-4 sm:px-6 md:px-10 mt-4 mb-16">
+          <div
+            className="
+              mx-auto max-w-lg
+              rounded-xl border-2 border-[#3a3a41]
+              bg-kilodarkgrey/80
+              px-6 py-12 sm:px-10
+              text-center
+            "
+          >
+            {isSearchOrFilterEmpty ? (
               <>
-                No results found for{" "}
-                <span className="italic">“{debouncedSearch}”</span>
+                <p className="text-lg font-semibold text-white">
+                  No matches
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-kilotextlight">
+                  {debouncedSearch.length > 0 ? (
+                    <>
+                      Nothing matched{" "}
+                      <span className="italic text-white">
+                        “{debouncedSearch}”
+                      </span>
+                      {selectedCategories.length > 0
+                        ? " with the selected filters."
+                        : "."}
+                    </>
+                  ) : (
+                    "Nothing matches the selected category filters."
+                  )}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchInput("");
+                    setSelectedCategories([]);
+                  }}
+                  className="
+                    mt-6 inline-flex
+                    px-5 py-2.5
+                    text-sm font-semibold
+                    rounded-lg
+                    bg-kilored text-white
+                    hover:bg-[#B53535] transition
+                  "
+                >
+                  Clear search & filters
+                </button>
+              </>
+            ) : emptyTabCopy ? (
+              <>
+                <p className="text-lg font-semibold text-white">
+                  {emptyTabCopy.title}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-kilotextlight">
+                  {emptyTabCopy.body}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("all")}
+                  className="
+                    mt-6 inline-flex
+                    px-5 py-2.5
+                    text-sm font-semibold
+                    rounded-lg
+                    bg-kilored text-white
+                    hover:bg-[#B53535] transition
+                  "
+                >
+                  Browse all work
+                </button>
               </>
             ) : (
-              "No products in this view yet."
+              <>
+                <p className="text-lg font-semibold text-white">
+                  Gallery is empty
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-kilotextlight">
+                  New work will show up here when it’s available.
+                </p>
+              </>
             )}
-          </p>
+          </div>
         </div>
       )}
 
-      {/* Product Grid */}
-      <div className="
-        grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
-        gap-8 
-        pb-10 
-        md:p-10 "
-      >
-        {products.map((product) => {
-          const categories = product.categories ?? [];
-          const startingPriceCents =
-            product.product_sizes && product.product_sizes.length > 0
-              ? Math.min(...product.product_sizes.map((s) => s.price_cents))
-              : undefined;
-          const isSoldOut =
-            Array.isArray(product.product_sizes) &&
-            product.product_sizes.length > 0 &&
-            product.product_sizes.every((size) => size.stock === 0);
-
-          return (
-            <ProductListItem
-              key={product.id}
-              id={product.id}
-              title={product.title}
-              image_URL={product.image_URL}
-              starting_price_cents={startingPriceCents}
-              is_original={
-                product.product_type === "original" ||
-                product.product_type === "collection"
-              }
-              sold_out={isSoldOut}
-              is_available={product.is_available}
-              created_at={product.created_at}
-              updated_at={product.updated_at}
-              categories={categories}
-            />
-          );
-        })}
-
-        {/* Skeleton cards while loading */}
-        {isLoading &&
-          Array.from({ length: PAGE_SIZE }).map((_, index) => (
-            <ProductSkeletonCard key={`skeleton-${index}`} />
-          ))}
-      </div>
-
-      {/* Load More Button */}
-      {hasMore && (
-        <div className="flex justify-center ">
-          <button
-            onClick={() => {
-              if (isLoading) return;
-              const nextPage = page + 1;
-              setPage(nextPage);
-              fetchProducts(nextPage);
-            }}
-            disabled={isLoading}
+      {/* Product Grid — hide when empty state is up */}
+      {(!noResults || isLoading) && (
+        <>
+          <div
             className="
-              px-6 py-2 
-              border border-gray-500 rounded-lg
-              text-sm 
-              uppercase tracking-wide 
-              hover:bg-black hover:text-white transition 
-              disabled:opacity-50"
+              grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+              gap-8 
+              pb-10 
+              md:p-10 "
           >
-            {isLoading ? "Loading…" : "Load more"}
-          </button>
-        </div>
+            {products.map((product) => {
+              const categories = product.categories ?? [];
+              const startingPriceCents =
+                product.product_sizes && product.product_sizes.length > 0
+                  ? Math.min(...product.product_sizes.map((s) => s.price_cents))
+                  : undefined;
+              const isSoldOut =
+                Array.isArray(product.product_sizes) &&
+                product.product_sizes.length > 0 &&
+                product.product_sizes.every((size) => size.stock === 0);
+
+              return (
+                <ProductListItem
+                  key={product.id}
+                  id={product.id}
+                  title={product.title}
+                  image_URL={product.image_URL}
+                  starting_price_cents={startingPriceCents}
+                  is_original={
+                    product.product_type === "original" ||
+                    product.product_type === "collection"
+                  }
+                  sold_out={isSoldOut}
+                  is_available={product.is_available}
+                  created_at={product.created_at}
+                  updated_at={product.updated_at}
+                  categories={categories}
+                />
+              );
+            })}
+
+            {isLoading &&
+              Array.from({ length: PAGE_SIZE }).map((_, index) => (
+                <ProductSkeletonCard key={`skeleton-${index}`} />
+              ))}
+          </div>
+
+          {hasMore && (
+            <div className="flex justify-center ">
+              <button
+                onClick={() => {
+                  if (isLoading) return;
+                  const nextPage = page + 1;
+                  setPage(nextPage);
+                  fetchProducts(nextPage);
+                }}
+                disabled={isLoading}
+                className="
+                  px-6 py-2 
+                  border border-gray-500 rounded-lg
+                  text-sm 
+                  uppercase tracking-wide 
+                  hover:bg-black hover:text-white transition 
+                  disabled:opacity-50"
+              >
+                {isLoading ? "Loading…" : "Load more"}
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

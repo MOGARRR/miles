@@ -40,7 +40,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
     <div
       className={`
         flex flex-col
-        rounded-lg border border-[#3a3a41]
+        rounded-lg border-2 border-[#3a3a41]
         bg-kilodarkgrey
         ${sold_out ? "opacity-70" : ""}
       `}

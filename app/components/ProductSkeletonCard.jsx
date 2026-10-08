@@ -4,7 +4,7 @@ const ProductSkeletonCard = () => {
       className="
         flex flex-col
         rounded-lg
-        border border-[#3a3a41]
+        border-2 border-[#3a3a41]
         bg-kilodarkgrey
         animate-pulse opacity-70
       "
