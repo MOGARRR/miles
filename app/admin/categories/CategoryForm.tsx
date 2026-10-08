@@ -136,10 +136,22 @@ const CategoryForm = ({ category, onSuccess, onClose }: Props) => {
             <FormAlert type="success" message={successMessage} />
           )}
 
-          {/* SUBMIT BUTTON  */}
-          <div className="flex justify-center pt-4">
+          {/* SUBMIT / CANCEL */}
+          <div className="flex justify-center gap-3 pt-4">
+            {onClose && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="mt-0"
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+            )}
             <Button
               type="submit"
+              className="mt-0"
               isLoading={isLoading}
               loadingText={isEditMode ? "Saving..." : "Creating..."}
             >

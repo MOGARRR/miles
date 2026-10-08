@@ -2,12 +2,13 @@
 
 // Client wrapper owns all interactive UI for products:
 // - toggling create form
+// - type filters (All / Prints / Specials / Collections)
 // - Available / Deleted tabs
 // - search + category filter
 // - soft-delete and restore
 
 import { useMemo, useState, useEffect, useRef } from "react";
-import type { Product } from "@/src/types/product";
+import type { Product, ProductType } from "@/src/types/product";
 import type { Category } from "@/src/types/category";
 import CreateProductForm from "./ProductForm";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,14 @@ type Props = {
 };
 
 type ProductTab = "available" | "deleted";
+type TypeFilter = "all" | ProductType;
+
+const TYPE_FILTERS: { id: TypeFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "print", label: "Prints" },
+  { id: "original", label: "Specials" },
+  { id: "collection", label: "Collections" },
+];
 
 const SIZE_ORDER = ["Small", "Large", "Original", "Collection"] as const;
 
@@ -44,6 +53,7 @@ const AdminProductsClient = ({ products, categories }: Props) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
   );
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
 
   const [isLoadingEdit, setIsLoadingEdit] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
@@ -67,9 +77,12 @@ const AdminProductsClient = ({ products, categories }: Props) => {
         selectedCategoryId === null ||
         product.categories?.some((cat) => cat.id === selectedCategoryId);
 
-      return matchesSearch && matchesCategory;
+      const matchesType =
+        typeFilter === "all" || product.product_type === typeFilter;
+
+      return matchesSearch && matchesCategory && matchesType;
     });
-  }, [products, searchQuery, selectedCategoryId]);
+  }, [products, searchQuery, selectedCategoryId, typeFilter]);
 
   const availableProducts = filteredBySearchAndCategory.filter(
     (product) => product.is_available,
@@ -229,6 +242,36 @@ const AdminProductsClient = ({ products, categories }: Props) => {
         </p>
       )}
 
+      <div
+        className="flex flex-wrap gap-2 mb-4"
+        role="tablist"
+        aria-label="Product type"
+      >
+        {TYPE_FILTERS.map((tab) => {
+          const selected = typeFilter === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={() => setTypeFilter(tab.id)}
+              className={`
+                px-4 py-2 text-sm font-semibold tracking-wide
+                rounded-lg transition
+                ${
+                  selected
+                    ? "bg-kilored text-white"
+                    : "text-kilotextlight hover:text-white hover:bg-black/30 border border-[#3a3a41]"
+                }
+              `}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-6">
         <SearchBar
           value={searchQuery}
@@ -285,8 +328,10 @@ const AdminProductsClient = ({ products, categories }: Props) => {
 
       {visibleProducts.length === 0 ? (
         <p>
-          {searchQuery.trim() || selectedCategoryId !== null
-            ? "No products match your search."
+          {searchQuery.trim() ||
+          selectedCategoryId !== null ||
+          typeFilter !== "all"
+            ? "No products match your filters."
             : activeTab === "available"
               ? "No available products."
               : "No deleted products."}

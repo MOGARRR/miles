@@ -399,10 +399,22 @@ const EventsForm = ({ event, onSuccess, onClose }: Props) => {
             <FormAlert type="success" message={successMessage} />
           )}
 
-          <div className="flex justify-center pt-4">
+          <div className="flex justify-center gap-3 pt-4">
+            {onClose && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="mt-0"
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+            )}
             <Button
               type="submit"
               variant="primary"
+              className="mt-0"
               isLoading={isLoading}
               loadingText={isEditMode ? "Saving..." : "Creating..."}
             >

@@ -267,8 +267,16 @@ const OrderForm: FC<OrderFormProps> = ({ id, updateFormInfo, onClose }) => {
             </div>
           </AdminFormSection>
 
-          <div className="flex justify-center pt-4">
-            <Button type="submit" variant="primary">
+          <div className="flex justify-center gap-3 pt-4">
+            <Button
+              type="button"
+              variant="secondary"
+              className="mt-0"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" className="mt-0">
               Update Order
             </Button>
           </div>
